@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\ImageCoreHeader">
+      <UniqueIdentifier>{ca012fa4-4450-42a8-8c02-b083f7cd9660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ImageCore">
+      <UniqueIdentifier>{8ce7023a-d218-4c49-b498-2ade437cd2be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ToolCode">
+      <UniqueIdentifier>{6e8450a9-0a7b-420c-bc0b-1adddaa405af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TowerCad">
+      <UniqueIdentifier>{a48cbaf0-1228-49e2-bcde-9b2421bd91df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MuPdf">
+      <UniqueIdentifier>{736606a9-9979-498f-8802-6c684ca50a27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{38aa0923-9870-4808-9968-ba107487950f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Recog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRecognizer.h">
+      <Filter>头文件\ImageCoreHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageTransform.h">
+      <Filter>头文件\ImageCoreHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFile\ImageFile.h">
+      <Filter>头文件\ImageCoreHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFile\ximajpg.h">
+      <Filter>头文件\ImageCoreHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\ToolCode\LogFile.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\ToolCode\Buffer.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\ToolCode\XhCharString.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFile\ximapng.h">
+      <Filter>头文件\ImageCoreHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFile\zlib.h">
+      <Filter>头文件\ImageCoreHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\ToolCode\TempFile.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\TowerCad\SegI.h">
+      <Filter>TowerCad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\ToolCode\MonoBmpFile.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Toolkits\MuPDF\PdfEngine.h">
+      <Filter>MuPdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\Archive.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\BaseUtil.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\ByteOrderDecoder.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\ByteReader.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\ByteWriter.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\DbgHelpDyn.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\DebugLog.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\Dict.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\DirIter.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\Dpi.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\FileUtil.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\FzImgReader.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\GdiPlusUtil.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\HtmlParserLookup.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\HtmlPullParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\ScopedWin.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\StringView.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\StrSlice.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\StrUtil.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\TgaReader.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\TrivialHtmlParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\Vec.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\VecSegmented.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\WinDynCalls.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\WinUtil.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\utils\ZipUtil.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Recog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRecognizer.cpp">
+      <Filter>源文件\ImageCore</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageTransform.cpp">
+      <Filter>源文件\ImageCore</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFile\ImageFile.cpp">
+      <Filter>源文件\ImageCore</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFile\ximajpg.cpp">
+      <Filter>源文件\ImageCore</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFile\ximaexif.cpp">
+      <Filter>源文件\ImageCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\ToolCode\LogFile.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\ToolCode\Buffer.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\ToolCode\XhCharString.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFile\ximapng.cpp">
+      <Filter>源文件\ImageCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\ToolCode\TempFile.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="PartLibrary.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\TowerCad\SegI.cpp">
+      <Filter>TowerCad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\ToolCode\MonoBmpFile.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Toolkits\MuPDF\PdfEngine.cpp">
+      <Filter>MuPdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\Archive.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\BaseUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\ByteOrderDecoder.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\DbgHelpDyn.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\DebugLog.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\Dict.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\DirIter.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\Dpi.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\FileUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\FzImgReader.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\GdiPlusUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\HtmlParserLookup.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\HtmlPullParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\StrSlice.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\StrUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\StrUtil_win.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\TgaReader.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\TrivialHtmlParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\WinDynCalls.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\WinUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\ZipUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

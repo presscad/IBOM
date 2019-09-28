@@ -1,0 +1,1237 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+// Generated Help ID header file
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.hm"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#include ""res\\IBOM.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#include ""l.CHS\\afxprint.rc""    // 打印/打印预览资源\r\n"
+    "#if !defined(_AFXDLL)\r\n"
+    "#include ""l.CHS\\afxribbon.rc""        // MFC 功能区和控件条资源\r\n"
+    "#endif\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\IBOM.ico"
+
+IDR_IBOMTYPE            ICON                    "res\\IBOMDoc.ico"
+
+IDI_FILE_VIEW           ICON                    "res\\file_view.ico"
+
+IDI_FILE_VIEW_HC        ICON                    "res\\file_view_hc.ico"
+
+IDI_CLASS_VIEW          ICON                    "res\\class_view.ico"
+
+IDI_CLASS_VIEW_HC       ICON                    "res\\class_view_hc.ico"
+
+IDI_OUTPUT_WND          ICON                    "res\\output_wnd.ico"
+
+IDI_OUTPUT_WND_HC       ICON                    "res\\output_wnd_hc.ico"
+
+IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
+
+IDI_PROPERTIES_WND_HC   ICON                    "res\\properties_wnd_hc.ico"
+
+IDI_PIN_CROSS           ICON                    "res\\icon1.ico"
+
+IDI_PIN_VERT            ICON                    "res\\icon2.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+IDR_MAINFRAME_256       BITMAP                  "res\\Toolbar256.bmp"
+
+IDR_SORT                BITMAP                  "res\\sort.bmp"
+
+IDB_SORT_24             BITMAP                  "res\\sort_hc.bmp"
+
+IDB_FILE_VIEW           BITMAP                  "res\\fileview.bmp"
+
+IDB_FILE_VIEW_24        BITMAP                  "res\\fileview_hc.bmp"
+
+IDB_CLASS_VIEW          BITMAP                  "res\\classview.bmp"
+
+IDB_CLASS_VIEW_24       BITMAP                  "res\\classview_hc.bmp"
+
+IDR_EXPLORER            BITMAP                  "res\\explorer.bmp"
+
+IDB_EXPLORER_24         BITMAP                  "res\\explorer_hc.bmp"
+
+IDR_MENU_IMAGES         BITMAP                  "res\\menuimages.bmp"
+
+IDB_MENU_IMAGES_24      BITMAP                  "res\\menuimages_hc.bmp"
+
+IDR_PROPERTIES          BITMAP                  "res\\properties.bmp"
+
+IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
+
+IDB_IL_PROJECT          BITMAP                  "res\\il_file.bmp"
+
+IDR_PICTURE_TOOL        BITMAP                  "res\\toolbar2.bmp"
+
+IDB_SPLASH_IBOM         BITMAP                  "Splsh16.bmp"
+
+IDB_BMP_WXGH            BITMAP                  "res\\bmp00138.bmp"
+
+IDB_BMP_WXPAY_WELCOME   BITMAP                  "res\\bmp00137.bmp"
+
+IDB_BMP_WXPAY_SYMBOL    BITMAP                  "res\\bmp00136.bmp"
+
+IDB_BMP_WXPAY_FOOT      BITMAP                  "res\\bitmap4.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_MAINFRAME_256 TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_SORT TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_SORT_MENU
+    BUTTON      ID_NEW_FOLDER
+END
+
+IDR_EXPLORER TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_PROPERTIES
+END
+
+IDR_MENU_IMAGES TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_WINDOW_MANAGER
+    SEPARATOR
+    BUTTON      ID_WINDOW_CASCADE
+    BUTTON      ID_WINDOW_TILE_HORZ
+    BUTTON      ID_TOOLS_MACRO
+    BUTTON      ID_SORTING_SORTALPHABETIC
+    BUTTON      ID_SORTING_SORTBYTYPE
+    BUTTON      ID_SORTING_SORTBYACCESS
+    BUTTON      ID_SORTING_GROUPBYTYPE
+END
+
+IDR_PROPERTIES TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_EXPAND_ALL
+    BUTTON      ID_SORTPROPERTIES
+    BUTTON      ID_PROPERTIES1
+    BUTTON      ID_PROPERTIES2
+END
+
+IDR_PICTURE_TOOL TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_SNAP
+    BUTTON      ID_MOVE
+    BUTTON      ID_ZOOM
+    SEPARATOR
+    BUTTON      ID_TURN_ANTICLOCKWISE90
+    BUTTON      ID_TURN_CLOCKWISE90
+    SEPARATOR
+    BUTTON      ID_START_CALC
+    SEPARATOR
+    BUTTON      ID_RUN_DBP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "文件(&F)"
+    BEGIN
+        MENUITEM "新建(&N)\tCtrl+N",              ID_FILE_NEW
+        MENUITEM "打开(&O)...\tCtrl+O",           ID_FILE_OPEN
+        MENUITEM "保存(&S)\tCtrl+S",              ID_FILE_SAVE
+        MENUITEM "输出TBOM",                      ID_OUTPUT_TBOM
+        MENUITEM "另存为(&A)...",                  ID_FILE_SAVE_AS
+        MENUITEM "文件属性",                        ID_FILE_PROP
+        MENUITEM SEPARATOR
+        MENUITEM "最近的文件",                       ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "退出(&X)",                      ID_APP_EXIT
+    END
+    POPUP "选项(&O)"
+    BEGIN
+        MENUITEM "偏好设置(&S)",                    ID_SETTING
+        MENUITEM "设置CAD路径...",                  ID_SET_CAD_PATH
+    END
+    POPUP "视图(&V)"
+    BEGIN
+        POPUP "工具栏和停靠窗口(&T)"
+        BEGIN
+            MENUITEM "<占位符>",                       ID_VIEW_TOOLBAR
+        END
+        MENUITEM "状态栏(&S)",                     ID_VIEW_STATUS_BAR
+        POPUP "应用程序外观(&A)"
+        BEGIN
+            MENUITEM "Windows 2000(&2)",            ID_VIEW_APPLOOK_WIN_2000
+            MENUITEM "Office XP(&X)",               ID_VIEW_APPLOOK_OFF_XP
+            MENUITEM "Windows XP(&W)",              ID_VIEW_APPLOOK_WIN_XP
+            MENUITEM "Office 2003(&3)",             ID_VIEW_APPLOOK_OFF_2003
+            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS_2005
+            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS_2008
+            POPUP "Office 2007(&7)"
+            BEGIN
+                MENUITEM "蓝色样式(&B)",                    ID_VIEW_APPLOOK_OFF_2007_BLUE
+                MENUITEM "黑色样式(&L)",                    ID_VIEW_APPLOOK_OFF_2007_BLACK
+                MENUITEM "银色样式(&S)",                    ID_VIEW_APPLOOK_OFF_2007_SILVER
+                MENUITEM "水绿色样式(&A)",                   ID_VIEW_APPLOOK_OFF_2007_AQUA
+            END
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "专注模式",                        ID_IMMERSE_MODE, CHECKED
+        MENUITEM "打字机模式",                       ID_TYPEWRITER_MODE, CHECKED
+    END
+    POPUP "操作(&C)"
+    BEGIN
+        MENUITEM "选择(&S)",                      ID_SNAP
+        MENUITEM "移动(&M)",                      ID_MOVE
+        MENUITEM "缩放(&Z)",                      ID_ZOOM
+        MENUITEM SEPARATOR
+        MENUITEM "提取数据(&R)\tF2",                ID_RETRIEVE_IMAGE_DATA
+        POPUP "选取定位点"
+        BEGIN
+            MENUITEM "定位点1",                        ID_PICK_POINT_1, CHECKED
+            MENUITEM "定位点2",                        ID_PICK_POINT_2
+            MENUITEM "定位点3",                        ID_PICK_POINT_3
+            MENUITEM "定位点4",                        ID_PICK_POINT_4
+        END
+    END
+    POPUP "帮助(&H)"
+    BEGIN
+        MENUITEM "授权管理(&L)",                    271
+        MENUITEM SEPARATOR
+        MENUITEM "关于 IBOM(&A)...",              ID_APP_ABOUT
+    END
+END
+
+IDR_POPUP_EDIT MENU
+BEGIN
+    POPUP "编辑"
+    BEGIN
+        MENUITEM "剪切(&T)\tCtrl+X",              ID_EDIT_CUT
+        MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
+        MENUITEM "粘贴(&P)\tCtrl+V",              ID_EDIT_PASTE
+    END
+END
+
+IDR_POPUP_SORT MENU
+BEGIN
+    POPUP "排序"
+    BEGIN
+        MENUITEM "按字母顺序排序(&S)",                 ID_SORTING_SORTALPHABETIC
+        MENUITEM "按类型排序(&T)",                   ID_SORTING_SORTBYTYPE
+        MENUITEM "按访问排序(&E)",                   ID_SORTING_SORTBYACCESS
+        MENUITEM "按类型分组(&Y)",                   ID_SORTING_GROUPBYTYPE
+    END
+END
+
+IDR_POPUP_EXPLORER MENU
+BEGIN
+    POPUP "资源管理器"
+    BEGIN
+        MENUITEM "打开(&O)",                      ID_OPEN
+        MENUITEM "打开方式(&W)....",                ID_OPEN_WITH
+        MENUITEM SEPARATOR
+        MENUITEM "编译(&C)",                      ID_DUMMY_COMPILE
+        MENUITEM SEPARATOR
+        MENUITEM "剪切(&T)\tCtrl+X",              ID_EDIT_CUT
+        MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
+        MENUITEM "删除(&R)",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "属性(&P)...",                   ID_PROPERTIES
+    END
+END
+
+IDR_OUTPUT_POPUP MENU
+BEGIN
+    POPUP "弹出项"
+    BEGIN
+        MENUITEM "复制(&C)",                      ID_EDIT_COPY
+        MENUITEM "清除(&C)",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "隐藏(&H)",                      ID_VIEW_OUTPUTWND
+        MENUITEM "启动DBP",                       ID_RUN_DBP
+    END
+END
+
+IDR_THEME_MENU MENU
+BEGIN
+    MENUITEM "Office 2007 (蓝色样式)(&B)",      ID_VIEW_APPLOOK_OFF_2007_BLUE
+    MENUITEM "Office 2007 (黑色样式)(&L)",      ID_VIEW_APPLOOK_OFF_2007_BLACK
+    MENUITEM "Office 2007 (银色样式)(&S)",      ID_VIEW_APPLOOK_OFF_2007_SILVER
+    MENUITEM "Office 2007 (水绿色样式)(&A)",     ID_VIEW_APPLOOK_OFF_2007_AQUA
+    MENUITEM "Windows 7(&D)",               ID_VIEW_APPLOOK_WINDOWS_7
+END
+
+IDR_ITEM_CMD_POPUP MENU
+BEGIN
+    POPUP "_CMD_POPUP"
+    BEGIN
+        MENUITEM "属性",                          ID_EDIT_ITEM_PROP_ITEM
+        MENUITEM "选择文件夹",                       ID_SELECT_FOLDER
+        MENUITEM "标记错误",                        ID_MARK_ERROR
+        MENUITEM "标记正常",                        ID_MARK_NORMAL
+        MENUITEM "重命名",                         ID_RENAME_ITEM
+        MENUITEM "置顶",                          ID_MOVE_TO_TOP
+        MENUITEM "上移",                          ID_MOVE_UP
+        MENUITEM "下移",                          ID_MOVE_DOWN
+        MENUITEM "置尾",                          ID_MOVE_TO_BOTTOM
+        MENUITEM "属性",                          ID_EDIT_ITEM_PROP
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    VK_F2,          ID_RETRIEVE_IMAGE_DATA, VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 215, 54
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 IBOM"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,16,20,20
+    LTEXT           "IBOM 1.1 版",IDC_S_VERSION,42,13,166,8,SS_NOPREFIX
+    DEFPUSHBUTTON   "确定",IDOK,153,30,50,13,WS_GROUP
+    LTEXT           "北京信狐天诚软件科技有限公司版权所有 (C) 2016-2019",IDC_S_COPYRIGHT,40,26,102,18
+END
+
+IDD_FILE_TREE_DLG DIALOGEX 0, 0, 132, 183
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 12, "宋体", 400, 0, 0x86
+BEGIN
+    CONTROL         "",IDC_TREE_CTRL,"SysTreeView32",TVS_EDITLABELS | TVS_SHOWSELALWAYS | TVS_NOHSCROLL | WS_TABSTOP,7,7,118,169
+END
+
+IDD_OUTPUT_INFO_DLG DIALOGEX 0, 0, 376, 210
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 14, "宋体", 400, 0, 0x86
+BEGIN
+    CONTROL         "",IDC_OUTPUT_INFO_LIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | WS_TABSTOP,7,21,362,182
+    CONTROL         "",IDC_TAB_GROUP,"SysTabControl32",0x0,7,10,115,12
+    EDITTEXT        IDC_E_RECORD,147,7,66,12,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "长度容差:",IDC_S_TOLERANCE_LABEL,215,10,35,8
+    EDITTEXT        IDC_E_COMPARE_TOLERANCE,251,7,18,12,ES_AUTOHSCROLL
+    LTEXT           "重量容差:",IDC_S_TOLERANCE_LABEL2,272,10,35,8
+    EDITTEXT        IDC_E_COMPARE_WEIGHT_TOLERANCE,308,7,18,12,ES_AUTOHSCROLL
+END
+
+IDD_DISP_DATA_PAGE DIALOGEX 0, 0, 471, 235
+STYLE DS_SETFONT | WS_CHILD
+FONT 18, "宋体", 400, 0, 0x86
+BEGIN
+    LTEXT           "记录数:",IDC_S_RECORD_NUM,210,12,31,8
+    EDITTEXT        IDC_E_RECORD_NUM,242,10,20,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_PREV_LIST_CTRL,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | NOT WS_VISIBLE | WS_TABSTOP,7,111,120,63
+    CONTROL         "",IDC_WORK_PANEL,"Static",SS_BLACKFRAME,7,24,123,73
+    CONTROL         "",IDC_SUB_WORK_PANEL,"Static",SS_BLACKFRAME,131,24,155,32
+    CONTROL         "",IDC_SPLITTER_HORIZ,"Static",SS_BLACKFRAME,7,99,279,5
+    CONTROL         "",IDC_SLIDER_BALANCE_COEF,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,22,10,54,10
+    LTEXT           " 暗",IDC_S_COEF_TITLE,8,10,13,8
+    LTEXT           "明100",IDC_S_BALANCE_COEF,76,11,21,8
+    COMBOBOX        IDC_CMB_MODEL,153,11,57,52,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "显示模式:",IDC_S_DISPLAY_MODEL,115,11,37,8
+    CONTROL         "",IDC_LIST_CTRL,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_TABSTOP,7,179,120,43
+    CONTROL         "",IDC_SLIDER_SPIN,"msctls_updown32",UDS_ARROWKEYS,98,9,6,11
+    LTEXT           "总  计:",IDC_S_SUM_WEIGHT_TITLE,290,12,31,8,0,WS_EX_RIGHT
+    LTEXT           "",IDC_S_SUM_WEIGHT,323,12,122,8
+    CONTROL         "",IDC_SUB_WORK_PANEL2,"Static",SS_BLACKFRAME,136,59,149,34
+    LTEXT           "材质快捷键\nQ235: R\nQ345: T\nQ390: Y\nQ420: U\n——————\n操作快捷键\n上: ↑或E\n下: ↓或D\n左: ←或S\n右: →或F\n重复内容: .",IDC_S_PROMPT,296,28,50,124,NOT WS_VISIBLE
+    CONTROL         "",IDC_FILE_LIST_CTRL,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_TABSTOP,140,160,152,50
+    CONTROL         "",IDC_TAB_CTRL,"SysTabControl32",0x0,135,114,65,11
+    CONTROL         "",IDC_SLIDER_ZOOM_SCALE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,394,12,42,8
+    LTEXT           "缩放比例:",IDC_S_PDF_ZOOM_SCALE_TITLE,356,12,36,8,0,WS_EX_RIGHT
+END
+
+IDD_INPUT_PARTINFO_DLG DIALOGEX 0, 0, 367, 88
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    EDITTEXT        IDC_E_PARTNO,8,51,34,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_CMB_MATERIAL,43,51,31,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CMB_GUIGE,74,51,36,280,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_E_LENGHT,111,51,37,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_E_NUM,148,51,45,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_E_WEIGHT,193,51,45,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_E_SUM_WEIGHT,239,51,45,14,ES_AUTOHSCROLL | ES_READONLY
+    CONTROL         "",IDC_PICTURE_PANEL,"Static",SS_BLACKFRAME,7,24,353,25
+    CTEXT           "件号",IDC_S_PARTNO,15,12,16,8
+    CTEXT           "材质-规格",IDC_S_MAT_GUIGE,57,12,35,8
+    CTEXT           "长度",IDC_S_LEN,119,12,16,8
+    CTEXT           "数量",IDC_S_NUM,160,12,16,8
+    CTEXT           "单重",IDC_S_WEIGHT,202,12,16,8
+    CTEXT           "总重",IDC_S_SUM_WEIGHT,252,12,16,8
+    CTEXT           "备注",IDC_S_NOTE,299,12,16,8
+    CONTROL         "",IDC_RICHEDIT21,"RichEdit20A",ES_AUTOHSCROLL | WS_TABSTOP,7,67,40,14
+    CONTROL         "",IDC_RICHEDIT22,"RichEdit20A",ES_AUTOHSCROLL | WS_TABSTOP,50,67,241,14
+END
+
+IDD_INPUT_AN_INTEGER_VAL_DLG DIALOGEX 0, 0, 141, 49
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入"
+FONT 10, "宋体", 0, 0, 0x1
+BEGIN
+    LTEXT           "值标题",IDC_S_TITLE,7,9,63,21
+    EDITTEXT        IDC_E_VAL,83,7,51,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "确定",IDOK,42,28,50,14,0,0,HIDOK
+END
+
+IDD_INPUT_AN_STRING_VAL_DLG DIALOGEX 0, 0, 135, 50
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入"
+FONT 10, "宋体", 0, 0, 0x1
+BEGIN
+    LTEXT           "值标题",IDC_S_TITLE,7,9,42,15
+    EDITTEXT        IDC_E_VAL,45,7,84,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "确定",IDOK,44,29,50,14,0,0,HIDOK
+END
+
+IDD_RUN_DBP_DLG DIALOGEX 0, 0, 181, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "IBOM"
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "关闭",IDOK,136,41,38,14
+    LTEXT           "请确定AutoCAD的启动路径:",IDC_STATIC,9,11,97,8
+    COMBOBOX        IDC_CMB_CAD_PATH,8,23,164,133,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_FONTS_LIBRARY_DLG DIALOGEX 0, 0, 204, 43
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "字体库"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,147,7,50,14
+    PUSHBUTTON      "取消",IDCANCEL,147,22,50,14
+    COMBOBOX        IDC_CMB_FONTS,38,7,64,56,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "字体：",IDC_STATIC,7,9,25,8
+    COMBOBOX        IDC_CMB_CHAR_IMAGE,38,23,64,168,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "字符：",IDC_STATIC,7,25,25,8
+    CONTROL         "",IDC_PIC_CHAR_IMAGE,"Static",SS_BLACKFRAME,108,7,30,30
+END
+
+IDD_INPUT_DLG DIALOGEX 0, 0, 223, 32
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入段号范围"
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    EDITTEXT        IDC_E_INPUT,7,7,154,17,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "确定",IDOK,166,7,50,17
+END
+
+IDD_LICENSE_VIRTUAL_RENTAL_DLG DIALOGEX 0, 0, 266, 47
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "***导入离线授权文件前切勿关闭对话框***",IDC_S_MSG_NO_CLOSE,6,3,158,8
+    PUSHBUTTON      "生成离线申请文件",15008,6,15,80,14
+    PUSHBUTTON      "导入离线授权文件",15010,97,15,80,14
+    LTEXT           "租期：",IDC_STATIC,6,34,25,8
+    COMBOBOX        IDC_CMB_RENTAL_PERIOD,33,31,44,100,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "申请编码:",IDC_S_RAND_APPLY_CODE,82,34,95,8
+    PUSHBUTTON      "=>申请主服务器授权",IDC_BN_SHIFT_TO_SERVER_LICENSE,182,0,80,14
+    PUSHBUTTON      "=>申请局域网子授权",IDC_BN_SHIFT_TO_END_LICENSE,182,15,80,14
+    PUSHBUTTON      "在线租借授权",IDC_BN_APPLY_LICENSE_ONLINE,182,30,80,14
+END
+
+IDD_LICENSE_SERVER_ACTIVATE_DLG DIALOGEX 0, 0, 266, 47
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "=>申请局域网子授权",15009,182,0,80,14,BS_FLAT
+    LTEXT           "    1.点击左侧按钮生成(*.apl)文件, 发给信狐公司",IDC_STATIC,0,19,170,8
+    PUSHBUTTON      "生成申请文件",15008,0,0,80,14
+    LTEXT           "    2.点击右侧按钮导入授权文件(*.aut)",IDC_STATIC,0,35,134,8
+    PUSHBUTTON      "导入授权文件",15010,83,0,80,14
+    PUSHBUTTON      "在线申请主服务器授权",15012,182,15,80,14,WS_DISABLED
+END
+
+IDD_LICENSE_AHTORIZE_DLG DIALOGEX 0, 0, 279, 131
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "证书授权管理"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "单机锁",15001,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,13,16,37,11
+    CONTROL         "网络锁",15002,"Button",BS_AUTORADIOBUTTON,58,16,40,11
+    CONTROL         "HASP锁",15003,"Button",BS_AUTORADIOBUTTON,102,16,41,11
+    CONTROL         "虚拟锁",IDC_RDO_DOG_TYPE4,"Button",BS_AUTORADIOBUTTON,146,16,41,11
+    GROUPBOX        "加密锁类型",IDC_STATIC,8,5,182,26,WS_GROUP
+    PUSHBUTTON      "连接加密锁",15005,191,7,81,18
+    LTEXT           "锁Id：",IDC_STATIC,192,25,24,8
+    LTEXT           "",15015,216,25,56,8
+    LTEXT           "服务器名称:",15016,19,58,44,8,0,WS_EX_RIGHT
+    EDITTEXT        15018,67,56,54,14,ES_AUTOHSCROLL
+    LTEXT           "服务器IP地址:",15017,13,81,50,8,0,WS_EX_RIGHT
+    CONTROL         "",15019,"SysIPAddress32",WS_TABSTOP,67,78,97,15
+    CONTROL         "",15021,"Static",SS_BLACKFRAME,7,48,266,52
+    PUSHBUTTON      "=>申请主服务器授权",IDC_BN_SHIFT_TO_SERVER_LICENSE,190,49,80,14
+    PUSHBUTTON      "申请局域网子授权",15006,190,80,80,14
+    LTEXT           "用户名称:",IDC_STATIC,7,108,36,8
+    EDITTEXT        15013,43,107,61,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "授权类型:",IDC_STATIC,108,109,36,8
+    EDITTEXT        15014,143,107,46,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "退出",IDCANCEL,191,103,81,20
+    LTEXT           "3#执行目录下不存在证书文件或证书文件与加密狗不匹配",15022,9,35,263,8
+    LTEXT           "端口号:",IDC_S_PORT_NUMBER,126,58,28,8,0,WS_EX_RIGHT
+    EDITTEXT        IDC_E_PORT_NUMBER,158,56,29,14,ES_AUTOHSCROLL
+END
+
+IDD_SETTING_DLG DIALOGEX 0, 0, 207, 260
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "偏好设置"
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,82,240,50,14
+    PUSHBUTTON      "取消",IDCANCEL,139,240,50,14
+    LISTBOX         IDC_SETTING_LIST,7,21,193,194,LBS_OWNERDRAWVARIABLE | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_E_PROP_HELP_STR,7,216,192,22,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY
+    PUSHBUTTON      "恢复默认设置",ID_BTN_DEFAULT,12,240,59,14
+    CONTROL         "",IDC_TAB_GROUP,"SysTabControl32",TCS_HOTTRACK | TCS_BUTTONS,7,7,178,14
+END
+
+IDD_LICENSE_ONLINE_RENTAL_DLG DIALOGEX 0, 0, 266, 47
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "申请正式授权",IDC_BN_CREATE_IDENTITY_FILE,182,33,80,14
+    LTEXT           "租期：",IDC_STATIC,6,21,25,8
+    COMBOBOX        IDC_CMB_RENTAL_PERIOD,33,18,44,100,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "申请编码:",IDC_S_RAND_APPLY_CODE,82,21,95,8
+    PUSHBUTTON      "=>申请虚拟锁授权",IDC_BN_SHIFT_TO_VIRTUAL_LICENSE,182,2,80,14
+    PUSHBUTTON      "在线租借授权",IDC_BN_APPLY_LICENSE_ONLINE,182,16,80,14
+    LTEXT           "临时授权,剩余10天",IDC_S_MSG_NO_CLOSE,6,5,158,8
+END
+
+IDD_INPUT_PERFIX_AND_SUFFIX_DLG DIALOGEX 0, 0, 175, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入文件名前缀和后缀"
+FONT 10, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,85,40,37,14
+    PUSHBUTTON      "取消",IDCANCEL,127,40,41,14
+    EDITTEXT        IDC_E_PREFIX,32,7,136,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_E_SUFFIX,32,24,136,14,ES_AUTOHSCROLL
+    LTEXT           "前缀：",IDC_STATIC,7,10,24,8
+    LTEXT           "后缀：",IDC_STATIC,7,26,24,8
+    LTEXT           "旋转角度：",IDC_STATIC,7,43,39,8
+    COMBOBOX        IDC_CMD_ROTATE_ANGLE,44,41,31,69,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_AUTO_SAVE_PARAM_DLG DIALOGEX 0, 0, 140, 65
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "请及时存盘"
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "存盘",IDOK,10,45,50,14
+    PUSHBUTTON      "取消",IDCANCEL,81,45,50,14
+    LTEXT           "自动存盘时间间隔",IDC_STATIC,10,12,62,11
+    LTEXT           "分钟",IDC_STATIC,119,12,15,11
+    LTEXT           "自动存盘方式",IDC_STATIC,10,28,58,11
+    EDITTEXT        IDC_AUTO_SAVE_TIME,73,10,44,12,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COM_SAVE_FILE_TYPE,73,25,60,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_PROC_BAR_DLG DIALOG 0, 0, 224, 21
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "到位进度"
+FONT 10, "宋体"
+BEGIN
+    CONTROL         "Progress1",IDC_PROGRESS_BAR,"msctls_progress32",WS_BORDER,7,4,189,10
+    LTEXT           "100%",IDC_NUMERIC_PROC,197,6,18,8
+END
+
+IDD_PAY_QRCODE_DLG DIALOGEX 0, 0, 251, 103
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "微信支付"
+FONT 16, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    CTEXT           "LDS软件租借授权订单",15029,130,3,97,8
+    CONTROL         IDB_BMP_WXPAY_SYMBOL,IDC_S_PIC_WXPAY_SYMBOL,"Static",SS_BITMAP,3,0,74,16
+    CONTROL         IDB_BMP_WXPAY_WELCOME,IDC_STATIC,"Static",SS_BITMAP,110,1,31,34
+    CTEXT           " ￥",IDC_STATIC,141,18,11,8
+    LTEXT           "收款方",IDC_STATIC,110,40,22,8
+    LTEXT           "租借时间",IDC_STATIC,110,51,29,8
+    LTEXT           "订单号",IDC_STATIC,110,62,22,8
+    LTEXT           "下单时间",IDC_STATIC,110,73,29,8
+    LTEXT           "订单将在3分钟后关闭，请及时付款",IDC_STATIC,110,84,110,8
+    LTEXT           "北京信狐天诚软件科技有限公司",IDC_STATIC,143,39,99,8
+    LTEXT           "一周",IDC_RENTAL_PERIOD,144,51,100,8
+    LTEXT           "2018-09-29 11:29:30",IDC_RENTAL_ORDER_DATE,143,73,68,8
+    LTEXT           "W201809290333",IDC_ORDER_IDSTR,143,62,101,8
+    CTEXT           "0.01",IDC_MSG_MONEY,154,18,29,16
+END
+
+IDD_APPLY_CREDIT_RESULT_DLG DIALOGEX 0, 0, 149, 209
+STYLE DS_SETFONT | DS_3DLOOK | WS_POPUP | WS_BORDER | WS_SYSMENU
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,13,191,50,14
+    PUSHBUTTON      "取消",IDCANCEL,83,191,50,14
+    LTEXT           "关注公众号，回复“TMA”,通知客服！",1776,3,5,146,8
+    LTEXT           "QQ：365028520  电话: 010-68241139",IDC_STATIC,4,17,146,8
+    CONTROL         IDB_BMP_WXGH,IDC_STATIC,"Static",SS_BITMAP,0,29,162,159
+END
+
+IDD_ENDUSER_APPLY_DLG DIALOGEX 0, 0, 154, 100
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "用户申请"
+FONT 10, "宋体", 400, 0, 0x86
+BEGIN
+    EDITTEXT        IDC_E_ENDUSER,37,8,97,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_E_PHONENUMBER,37,25,97,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_E_WX_ACCOUNT,37,41,97,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_E_CLIENTNAME,37,58,97,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "申请",IDOK,18,78,50,14
+    PUSHBUTTON      "取消",IDCANCEL,84,78,50,14
+    LTEXT           "姓  名:",IDC_STATIC,9,10,27,8
+    LTEXT           "手机号:",IDC_STATIC,9,28,27,8
+    LTEXT           "单  位:",IDC_STATIC,9,60,27,8
+    CTEXT           "*",IDC_STATIC,137,12,8,8
+    CTEXT           "*",IDC_STATIC,137,29,8,8
+    LTEXT           "微信号:",IDC_STATIC,9,44,27,8
+    CTEXT           "*",IDC_STATIC,137,45,8,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", "北京信狐天诚软件科技有限公司"
+            VALUE "FileDescription", "IBOM"
+            VALUE "FileVersion", "1.1.0.0"
+            VALUE "InternalName", "IBOM2019"
+            VALUE "LegalCopyright", "版权所有 (C) 2016-2019"
+            VALUE "OriginalFilename", "IBOM.exe"
+            VALUE "ProductName", "IBOM 铁塔材料表提取软件"
+            VALUE "ProductVersion", "1.1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 208
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 47
+    END
+
+    IDD_FILE_TREE_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 125
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_OUTPUT_INFO_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 369
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 203
+    END
+
+    IDD_DISP_DATA_PAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 464
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 228
+    END
+
+    IDD_INPUT_PARTINFO_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 360
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 81
+    END
+
+    IDD_INPUT_AN_INTEGER_VAL_DLG, DIALOG
+    BEGIN
+    END
+
+    IDD_INPUT_AN_STRING_VAL_DLG, DIALOG
+    BEGIN
+    END
+
+    IDD_RUN_DBP_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 174
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_FONTS_LIBRARY_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 197
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 36
+    END
+
+    IDD_INPUT_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 216
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 25
+    END
+
+    IDD_LICENSE_VIRTUAL_RENTAL_DLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 262
+    END
+
+    IDD_LICENSE_SERVER_ACTIVATE_DLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 262
+    END
+
+    IDD_LICENSE_AHTORIZE_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 272
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 124
+    END
+
+    IDD_SETTING_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 253
+    END
+
+    IDD_LICENSE_ONLINE_RENTAL_DLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 262
+    END
+
+    IDD_INPUT_PERFIX_AND_SUFFIX_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 168
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_AUTO_SAVE_PARAM_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 132
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 59
+    END
+
+    IDD_PROC_BAR_DLG, DIALOG
+    BEGIN
+    END
+
+    IDD_PAY_QRCODE_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 3
+        RIGHTMARGIN, 244
+        BOTTOMMARGIN, 96
+    END
+
+    IDD_APPLY_CREDIT_RESULT_DLG, DIALOG
+    BEGIN
+    END
+
+    IDD_ENDUSER_APPLY_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 147
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 93
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_FONTS_LIBRARY_DLG DLGINIT
+BEGIN
+    IDC_CMB_FONTS, 0x403, 9, 0
+0xbaba, 0xd6d7, 0xc2b7, 0xcecb, "\000" 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0030, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0031, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0032, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0033, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0034, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0035, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0036, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0037, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0038, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0039, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0041, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0042, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x004c, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0051, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x0058, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x002d, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x005f, 
+    IDC_CMB_CHAR_IMAGE, 0x403, 2, 0
+0x002e, 
+    0
+END
+
+IDD_DISP_DATA_PAGE DLGINIT
+BEGIN
+    IDC_CMB_MODEL, 0x403, 9, 0
+0xe9b2, 0xb4bf, 0xa3c4, 0xbdca, "\000" 
+    0
+END
+
+IDD_LICENSE_VIRTUAL_RENTAL_DLG DLGINIT
+BEGIN
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xbbd2, 0xdcd6, "\000" 
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xb1a3, 0xc2d4, "\000" 
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xb3a3, 0xc2d4, "\000" 
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xb6a3, 0xc2d4, "\000" 
+    0
+END
+
+IDD_LICENSE_ONLINE_RENTAL_DLG DLGINIT
+BEGIN
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xbbd2, 0xdcd6, "\000" 
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xb1a3, 0xc2d4, "\000" 
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xb3a3, 0xc2d4, "\000" 
+    IDC_CMB_RENTAL_PERIOD, 0x403, 5, 0
+0xb6a3, 0xc2d4, "\000" 
+    0
+END
+
+IDD_INPUT_PERFIX_AND_SUFFIX_DLG DLGINIT
+BEGIN
+    IDC_CMD_ROTATE_ANGLE, 0x403, 2, 0
+0x0030, 
+    IDC_CMD_ROTATE_ANGLE, 0x403, 3, 0
+0x3039, "\000" 
+    IDC_CMD_ROTATE_ANGLE, 0x403, 4, 0
+0x3831, 0x0030, 
+    IDC_CMD_ROTATE_ANGLE, 0x403, 4, 0
+0x3732, 0x0030, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CUR_ANCHOR          CURSOR                  "res\\cursor1.cur"
+
+IDC_CUR_PIN             CURSOR                  "res\\cursor2.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE 初始化失败。请确保 OLE 库是正确的版本。"
+    IDS_FILE_CTRL_VIEW      "模型"
+    IDS_OUTPUT_INFO_VIEW    "输出结果"
+END
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "IBOM\n\nIBOM\nIBOM Files (*.ibom)\n.ibom\nIBOM.Document\nIBOM.Document"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "IBOM"
+    AFX_IDS_IDLEMESSAGE     "就绪"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "创建新文档\n新建"
+    ID_FILE_OPEN            "打开现有文档\n打开"
+    ID_FILE_CLOSE           "关闭活动文档\n关闭"
+    ID_FILE_SAVE            "保存活动文档\n保存"
+    ID_FILE_SAVE_AS         "用新名称保存活动文档\n另存为"
+    ID_FILE_PAGE_SETUP      "更改打印选项\n页面设置"
+    ID_FILE_PRINT_SETUP     "更改打印机选项和打印选项\n打印设置"
+    ID_FILE_PRINT           "打印活动文档\n打印"
+    ID_FILE_PRINT_DIRECT    "使用当前选项打印活动文档\n快速打印"
+    ID_FILE_PRINT_PREVIEW   "显示整页\n打印预览"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "显示程序信息、版本号和版权信息\n关于"
+    ID_APP_EXIT             "退出应用程序；提示保存文档\n退出"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "打开此文档"
+    ID_FILE_MRU_FILE2       "打开此文档"
+    ID_FILE_MRU_FILE3       "打开此文档"
+    ID_FILE_MRU_FILE4       "打开此文档"
+    ID_FILE_MRU_FILE5       "打开此文档"
+    ID_FILE_MRU_FILE6       "打开此文档"
+    ID_FILE_MRU_FILE7       "打开此文档"
+    ID_FILE_MRU_FILE8       "打开此文档"
+    ID_FILE_MRU_FILE9       "打开此文档"
+    ID_FILE_MRU_FILE10      "打开此文档"
+    ID_FILE_MRU_FILE11      "打开此文档"
+    ID_FILE_MRU_FILE12      "打开此文档"
+    ID_FILE_MRU_FILE13      "打开此文档"
+    ID_FILE_MRU_FILE14      "打开此文档"
+    ID_FILE_MRU_FILE15      "打开此文档"
+    ID_FILE_MRU_FILE16      "打开此文档"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "切换到下一个窗格\n下一窗格"
+    ID_PREV_PANE            "切换回上一个窗格\n上一窗格"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_SPLIT         "将活动窗口拆分为多个窗格\n拆分"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "清除所选内容\n清除"
+    ID_EDIT_CLEAR_ALL       "清除全部内容\n全部清除"
+    ID_EDIT_COPY            "复制所选内容，将其放入剪贴板\n复制"
+    ID_EDIT_CUT             "剪切所选内容，将其放入剪贴板\n剪切"
+    ID_EDIT_FIND            "查找指定的文本\n查找"
+    ID_EDIT_PASTE           "插入剪贴板内容\n粘贴"
+    ID_EDIT_REPEAT          "重复上一操作\n重复"
+    ID_EDIT_REPLACE         "用其他文本替换特定的文本\n替换"
+    ID_EDIT_SELECT_ALL      "选定整个文档\n全选"
+    ID_EDIT_UNDO            "撤消上一操作\n撤消"
+    ID_EDIT_REDO            "重做上次撤消的操作\n重做"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_STATUS_BAR      "显示或隐藏状态栏\n切换状态栏"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "更改窗口大小"
+    AFX_IDS_SCMOVE          "更改窗口位置"
+    AFX_IDS_SCMINIMIZE      "将窗口缩小成图标"
+    AFX_IDS_SCMAXIMIZE      "将窗口放大到最大尺寸"
+    AFX_IDS_SCNEXTWINDOW    "切换到下一个文档窗口"
+    AFX_IDS_SCPREVWINDOW    "切换到上一个文档窗口"
+    AFX_IDS_SCCLOSE         "关闭活动窗口并提示保存文档"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "将窗口恢复到正常大小"
+    AFX_IDS_SCTASKLIST      "激活任务列表"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "关闭打印预览模式\n取消预览"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_STATUS_PANE1        "窗格 1"
+    IDS_STATUS_PANE2        "窗格 2"
+    IDS_TOOLBAR_STANDARD    "标准"
+    IDS_TOOLBAR_CUSTOMIZE   "自定义..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FILE_VIEW           "文件视图"
+    IDS_CLASS_VIEW          "类视图"
+    IDS_OUTPUT_WND          "输出"
+    IDS_PROPERTIES_WND      "属性"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_EXPLORER            "资源管理器"
+    IDS_EDIT_MENU           "编辑"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_BUILD_TAB           "生成"
+    IDS_DEBUG_TAB           "调试"
+    IDS_FIND_TAB            "查找"
+END
+
+STRINGTABLE
+BEGIN
+    ID_SNAP                 "图片捕捉\n选择"
+    ID_MOVE                 "图片移动\n移动"
+    ID_ZOOM                 "图片缩放\n缩放"
+END
+
+STRINGTABLE
+BEGIN
+    ID_RUN_DBP              "在CAD中输入RT命令\n启动DBP,提取Dwg构件信息"
+END
+
+STRINGTABLE
+BEGIN
+    ID_TURN_ANTICLOCKWISE90 "逆时针旋转90°\n逆时针旋转90°"
+    ID_TURN_CLOCKWISE90     "顺时针旋转90°\n顺时针旋转90°"
+    ID_PICK_POINT_1         "拾取第一点\n拾取第一点"
+    ID_PICK_POINT_2         "拾取第二点\n拾取第二点"
+    ID_BUTTON246            "拾取第三点\n拾取第三点"
+    ID_BUTTON247            "拾取第四点\n拾取第四点"
+    ID_PICK_POINT_3         "拾取第三点\n拾取第三点"
+    ID_PICK_POINT_4         "拾取第四点\n拾取第四点"
+END
+
+STRINGTABLE
+BEGIN
+    ID_START_CALC           "启动计算器\n启动计算器"
+    ID_OUTPUT_TBOM          "输出LTMA接口文件\n输出LTMA接口文件"
+END
+
+STRINGTABLE
+BEGIN
+    ID_RENAME_ITEM          "重命名\n重命名"
+    ID_FILE_PROP            "文件属性\n文件属性"
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#include "res\IBOM.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#include "l.CHS\afxprint.rc"    // 打印/打印预览资源
+#if !defined(_AFXDLL)
+#include "l.CHS\afxribbon.rc"        // MFC 功能区和控件条资源
+#endif
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

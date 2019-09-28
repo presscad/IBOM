@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release07|Win32">
+      <Configuration>Release07</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release10|Win32">
+      <Configuration>Release10</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EA9994B9-E8E9-461D-8067-5FEA2E10F60A}</ProjectGuid>
+    <RootNamespace>DBP</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v70</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v70</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v80</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\Debug\</OutDir>
+    <TargetExt>.arx</TargetExt>
+    <IgnoreImportLibrary>
+    </IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\Release\</OutDir>
+    <TargetExt>.arx</TargetExt>
+    <TargetName>$(ProjectName)05</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\Release\</OutDir>
+    <TargetExt>.arx</TargetExt>
+    <TargetName>$(ProjectName)10</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\Release\</OutDir>
+    <TargetExt>.arx</TargetExt>
+    <TargetName>$(ProjectName)07</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>__BOM_FILE_;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;D:\ObjectARX 2005\inc;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\LDS\MapLds</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>.\DBP.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>D:\ObjectARX 2005\lib;..\..\XhLmd\DogDrvs;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>acdb16.lib;acge16.lib;achapi16.lib;acISMobj16.lib;adui16.lib;acui16.lib;rxapi.lib;acgiapi.lib;acad.lib;acedapi.lib;hasp_windows_106281.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>.\Debug/DBP.lib</ImportLibrary>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>__BOM_FILE_;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;D:\ObjectARX 2005\inc;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\LDS\MapLds</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\DBP.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>D:\ObjectARX 2005\lib;..\..\XhLmd\DogDrvs;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>acdb16.lib;acge16.lib;achapi16.lib;acISMobj16.lib;adui16.lib;acui16.lib;rxapi.lib;acgiapi.lib;acad.lib;acedapi.lib;hasp_windows_106281.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>__AFTER_ARX_2007;__BOM_FILE_;_ARX_2007;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\LDS\MapLds;D:\ObjectARX 2010\inc-win32;D:\ObjectARX 2010\inc;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\DBP.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>D:\ObjectARX 2010\lib-win32;..\..\XhLmd\DogDrvs;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>acdb18.lib;acge18.lib;acISMobj18.lib;adui18.lib;acui18.lib;rxapi.lib;acgiapi.lib;acad.lib;acedapi.lib;hasp_windows_106281.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>__BOM_FILE_;_ARX_2007;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\LDS\MapLds;D:\ObjectARX 2007\inc;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\DBP.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>D:\ObjectARX 2007\lib;..\..\XhLmd\DogDrvs;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>acdb17.lib;acge17.lib;acISMobj17.lib;adui17.lib;acui17.lib;rxapi.lib;acgiapi.lib;acad.lib;acedapi.lib;hasp_windows_106281.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="DBP.def" />
+    <None Include="ReadMe.txt" />
+    <None Include="res\DBP.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\LDS\LDS\maplds\RecogPartBOM.cpp" />
+    <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp" />
+    <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\Buffer.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\LogBinaryFile.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\LogFile.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\MD5.CPP" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\nettime.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\XhCharString.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\LicFuncDef.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\ProductFeature.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\SegI.cpp" />
+    <ClCompile Include="..\..\XhLmd\AES\aes.cpp" />
+    <ClCompile Include="..\..\XhLmd\DES\DES.cpp" />
+    <ClCompile Include="..\..\XhLmd\DogDrvs\GSMH.CPP" />
+    <ClCompile Include="..\..\XhLmd\RSA\BigInt.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\ClassDef.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\CryptLdsCode.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\ToolKits.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\XhLdsLm.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\AgentCoreClassDef.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\Computer.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\hardcomm.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\DogAgent.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\DogAPI.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\LegacyDogDataCryptKey.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\LicBuffer.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\SafeDecryptBuffer.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgent.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.cpp" />
+    <ClCompile Include="DBP.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\LDS\LDS\maplds\RecogPartBom.h" />
+    <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h" />
+    <ClInclude Include="..\..\XhCore\Ent\f_ent.h" />
+    <ClInclude Include="..\..\LDS\maplds\Material.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\Buffer.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\LogBinaryFile.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\LogFile.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\MD5.H" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\XhCharString.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\LicFuncDef.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\SegI.h" />
+    <ClInclude Include="..\..\XhLmd\AES\aes.h" />
+    <ClInclude Include="..\..\XhLmd\DES\DES.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\GSMH.H" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_api.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_vcode.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\NetDogAPI.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\sntl_licgen.h" />
+    <ClInclude Include="..\..\XhLmd\RSA\BigInt.h" />
+    <ClInclude Include="..\..\XhLmd\XhLdsLm\ToolKits.h" />
+    <ClInclude Include="..\..\XhLmd\XhLdsLm\XhLdsLm.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\Computer.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\hardcomm.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\Ident.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAgent.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAPI.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\LicBuffer.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgent.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgentS.h" />
+    <ClInclude Include="..\ToolCode\ArrayList.h" />
+    <ClInclude Include="MenuFunc.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBP.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\..\XhLmd\DogDrvs\MHWIN32C.OBJ" />
+    <Object Include="..\..\XhLmd\DogDrvs\UNHWIN32C.OBJ" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

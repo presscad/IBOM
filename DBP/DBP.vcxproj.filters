@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="DBP.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\..\XhLmd\AES\aes.cpp">
+      <Filter>XhLicAgent\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\Computer.cpp">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.cpp">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.cpp">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\hardcomm.cpp">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\DES\DES.cpp">
+      <Filter>XhLicAgent\DES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\DogDrvs\GSMH.CPP">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\RSA\BigInt.cpp">
+      <Filter>XhLicAgent\RSA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\SafeDecryptBuffer.cpp">
+      <Filter>XhLicAgent\Obfuscator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\DogAgent.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\LegacyDogDataCryptKey.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgent.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\LicBuffer.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\DogAPI.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\AgentCoreClassDef.cpp">
+      <Filter>XhLicAgent\Sources Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\CryptLdsCode.cpp">
+      <Filter>XhLdsLm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\ClassDef.cpp">
+      <Filter>XhLdsLm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\XhLdsLm.cpp">
+      <Filter>XhLdsLm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\ToolKits.cpp">
+      <Filter>XhLdsLm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\nettime.cpp" />
+    <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp">
+      <Filter>AlgFun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp">
+      <Filter>Ent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\LogBinaryFile.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\LogFile.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\MD5.CPP">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\Buffer.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\TowerCad\LicFuncDef.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\XhCharString.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\TowerCad\SegI.cpp">
+      <Filter>TowerCad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\TowerCad\ProductFeature.cpp">
+      <Filter>TowerCad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\LDS\LDS\maplds\RecogPartBOM.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MenuFunc.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\..\XhLmd\AES\aes.h">
+      <Filter>XhLicAgent\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.h">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\Computer.h">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\Ident.h">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.h">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\hardcomm.h">
+      <Filter>XhLicAgent\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\DES\DES.h">
+      <Filter>XhLicAgent\DES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\DogDrvs\sntl_licgen.h">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_api.h">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\DogDrvs\GSMH.H">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_vcode.h">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\DogDrvs\NetDogAPI.h">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\RSA\BigInt.h">
+      <Filter>XhLicAgent\RSA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgent.h">
+      <Filter>XhLicAgent\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\LicBuffer.h">
+      <Filter>XhLicAgent\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAPI.h">
+      <Filter>XhLicAgent\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgentS.h">
+      <Filter>XhLicAgent\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.h">
+      <Filter>XhLicAgent\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAgent.h">
+      <Filter>XhLicAgent\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLdsLm\XhLdsLm.h">
+      <Filter>XhLdsLm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLdsLm\ToolKits.h">
+      <Filter>XhLdsLm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LDS\maplds\Material.h" />
+    <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h">
+      <Filter>AlgFun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhCore\Ent\f_ent.h">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\LogBinaryFile.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\LogFile.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\MD5.H">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\Buffer.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ToolCode\ArrayList.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\XhCharString.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\TowerCad\SegI.h">
+      <Filter>TowerCad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LDS\LDS\maplds\RecogPartBom.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\LicFuncDef.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBP.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBP.def" />
+    <None Include="ReadMe.txt" />
+    <None Include="res\DBP.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Ent">
+      <UniqueIdentifier>{0376bd50-0cb2-456f-b176-9cfe17d314c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AlgFun">
+      <UniqueIdentifier>{5df392b0-f6f0-4043-8aa0-8af299ff532f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TowerCad">
+      <UniqueIdentifier>{5cb18956-d83e-4126-9f4e-0e462ccc7577}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ToolCode">
+      <UniqueIdentifier>{0e34bef8-5a31-45ab-8c7e-ef0d344fb152}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent">
+      <UniqueIdentifier>{a39fa05b-023f-40f4-8509-a5160d6e3a84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\AES">
+      <UniqueIdentifier>{b5d75eba-741d-457e-96e3-48f89113dae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\computer">
+      <UniqueIdentifier>{b2641ef2-2baa-43f3-9f14-83bb69987b90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\DES">
+      <UniqueIdentifier>{4fdb9ceb-cc68-449d-aa66-e60328be8118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\DogDrvs">
+      <UniqueIdentifier>{827ad7ee-d2c1-4df6-a128-8d95452a8bc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\Obfuscator">
+      <UniqueIdentifier>{43b53e9b-97f5-46a6-b579-808ffcc2c78e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\RSA">
+      <UniqueIdentifier>{3ebd7db1-19b3-49c2-a531-9de9da375e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\Header Files">
+      <UniqueIdentifier>{8ed74f29-c17c-4a59-8580-a5117ef5bbcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLicAgent\Sources Files">
+      <UniqueIdentifier>{701d9baf-faa4-45f8-a39f-6a8c8beda8cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XhLdsLm">
+      <UniqueIdentifier>{7e252cd7-39a5-4506-9b2e-1fde6351b8b1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\..\XhLmd\DogDrvs\UNHWIN32C.OBJ">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </Object>
+    <Object Include="..\..\XhLmd\DogDrvs\MHWIN32C.OBJ">
+      <Filter>XhLicAgent\DogDrvs</Filter>
+    </Object>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,5 @@
+LIBRARY      "DBP"
+
+EXPORTS
+	acrxEntryPoint		PRIVATE
+	acrxGetApiVersion	PRIVATE

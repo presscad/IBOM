@@ -1,0 +1,538 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F81AA50D-71BA-43C1-AFD0-1AF09117B9C4}</ProjectGuid>
+    <RootNamespace>IBOM</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <SccProjectName>"$/IBOM", WKMAAAAA</SccProjectName>
+    <SccLocalPath>.</SccLocalPath>
+    <SccProvider>MSSCCI:Microsoft Visual SourceSafe</SccProvider>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>.\Release\</OutDir>
+    <TargetName>IBOM</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>__ENCRYPT_VERSION_;__WXPAY_RENTAL_ONLINE_;WITH_NONAMESPACES;__EXPORT_LOGFILE_;WIN32;_WINDOWS;_DEBUG;__IBOM_;__VS2010_;__XHLICAGENT_2_;__ALL_LICFUNC_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;APP_EMBEDDED_MODULE_ENCRYPT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\LDS\LDS\BOM;..\..\ToolKits\utils;..\..\ToolKits\MuPdf;..\..\ToolKits\MuPdf\include;..\..\ToolKits\VersionServ;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhCore\Ent;..\..\XhCore\AlgFun;..\..\XhCore\EntList;..\..\XhCore\PartLib;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\Recog;..\Recog\ImageFile</AdditionalIncludeDirectories>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\ToolKits\MuPDF\Debug;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>unarrlib.lib;libmupdf.lib;version.lib;Jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>__ENCRYPT_VERSION_;__WXPAY_RENTAL_ONLINE_;WITH_NONAMESPACES;__EXPORT_LOGFILE_;WIN32;_WINDOWS;NDEBUG;__IBOM_;__VS2010_;__XHLICAGENT_2_;__ALL_LICFUNC_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;APP_EMBEDDED_MODULE_ENCRYPT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\LDS\LDS\BOM;..\..\ToolKits\utils;..\..\ToolKits\MuPdf;..\..\ToolKits\MuPdf\include;..\..\ToolKits\VersionServ;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhCore\Ent;..\..\XhCore\AlgFun;..\..\XhCore\EntList;..\..\XhCore\PartLib;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\Recog;..\Recog\ImageFile</AdditionalIncludeDirectories>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\ToolKits\MuPDF\Release;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>unarrlib.lib;libmupdf.lib;version.lib;Jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\ToolKits\VersionServ\soap.nsmap" />
+    <None Include="IBOM.reg" />
+    <None Include="res\bitmap4.bmp" />
+    <None Include="res\bmp00136.bmp" />
+    <None Include="res\bmp00137.bmp" />
+    <None Include="res\bmp00138.bmp" />
+    <None Include="res\classview.bmp" />
+    <None Include="res\classview_hc.bmp" />
+    <None Include="res\class_view.ico" />
+    <None Include="res\class_view_hc.ico" />
+    <None Include="res\cursor1.cur" />
+    <None Include="res\cursor2.cur" />
+    <None Include="res\explorer.bmp" />
+    <None Include="res\explorer_hc.bmp" />
+    <None Include="res\fileview.bmp" />
+    <None Include="res\fileview_hc.bmp" />
+    <None Include="res\file_view.ico" />
+    <None Include="res\file_view_hc.ico" />
+    <None Include="res\IBOM.ico" />
+    <None Include="res\IBOM.rc2" />
+    <None Include="res\IBOMDoc.ico" />
+    <None Include="res\icon1.ico" />
+    <None Include="res\icon2.ico" />
+    <None Include="res\il_file.bmp" />
+    <None Include="res\menuimages.bmp" />
+    <None Include="res\menuimages_hc.bmp" />
+    <None Include="res\output_wnd.ico" />
+    <None Include="res\output_wnd_hc.ico" />
+    <None Include="res\properties.bmp" />
+    <None Include="res\properties_hc.bmp" />
+    <None Include="res\properties_wnd.ico" />
+    <None Include="res\properties_wnd_hc.ico" />
+    <None Include="res\sort.bmp" />
+    <None Include="res\sort_hc.bmp" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\toolbar2.bmp" />
+    <None Include="res\Toolbar256.bmp" />
+    <None Include="Splsh16.bmp" />
+    <None Include="UserImages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h" />
+    <ClInclude Include="..\..\XhCore\Ent\f_ent.h" />
+    <ClInclude Include="..\..\LDS\LDS\BOM\BOM.h" />
+    <ClInclude Include="..\..\ToolKits\MuPdf\BaseEngine.h" />
+    <ClInclude Include="..\..\ToolKits\MuPdf\PdfEngine.h" />
+    <ClInclude Include="..\..\XhCore\PartLib\BoltLibrary.h" />
+    <ClInclude Include="..\..\XhCore\PartLib\PartLib.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\ArrayList.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\Buffer.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\ColorSelectComboBox.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\Communication.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\DialogPanel.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\EnlargeFileDialog.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\excel9.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\ExcelOper.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\folder_dialog.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\HttpClient.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\LogBinaryFile.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\LogFile.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\Markup.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\MD5.H" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\MonoBmpFile.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\PropertyList.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\PropertyListOper.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\PropListItem.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\QRCode.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\ScannerLoader.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\ServerObject.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\SocketObject.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\SortHeaderCtrl.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\SuperEdit.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\supergridctrl.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\TempFile.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\Variant.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\WlanConnect.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\WxPayAPI.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\XhCharString.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\XhTreeCtrl.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\ComparePartNoString.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\LicFuncDef.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\ParseAdaptNo.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\ProductFeature.h" />
+    <ClInclude Include="..\..\ToolKits\TowerCad\SegI.h" />
+    <ClInclude Include="..\..\ToolKits\utils\Archive.h" />
+    <ClInclude Include="..\..\ToolKits\utils\BaseUtil.h" />
+    <ClInclude Include="..\..\ToolKits\utils\ByteOrderDecoder.h" />
+    <ClInclude Include="..\..\ToolKits\utils\ByteReader.h" />
+    <ClInclude Include="..\..\ToolKits\utils\ByteWriter.h" />
+    <ClInclude Include="..\..\ToolKits\utils\DbgHelpDyn.h" />
+    <ClInclude Include="..\..\ToolKits\utils\DebugLog.h" />
+    <ClInclude Include="..\..\ToolKits\utils\Dict.h" />
+    <ClInclude Include="..\..\ToolKits\utils\DirIter.h" />
+    <ClInclude Include="..\..\ToolKits\utils\Dpi.h" />
+    <ClInclude Include="..\..\ToolKits\utils\FileUtil.h" />
+    <ClInclude Include="..\..\ToolKits\utils\FzImgReader.h" />
+    <ClInclude Include="..\..\ToolKits\utils\GdiPlusUtil.h" />
+    <ClInclude Include="..\..\ToolKits\utils\HtmlParserLookup.h" />
+    <ClInclude Include="..\..\ToolKits\utils\HtmlPullParser.h" />
+    <ClInclude Include="..\..\ToolKits\utils\ScopedWin.h" />
+    <ClInclude Include="..\..\ToolKits\utils\StringView.h" />
+    <ClInclude Include="..\..\ToolKits\utils\StrSlice.h" />
+    <ClInclude Include="..\..\ToolKits\utils\StrUtil.h" />
+    <ClInclude Include="..\..\ToolKits\utils\TgaReader.h" />
+    <ClInclude Include="..\..\ToolKits\utils\TrivialHtmlParser.h" />
+    <ClInclude Include="..\..\ToolKits\utils\Vec.h" />
+    <ClInclude Include="..\..\ToolKits\utils\VecSegmented.h" />
+    <ClInclude Include="..\..\ToolKits\utils\WinDynCalls.h" />
+    <ClInclude Include="..\..\ToolKits\utils\WinUtil.h" />
+    <ClInclude Include="..\..\ToolKits\utils\ZipUtil.h" />
+    <ClInclude Include="..\..\ToolKits\VersionServ\LicenseManager.h" />
+    <ClInclude Include="..\..\ToolKits\VersionServ\soapH.h" />
+    <ClInclude Include="..\..\ToolKits\VersionServ\soapStub.h" />
+    <ClInclude Include="..\..\ToolKits\VersionServ\soapVersionServiceSoapProxy.h" />
+    <ClInclude Include="..\..\ToolKits\VersionServ\stdsoap2.h" />
+    <ClInclude Include="..\..\ToolKits\VersionServ\VER.h" />
+    <ClInclude Include="..\..\XhLmd\Aes\aes.h" />
+    <ClInclude Include="..\..\XhLmd\ApplyCreditResultDlg.h" />
+    <ClInclude Include="..\..\XhLmd\Des\DES.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\Gsmh.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_api.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\NetDogAPI.h" />
+    <ClInclude Include="..\..\XhLmd\DogDrvs\sntl_licgen.h" />
+    <ClInclude Include="..\..\XhLmd\EndUserApplyDlg.h" />
+    <ClInclude Include="..\..\XhLmd\LicenseAuthorizeDlg.h" />
+    <ClInclude Include="..\..\XhLmd\LicenseServerActivatePage.h" />
+    <ClInclude Include="..\..\XhLmd\LicenseVirtualRentalPage.h" />
+    <ClInclude Include="..\..\XhLmd\LicProxy\LicProxy.h" />
+    <ClInclude Include="..\..\XhLmd\LinkLabel.h" />
+    <ClInclude Include="..\..\XhLmd\Markup.h" />
+    <ClInclude Include="..\..\XhLmd\MsgDef.h" />
+    <ClInclude Include="..\..\XhLmd\PayQRCodeDlg.h" />
+    <ClInclude Include="..\..\XhLmd\RSA\BigInt.h" />
+    <ClInclude Include="..\..\XhLmd\XhLdsLm\ToolKits.h" />
+    <ClInclude Include="..\..\XhLmd\XhLdsLm\XhLdsLm.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\hardcomm.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\Ident.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\CryptAlg.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAgent.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAPI.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\LicBuffer.h" />
+    <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgent.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmdI.h" />
+    <ClInclude Include="AutoSaveParamDlg.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="CryptBuffer.h" />
+    <ClInclude Include="database.h" />
+    <ClInclude Include="DataModel.h" />
+    <ClInclude Include="DisplayDataPage.h" />
+    <ClInclude Include="FileTreeDlg.h" />
+    <ClInclude Include="FontsLibraryDlg.h" />
+    <ClInclude Include="IBOM.h" />
+    <ClInclude Include="IBOMDoc.h" />
+    <ClInclude Include="IBOMView.h" />
+    <ClInclude Include="image.h" />
+    <ClInclude Include="ImageHost.h" />
+    <ClInclude Include="InputAnValDlg.h" />
+    <ClInclude Include="InputDlg.h" />
+    <ClInclude Include="InputPartInfoDlg.h" />
+    <ClInclude Include="InputPerfixAndSuffixDlg.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="OutputInfoDlg.h" />
+    <ClInclude Include="PartLibraryEx.h" />
+    <ClInclude Include="ProcBarDlg.h" />
+    <ClInclude Include="..\Recog\ImageFile\ImageFile.h" />
+    <ClInclude Include="..\Recog\ImageFile\ximajpg.h" />
+    <ClInclude Include="..\Recog\ImageFile\ximapng.h" />
+    <ClInclude Include="..\Recog\ImageFile\zlib.h" />
+    <ClInclude Include="..\Recog\ImageRecognizer.h" />
+    <ClInclude Include="..\Recog\ImageTransform.h" />
+    <ClInclude Include="..\Recog\PdfReader.h" />
+    <ClInclude Include="..\Recog\Recog.h" />
+    <ClInclude Include="..\Recog\Robot.h" />
+    <ClInclude Include="..\Recog\TimerCount.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RunDBPDlg.h" />
+    <ClInclude Include="SettingDlg.h" />
+    <ClInclude Include="Splash.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Tool.h" />
+    <ClInclude Include="ViewTree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp" />
+    <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp" />
+    <ClCompile Include="..\..\LDS\LDS\BOM\BOM.cpp" />
+    <ClCompile Include="..\..\ToolKits\MuPdf\PdfEngine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\XhCore\PartLib\BoltLibrary.cpp" />
+    <ClCompile Include="..\..\XhCore\PartLib\PartLib.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\Buffer.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\ColorSelectComboBox.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\Communication.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\DialogPanel.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\excel9.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\folder_dialog.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\HttpClient.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\LogBinaryFile.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\LogFile.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\Markup.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\MD5.CPP" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\MonoBmpFile.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\nettime.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\PropertyList.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\ScannerLoader.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\ScreenAdapter.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\ServerObject.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\SocketObject.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\SortHeaderCtrl.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\SuperEdit.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\supergridctrl.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\TempFile.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\Variant.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\WlanConnect.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\WxPayAPI.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\XhCharString.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\XhTreeCtrl.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\ComparePartNoString.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\LicFuncDef.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\ParseAdaptNo.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\ProductFeature.cpp" />
+    <ClCompile Include="..\..\ToolKits\TowerCad\SegI.cpp" />
+    <ClCompile Include="..\..\ToolKits\utils\Archive.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\BaseUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\ByteOrderDecoder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\DbgHelpDyn.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\DebugLog.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\Dict.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\DirIter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\Dpi.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\FileUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\FzImgReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\GdiPlusUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\HtmlParserLookup.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\HtmlPullParser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\StrSlice.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\StrUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\StrUtil_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\TgaReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\TrivialHtmlParser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\WinDynCalls.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\WinUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\utils\ZipUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\VersionServ\LicenseManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\VersionServ\soapC.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\VersionServ\soapVersionServiceSoapProxy.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\VersionServ\stdsoap2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\VersionServ\VER.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\Aes\aes.cpp" />
+    <ClCompile Include="..\..\XhLmd\ApplyCreditResultDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\Des\DES.cpp" />
+    <ClCompile Include="..\..\XhLmd\DogDrvs\Gsmh.cpp" />
+    <ClCompile Include="..\..\XhLmd\EndUserApplyDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\LicenseAuthorizeDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\LicenseServerActivatePage.cpp" />
+    <ClCompile Include="..\..\XhLmd\LicenseVirtualRentalPage.cpp" />
+    <ClCompile Include="..\..\XhLmd\LinkLabel.cpp" />
+    <ClCompile Include="..\..\XhLmd\PayQRCodeDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\RSA\BigInt.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\ClassDef.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\CryptLdsCode.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\ToolKits.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLdsLm\XhLdsLm.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\AgentCoreClassDef.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\Computer.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\hardcomm.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\DogAgent.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\DogAPI.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\LegacyDogDataCryptKey.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\LicBuffer.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\SafeDecryptBuffer.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgent.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd.cpp" />
+    <ClCompile Include="AutoSaveParamDlg.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="CryptBuffer.cpp" />
+    <ClCompile Include="database.cpp" />
+    <ClCompile Include="DataModel.cpp" />
+    <ClCompile Include="DisplayDataPage.cpp" />
+    <ClCompile Include="FileTreeDlg.cpp" />
+    <ClCompile Include="FontsLibraryDlg.cpp" />
+    <ClCompile Include="IBOM.cpp" />
+    <ClCompile Include="IBOMDoc.cpp" />
+    <ClCompile Include="IBOMView.cpp" />
+    <ClCompile Include="ImageHost.cpp" />
+    <ClCompile Include="InputAnValDlg.cpp" />
+    <ClCompile Include="InputDlg.cpp" />
+    <ClCompile Include="InputPartInfoDlg.cpp" />
+    <ClCompile Include="InputPerfixAndSuffixDlg.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OutputInfoDlg.cpp" />
+    <ClCompile Include="PartLibraryEx.cpp" />
+    <ClCompile Include="ProcBarDlg.cpp" />
+    <ClCompile Include="..\Recog\ImageFile\ImageFile.cpp" />
+    <ClCompile Include="..\Recog\ImageFile\ximaexif.cpp" />
+    <ClCompile Include="..\Recog\ImageFile\ximajpg.cpp" />
+    <ClCompile Include="..\Recog\ImageFile\ximapng.cpp" />
+    <ClCompile Include="..\Recog\ImageRecognizer.cpp" />
+    <ClCompile Include="..\Recog\ImageTransform.cpp" />
+    <ClCompile Include="..\Recog\PartLibrary.cpp" />
+    <ClCompile Include="..\Recog\PdfReader.cpp" />
+    <ClCompile Include="..\Recog\Recog.cpp" />
+    <ClCompile Include="..\Recog\Robot.cpp" />
+    <ClCompile Include="..\Recog\TimerCount.cpp" />
+    <ClCompile Include="RunDBPDlg.cpp" />
+    <ClCompile Include="SettingDlg.cpp" />
+    <ClCompile Include="Splash.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TestIBOM.cpp" />
+    <ClCompile Include="Tool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="IBOM.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\..\XhLmd\DogDrvs\Mhwin32c.obj">
+      <FileType>Document</FileType>
+    </Object>
+    <Object Include="..\..\XhLmd\DogDrvs\Unhwin32c.obj">
+      <FileType>Document</FileType>
+    </Object>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="IBOM.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
