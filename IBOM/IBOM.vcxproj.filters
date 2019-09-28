@@ -246,7 +246,6 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\Buffer.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    
     <ClInclude Include="ImageHost.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -352,12 +351,6 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\TempFile.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\XhLmd\LicenseAuthorizeDlg.h">
-      <Filter>XhLmd\头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XhLmd\LicenseServerActivatePage.h">
-      <Filter>XhLmd\头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\XhLmd\LicenseVirtualRentalPage.h">
       <Filter>XhLmd\头文件</Filter>
     </ClInclude>
@@ -451,9 +444,6 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\SocketObject.h">
       <Filter>XhLmd\ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\LDS\BOM\BOM.h">
-      <Filter>BOM</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h">
       <Filter>AlgFun</Filter>
     </ClInclude>
@@ -492,9 +482,6 @@
     </ClInclude>
     <ClInclude Include="database.h">
       <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PartLib\BoltLibrary.h">
-      <Filter>PartLib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\XhCore\PartLib\PartLib.h">
       <Filter>PartLib</Filter>
@@ -643,6 +630,21 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\WxPayAPI.h">
       <Filter>XhLmd\ToolCode</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\LDS\LDS\BOM\BOM.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhCore\PartLib\BoltLibrary.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\LicenseAuthorizeDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\LicenseServerActivatePage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Recog\Recog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IBOM.cpp">
@@ -732,33 +734,6 @@
     <ClCompile Include="Config.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Recog\ImageRecognizer.cpp">
-      <Filter>RecogCode</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\ImageTransform.cpp">
-      <Filter>RecogCode</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\Recog.cpp">
-      <Filter>RecogCode</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\Robot.cpp">
-      <Filter>RecogCode</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\ImageFile\ImageFile.cpp">
-      <Filter>RecogCode\ImageCoreFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\ImageFile\ximaexif.cpp">
-      <Filter>RecogCode\ImageCoreFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\ImageFile\ximajpg.cpp">
-      <Filter>RecogCode\ImageCoreFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\ImageFile\ximapng.cpp">
-      <Filter>RecogCode\ImageCoreFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\TimerCount.cpp">
-      <Filter>RecogCode\ImageCoreFiles</Filter>
-    </ClCompile>
     <ClCompile Include="InputDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -770,9 +745,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Toolkits\ToolCode\ScreenAdapter.cpp">
       <Filter>ToolCode</Filter>
-    </ClCompile>
-    <ClCompile Include="Recog\PartLibrary.cpp">
-      <Filter>RecogCode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Toolkits\ToolCode\TempFile.cpp">
       <Filter>ToolCode</Filter>
@@ -975,9 +947,6 @@
     <ClCompile Include="..\..\Toolkits\MuPDF\PdfEngine.cpp">
       <Filter>RecogCode\MuPdf</Filter>
     </ClCompile>
-    <ClCompile Include="Recog\PdfReader.cpp">
-      <Filter>RecogCode</Filter>
-    </ClCompile>
     <ClCompile Include="InputPerfixAndSuffixDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -1031,6 +1000,39 @@
     </ClCompile>
     <ClCompile Include="..\..\Toolkits\ToolCode\WxPayAPI.cpp">
       <Filter>XhLmd\ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageFile\ImageFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageFile\ximaexif.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageFile\ximajpg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageFile\ximapng.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageRecognizer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageTransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\PartLibrary.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\PdfReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\Recog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\Robot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\TimerCount.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

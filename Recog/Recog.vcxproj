@@ -42,13 +42,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Debug\</OutDir>
+    <OutDir>..\bin\Debug</OutDir>
     <IntDir>.\Debug\</IntDir>
     <TargetName>Recog</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>Release\</OutDir>
+    <OutDir>..\bin\Release</OutDir>
     <IntDir>Release\</IntDir>
     <TargetName>Recog</TargetName>
   </PropertyGroup>

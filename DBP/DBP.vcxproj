@@ -73,28 +73,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Debug\</OutDir>
+    <OutDir>..\bin\Debug</OutDir>
     <TargetExt>.arx</TargetExt>
     <IgnoreImportLibrary>
     </IgnoreImportLibrary>
+    <TargetName>DBP05</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Release\</OutDir>
+    <OutDir>..\bin\Release</OutDir>
     <TargetExt>.arx</TargetExt>
-    <TargetName>$(ProjectName)05</TargetName>
+    <TargetName>DBP05</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Release\</OutDir>
+    <OutDir>..\bin\Release</OutDir>
     <TargetExt>.arx</TargetExt>
-    <TargetName>$(ProjectName)10</TargetName>
+    <TargetName>$DBP10</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Release\</OutDir>
+    <OutDir>..\bin\Release</OutDir>
     <TargetExt>.arx</TargetExt>
-    <TargetName>$(ProjectName)07</TargetName>
+    <TargetName>$DBP07</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
