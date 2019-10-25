@@ -36,12 +36,12 @@ CImageFile::CImageFile()
 
 	short test = 1;
 	info.bLittleEndianHost = (*((char *) &test) == 1);
-	m_bInternalRawBitsBuff=true;
+	m_bInternalRawBitsBuff = true;
 }
 
 CImageFile::~CImageFile()
 {
-	if(pDib&&m_bInternalRawBitsBuff)
+	if (pDib&&m_bInternalRawBitsBuff)
 		delete []pDib;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +62,21 @@ void CImageFile::RGBtoBGR(BYTE *buffer, int length)
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
+RGBQUAD CImageFile::RGBtoRGBQUAD(COLORREF cr)
+{
+	RGBQUAD c;
+	c.rgbRed = GetRValue(cr);	/* get R, G, and B out of UINT */
+	c.rgbGreen = GetGValue(cr);
+	c.rgbBlue = GetBValue(cr);
+	c.rgbReserved=0;
+	return c;
+}
+////////////////////////////////////////////////////////////////////////////////
+COLORREF CImageFile::RGBQUADtoRGB (RGBQUAD c)
+{
+	return RGB(c.rgbRed,c.rgbGreen,c.rgbBlue);
+}
+////////////////////////////////////////////////////////////////////////////////
 /**
  * Initializes or rebuilds the image.
  * \param dwWidth: width
@@ -70,7 +85,7 @@ void CImageFile::RGBtoBGR(BYTE *buffer, int length)
  * \param imagetype: (optional) set the image format, see ENUM_CXIMAGE_FORMATS
  * \return pointer to the internal pDib object; NULL if an error occurs.
  */
-void* CImageFile::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype,BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/)
+void* CImageFile::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype, BYTE* lpExterRawBitsBuff/*=NULL*/, UINT uiBitsBuffSize/*=0*/)
 {
 	// destroy the existing image (if any)
 	if (!Destroy())
@@ -124,16 +139,16 @@ void* CImageFile::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imaget
 //    head.biYPelsPerMeter = 0; See SetYDPI
 //    head.biClrImportant = 0;  See SetClrImportant
 
-	if(lpExterRawBitsBuff!=NULL&&uiBitsBuffSize>=(UINT)GetSize())
+	if (lpExterRawBitsBuff != NULL && uiBitsBuffSize >= (UINT)GetSize())
 	{
-		pDib=lpExterRawBitsBuff;
-		m_bInternalRawBitsBuff=false;
+		pDib = lpExterRawBitsBuff;
+		m_bInternalRawBitsBuff = false;
 	}
-	else if(lpExterRawBitsBuff!=NULL)
+	else if (lpExterRawBitsBuff != NULL)
 		return NULL;	//Ô¤ÁôÍâ»º´æ²»×ã
 	else
 	{
-		m_bInternalRawBitsBuff=true;
+		m_bInternalRawBitsBuff = true;
 		pDib = malloc(GetSize()); // alloc memory block to store our bitmap
 	}
     if (!pDib){
@@ -180,7 +195,7 @@ bool CImageFile::Destroy()
 		}*/
 		// (pSelection) {free(pSelection); pSelection=0;}
 		// (pAlpha) {free(pAlpha); pAlpha=0;}
-		if (pDib&&m_bInternalRawBitsBuff) {free(pDib); pDib=0;}
+		if (pDib&&m_bInternalRawBitsBuff) { free(pDib); pDib = 0; }
 		return true;
 	}
 	return false;
@@ -288,6 +303,38 @@ void CImageFile::SetClrImportant(DWORD ncolors)
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * Transfers the image from an existing source image. The source becomes empty.
+ * \return true if everything is ok
+ */
+bool CImageFile::Transfer(CImageFile &from)//, bool bTransferFrames /*=true*/)
+{
+	if (!Destroy())
+		return false;
+
+	memcpy(&head,&from.head,sizeof(BITMAPINFOHEADER));
+	memcpy(&info,&from.info,sizeof(CIMAGEINFO));
+
+	pDib = from.pDib;
+	pAlpha = from.pAlpha;
+	//pSelection = from.pSelection;
+	//ppLayers = from.ppLayers;
+
+	memset(&from.head,0,sizeof(BITMAPINFOHEADER));
+	memset(&from.info,0,sizeof(CIMAGEINFO));
+	from.pDib = from.pAlpha = NULL;
+	//from.pSelection = NULL;
+	//from.ppLayers = NULL;
+
+	/*if (bTransferFrames){
+		DestroyFrames();
+		ppFrames = from.ppFrames;
+		from.ppFrames = NULL;
+	}*/
+
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
  * \return pointer to the image pixels. <b> USE CAREFULLY </b>
  */
 BYTE* CImageFile::GetBits(DWORD row)
@@ -373,6 +420,21 @@ void CImageFile::SetPaletteColor(BYTE idx, RGBQUAD c)
 			iDst[ldx++] = (BYTE) c.rgbGreen;
 			iDst[ldx++] = (BYTE) c.rgbRed;
 			iDst[ldx] = (BYTE) c.rgbReserved;
+			info.last_c_isvalid = false;
+		}
+	}
+}
+////////////////////////////////////////////////////////////////////////////////
+void CImageFile::SetPaletteColor(BYTE idx, COLORREF cr)
+{
+	if ((pDib)&&(head.biClrUsed)){
+		BYTE* iDst = (BYTE*)(pDib) + sizeof(BITMAPINFOHEADER);
+		if (idx<head.biClrUsed){
+			int ldx=idx*sizeof(RGBQUAD);
+			iDst[ldx++] = (BYTE) GetBValue(cr);
+			iDst[ldx++] = (BYTE) GetGValue(cr);
+			iDst[ldx++] = (BYTE) GetRValue(cr);
+			iDst[ldx] = (BYTE) 0;
 			info.last_c_isvalid = false;
 		}
 	}
@@ -473,6 +535,114 @@ bool CImageFile::SetCodecOption(DWORD opt, DWORD imagetype)
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns the best palette index that matches a specified color.
+ */
+BYTE CImageFile::GetNearestIndex(RGBQUAD c)
+{
+	if ((pDib==NULL)||(head.biClrUsed==0)) return 0;
+
+	// <RJ> check matching with the previous result
+	if (info.last_c_isvalid && (*(int*)&info.last_c == *(int*)&c)) return info.last_c_index;
+	info.last_c = c;
+	info.last_c_isvalid = true;
+
+	BYTE* iDst = (BYTE*)(pDib) + sizeof(BITMAPINFOHEADER);
+	int distance=200000;
+	int i,j = 0;
+	int k,l;
+	int m = (int)(head.biClrImportant==0 ? head.biClrUsed : head.biClrImportant);
+	for(i=0,l=0;i<m;i++,l+=sizeof(RGBQUAD)){
+		k = (iDst[l]-c.rgbBlue)*(iDst[l]-c.rgbBlue)+
+			(iDst[l+1]-c.rgbGreen)*(iDst[l+1]-c.rgbGreen)+
+			(iDst[l+2]-c.rgbRed)*(iDst[l+2]-c.rgbRed);
+//		k = abs(iDst[l]-c.rgbBlue)+abs(iDst[l+1]-c.rgbGreen)+abs(iDst[l+2]-c.rgbRed);
+		if (k==0){
+			j=i;
+			break;
+		}
+		if (k<distance){
+			distance=k;
+			j=i;
+		}
+	}
+	info.last_c_index = (BYTE)j;
+	return (BYTE)j;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns the palette index of the specified pixel.
+ */
+BYTE CImageFile::GetPixelIndex(int x,int y)
+{
+	if ((pDib==NULL)||(head.biClrUsed==0)) return 0;
+
+	if ((x<0)||(y<0)||(x>=head.biWidth)||(y>=head.biHeight)) {
+		if (info.nBkgndIndex >= 0)	return (BYTE)info.nBkgndIndex;
+		else return *info.pImage;
+	}
+	if (head.biBitCount==8){
+		return info.pImage[y*info.dwEffWidth + x];
+	} else {
+		BYTE pos;
+		BYTE iDst= info.pImage[y*info.dwEffWidth + (x*head.biBitCount >> 3)];
+		if (head.biBitCount==4){
+			pos = (BYTE)(4*(1-x%2));
+			iDst &= (0x0F<<pos);
+			return (BYTE)(iDst >> pos);
+		} else if (head.biBitCount==1){
+			pos = (BYTE)(7-x%8);
+			iDst &= (0x01<<pos);
+			return (BYTE)(iDst >> pos);
+		}
+	}
+	return 0;
+}
+void CImageFile::SetPixelIndex(int x,int y,BYTE i)
+{
+	if ((pDib==NULL)||(head.biClrUsed==0)||
+		(x<0)||(y<0)||(x>=head.biWidth)||(y>=head.biHeight)) return ;
+
+	if (head.biBitCount==8){
+		info.pImage[y*info.dwEffWidth + x]=i;
+		return;
+	}
+	else {
+		BYTE pos;
+		BYTE* iDst= info.pImage + y*info.dwEffWidth + (x*head.biBitCount >> 3);
+		if (head.biBitCount==4){
+			pos = (BYTE)(4*(1-x%2));
+			*iDst &= ~(0x0F<<pos);
+			*iDst |= ((i & 0x0F)<<pos);
+			return;
+		} else if (head.biBitCount==1){
+			pos = (BYTE)(7-x%8);
+			*iDst &= ~(0x01<<pos);
+			*iDst |= ((i & 0x01)<<pos);
+			return;
+		}
+	}
+}
+void CImageFile::SetPixelColor(int x,int y,RGBQUAD c,bool bSetAlpha/* = false*/)
+{
+	if ((pDib==NULL)||(x<0)||(y<0)||
+		(x>=head.biWidth)||(y>=head.biHeight)) return;
+	if (head.biClrUsed)
+		BlindSetPixelIndex(x,y,GetNearestIndex(c));
+	else {
+		BYTE* iDst = info.pImage + y*info.dwEffWidth + x*3;
+		*iDst++ = c.rgbBlue;
+		*iDst++ = c.rgbGreen;
+		*iDst   = c.rgbRed;
+	}
+#if CImageFile_SUPPORT_ALPHA
+	if (bSetAlpha) AlphaSet(x,y,c.rgbReserved);
+#endif //CImageFile_SUPPORT_ALPHA
+}
+void CImageFile::SetPixelColor(int x,int y,COLORREF cr)
+{
+	SetPixelColor(x,y,RGBtoRGBQUAD(cr));
+}
 bool CImageFile::EncodeSafeCheck(FILE *fp)
 {
 	if (fp==NULL) {
@@ -487,6 +657,550 @@ bool CImageFile::EncodeSafeCheck(FILE *fp)
 	return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
+bool CImageFile::GrayScale()
+{
+	/*if (!pDib) return false;
+	if (head.biBitCount<=8){
+		RGBQUAD* ppal=GetPalette();
+		int gray;
+		//converts the colors to gray, use the blue channel only
+		for(UINT i=0;i<head.biClrUsed;i++){
+			gray=(int)RGB2GRAY(ppal[i].rgbRed,ppal[i].rgbGreen,ppal[i].rgbBlue);
+			ppal[i].rgbBlue = (BYTE)gray;
+		}
+		// preserve transparency
+		if (info.nBkgndIndex >= 0) info.nBkgndIndex = ppal[info.nBkgndIndex].rgbBlue;
+		//create a "real" 8 bit gray scale image
+		if (head.biBitCount==8){
+			BYTE *img=info.pImage;
+			for(UINT i=0;i<head.biSizeImage;i++) img[i]=ppal[img[i]].rgbBlue;
+			SetGrayPalette();
+		}
+		//transform to 8 bit gray scale
+		if (head.biBitCount==4 || head.biBitCount==1){
+			CxImage ima;
+			ima.CopyInfo(*this);
+			if (!ima.Create(head.biWidth,head.biHeight,8,info.dwType)) return false;
+			ima.SetGrayPalette();
+#if CXIMAGE_SUPPORT_SELECTION
+			ima.SelectionCopy(*this);
+#endif //CXIMAGE_SUPPORT_SELECTION
+#if CXIMAGE_SUPPORT_ALPHA
+			ima.AlphaCopy(*this);
+#endif //CXIMAGE_SUPPORT_ALPHA
+			for (int y=0;y<head.biHeight;y++){
+				BYTE *iDst = ima.GetBits(y);
+				BYTE *iSrc = GetBits(y);
+				for (int x=0;x<head.biWidth; x++){
+					//iDst[x]=ppal[BlindGetPixelIndex(x,y)].rgbBlue;
+					if (head.biBitCount==4){
+						BYTE pos = (BYTE)(4*(1-x%2));
+						iDst[x]= ppal[(BYTE)((iSrc[x >> 1]&((BYTE)0x0F<<pos)) >> pos)].rgbBlue;
+					} else {
+						BYTE pos = (BYTE)(7-x%8);
+						iDst[x]= ppal[(BYTE)((iSrc[x >> 3]&((BYTE)0x01<<pos)) >> pos)].rgbBlue;
+					}
+				}
+			}
+			Transfer(ima);
+		}
+	} else { //from RGB to 8 bit gray scale
+		BYTE *iSrc=info.pImage;
+		CxImage ima;
+		ima.CopyInfo(*this);
+		if (!ima.Create(head.biWidth,head.biHeight,8,info.dwType)) return false;
+		ima.SetGrayPalette();
+		if (GetTransIndex()>=0){
+			RGBQUAD c = GetTransColor();
+			ima.SetTransIndex((BYTE)RGB2GRAY(c.rgbRed,c.rgbGreen,c.rgbBlue));
+		}
+#if CXIMAGE_SUPPORT_SELECTION
+		ima.SelectionCopy(*this);
+#endif //CXIMAGE_SUPPORT_SELECTION
+#if CXIMAGE_SUPPORT_ALPHA
+		ima.AlphaCopy(*this);
+#endif //CXIMAGE_SUPPORT_ALPHA
+		BYTE *img=ima.GetBits();
+		int l8=ima.GetEffWidth();
+		int l=head.biWidth * 3;
+		for(int y=0; y < head.biHeight; y++) {
+			for(int x=0,x8=0; x < l; x+=3,x8++) {
+				img[x8+y*l8]=(BYTE)RGB2GRAY(*(iSrc+x+2),*(iSrc+x+1),*(iSrc+x+0));
+			}
+			iSrc+=info.dwEffWidth;
+		}
+		Transfer(ima);
+	}*/
+	return true;
+}
+bool CImageFile::Flip(bool bFlipSelection/* = false*/,bool bFlipAlpha/* = true*/)
+{
+	if (!pDib) return false;
+
+	BYTE *buff = (BYTE*)malloc(info.dwEffWidth);
+	if (!buff) return false;
+
+	BYTE *iSrc,*iDst;
+	iSrc = GetBits(head.biHeight-1);
+	iDst = GetBits(0);
+	for (int i=0; i<(head.biHeight/2); ++i)
+	{
+		memcpy(buff, iSrc, info.dwEffWidth);
+		memcpy(iSrc, iDst, info.dwEffWidth);
+		memcpy(iDst, buff, info.dwEffWidth);
+		iSrc-=info.dwEffWidth;
+		iDst+=info.dwEffWidth;
+	}
+
+	free(buff);
+
+	if (bFlipSelection){
+#if CXIMAGE_SUPPORT_SELECTION
+		SelectionFlip();
+#endif //CXIMAGE_SUPPORT_SELECTION
+	}
+
+	if (bFlipAlpha){
+#if CXIMAGE_SUPPORT_ALPHA
+		AlphaFlip();
+#endif //CXIMAGE_SUPPORT_ALPHA
+	}
+
+	return true;
+}
+bool CImageFile::Mirror(bool bMirrorSelection/* = false*/,bool bMirrorAlpha/* = true*/)
+{
+#ifdef __FINISHED_
+	if (!pDib) return false;
+
+	CImageFile* imatmp = new CImageFile(*this,false,true,true);
+	if (!imatmp) return false;
+	if (!imatmp->IsValid()){
+		delete imatmp;
+		return false;
+	}
+
+	BYTE *iSrc,*iDst;
+	int wdt=(head.biWidth-1) * (head.biBitCount==24 ? 3:1);
+	iSrc=info.pImage + wdt;
+	iDst=imatmp->info.pImage;
+	int x,y;
+	switch (head.biBitCount){
+	case 24:
+		for(y=0; y < head.biHeight; y++){
+			for(x=0; x <= wdt; x+=3){
+				*(iDst+x)=*(iSrc-x);
+				*(iDst+x+1)=*(iSrc-x+1);
+				*(iDst+x+2)=*(iSrc-x+2);
+			}
+			iSrc+=info.dwEffWidth;
+			iDst+=info.dwEffWidth;
+		}
+		break;
+	case 8:
+		for(y=0; y < head.biHeight; y++){
+			for(x=0; x <= wdt; x++)
+				*(iDst+x)=*(iSrc-x);
+			iSrc+=info.dwEffWidth;
+			iDst+=info.dwEffWidth;
+		}
+		break;
+	default:
+		for(y=0; y < head.biHeight; y++){
+			for(x=0; x <= wdt; x++)
+				imatmp->SetPixelIndex(x,y,GetPixelIndex(wdt-x,y));
+		}
+	}
+
+	if (bMirrorSelection){
+#if CXIMAGE_SUPPORT_SELECTION
+		imatmp->SelectionMirror();
+#endif //CXIMAGE_SUPPORT_SELECTION
+	}
+
+	if (bMirrorAlpha){
+#if CXIMAGE_SUPPORT_ALPHA
+		imatmp->AlphaMirror();
+#endif //CXIMAGE_SUPPORT_ALPHA
+	}
+
+	Transfer(*imatmp);
+	delete imatmp;
+#endif
+	return true;
+}
+bool CImageFile::Negative()
+{
+#ifdef __FINISHED_
+	if (!pDib) return false;
+
+	if (head.biBitCount<=8){
+		if (IsGrayScale())
+		{ //GRAYSCALE, selection
+			/*if (pSelection){
+				for(int y=info.rSelectionBox.bottom; y<info.rSelectionBox.top; y++){
+					for(int x=info.rSelectionBox.left; x<info.rSelectionBox.right; x++){
+#if CXIMAGE_SUPPORT_SELECTION
+						if (BlindSelectionIsInside(x,y))
+#endif //CXIMAGE_SUPPORT_SELECTION
+						{
+							BlindSetPixelIndex(x,y,(BYTE)(255-BlindGetPixelIndex(x,y)));
+						}
+					}
+				}
+			} 
+			else */
+			{
+				BYTE *iSrc=info.pImage;
+				for(UINT i=0; i < head.biSizeImage; i++){
+					*iSrc=(BYTE)~(*(iSrc));
+					iSrc++;
+				}
+			}
+		} else { //PALETTE, full image
+			RGBQUAD* ppal=GetPalette();
+			for(UINT i=0;i<head.biClrUsed;i++){
+				ppal[i].rgbBlue =(BYTE)(255-ppal[i].rgbBlue);
+				ppal[i].rgbGreen =(BYTE)(255-ppal[i].rgbGreen);
+				ppal[i].rgbRed =(BYTE)(255-ppal[i].rgbRed);
+			}
+		}
+	}
+	else
+	{
+		/*if (pSelection==NULL){ //RGB, full image
+			BYTE *iSrc=info.pImage;
+			for(UINT i=0; i < head.biSizeImage; i++){
+				*iSrc=(BYTE)~(*(iSrc));
+				iSrc++;
+			}
+		} 
+		else */
+		{ // RGB with selection
+			RGBQUAD color;
+			for(int y=info.rSelectionBox.bottom; y<info.rSelectionBox.top; y++){
+				for(int x=info.rSelectionBox.left; x<info.rSelectionBox.right; x++){
+#if CXIMAGE_SUPPORT_SELECTION
+					if (BlindSelectionIsInside(x,y))
+#endif //CXIMAGE_SUPPORT_SELECTION
+					{
+						color = BlindGetPixelColor(x,y);
+						color.rgbRed = (BYTE)(255-color.rgbRed);
+						color.rgbGreen = (BYTE)(255-color.rgbGreen);
+						color.rgbBlue = (BYTE)(255-color.rgbBlue);
+						BlindSetPixelColor(x,y,color);
+					}
+				}
+			}
+		}
+		//<DP> invert transparent color too
+		info.nBkgndColor.rgbBlue = (BYTE)(255-info.nBkgndColor.rgbBlue);
+		info.nBkgndColor.rgbGreen = (BYTE)(255-info.nBkgndColor.rgbGreen);
+		info.nBkgndColor.rgbRed = (BYTE)(255-info.nBkgndColor.rgbRed);
+	}
+#endif
+	return true;
+}
+bool CImageFile::RotateLeft(CImageFile* iDst/* = NULL*/)
+{
+#ifdef __FINISHED_
+	if (!pDib) return false;
+
+	int newWidth = GetHeight();
+	int newHeight = GetWidth();
+
+	CImageFile imgDest;
+	imgDest.CopyInfo(*this);
+	imgDest.Create(newWidth,newHeight,GetBpp(),GetType());
+	imgDest.SetPalette(GetPalette());
+
+#if CXIMAGE_SUPPORT_ALPHA
+	if (AlphaIsValid()) imgDest.AlphaCreate();
+#endif
+
+#if CXIMAGE_SUPPORT_SELECTION
+	if (SelectionIsValid()) imgDest.SelectionCreate();
+#endif
+
+	int x,x2,y,dlineup;
+	
+	// Speedy rotate for BW images <Robert Abram>
+	if (head.biBitCount == 1) {
+	
+		BYTE *sbits, *dbits, *dbitsmax, bitpos, *nrow,*srcdisp;
+		ldiv_t div_r;
+
+		BYTE *bsrc = GetBits(), *bdest = imgDest.GetBits();
+		dbitsmax = bdest + imgDest.head.biSizeImage - 1;
+		dlineup = 8 * imgDest.info.dwEffWidth - imgDest.head.biWidth;
+
+		imgDest.Clear(0);
+		for (y = 0; y < head.biHeight; y++) {
+			// Figure out the Column we are going to be copying to
+			div_r = ldiv(y + dlineup, (int)8);
+			// set bit pos of src column byte				
+			bitpos = (BYTE)(1 << div_r.rem);
+			srcdisp = bsrc + y * info.dwEffWidth;
+			for (x = 0; x < (int)info.dwEffWidth; x++) {
+				// Get Source Bits
+				sbits = srcdisp + x;
+				// Get destination column
+				nrow = bdest + (x * 8) * imgDest.info.dwEffWidth + imgDest.info.dwEffWidth - 1 - div_r.quot;
+				for (int z = 0; z < 8; z++) {
+				   // Get Destination Byte
+					dbits = nrow + z * imgDest.info.dwEffWidth;
+					if ((dbits < bdest) || (dbits > dbitsmax)) break;
+					if (*sbits & (128 >> z)) *dbits |= bitpos;
+				}
+			}
+		}//for y
+
+#if CXIMAGE_SUPPORT_ALPHA
+		if (AlphaIsValid()) {
+			for (x = 0; x < newWidth; x++){
+				x2=newWidth-x-1;
+				for (y = 0; y < newHeight; y++){
+					imgDest.AlphaSet(x,y,BlindAlphaGet(y, x2));
+				}//for y
+			}//for x
+		}
+#endif //CXIMAGE_SUPPORT_ALPHA
+
+#if CXIMAGE_SUPPORT_SELECTION
+		if (SelectionIsValid()) {
+			imgDest.info.rSelectionBox.left = newWidth-info.rSelectionBox.top;
+			imgDest.info.rSelectionBox.right = newWidth-info.rSelectionBox.bottom;
+			imgDest.info.rSelectionBox.bottom = info.rSelectionBox.left;
+			imgDest.info.rSelectionBox.top = info.rSelectionBox.right;
+			for (x = 0; x < newWidth; x++){
+				x2=newWidth-x-1;
+				for (y = 0; y < newHeight; y++){
+					imgDest.SelectionSet(x,y,BlindSelectionGet(y, x2));
+				}//for y
+			}//for x
+		}
+#endif //CXIMAGE_SUPPORT_SELECTION
+
+	} else {
+	//anything other than BW:
+	//bd, 10. 2004: This optimized version of rotation rotates image by smaller blocks. It is quite
+	//a bit faster than obvious algorithm, because it produces much less CPU cache misses.
+	//This optimization can be tuned by changing block size (RBLOCK). 96 is good value for current
+	//CPUs (tested on Athlon XP and Celeron D). Larger value (if CPU has enough cache) will increase
+	//speed somehow, but once you drop out of CPU's cache, things will slow down drastically.
+	//For older CPUs with less cache, lower value would yield better results.
+		
+		BYTE *srcPtr, *dstPtr;                        //source and destionation for 24-bit version
+		int xs, ys;                                   //x-segment and y-segment
+		for (xs = 0; xs < newWidth; xs+=RBLOCK) {       //for all image blocks of RBLOCK*RBLOCK pixels
+			for (ys = 0; ys < newHeight; ys+=RBLOCK) {
+				if (head.biBitCount==24) {
+					//RGB24 optimized pixel access:
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){    //do rotation
+						info.nProgress = (int)(100*x/newWidth);
+						x2=newWidth-x-1;
+						dstPtr = (BYTE*) imgDest.BlindGetPixelPointer(x,ys);
+						srcPtr = (BYTE*) BlindGetPixelPointer(ys, x2);
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+							//imgDest.SetPixelColor(x, y, GetPixelColor(y, x2));
+							*(dstPtr) = *(srcPtr);
+							*(dstPtr+1) = *(srcPtr+1);
+							*(dstPtr+2) = *(srcPtr+2);
+							srcPtr += 3;
+							dstPtr += imgDest.info.dwEffWidth;
+						}//for y
+					}//for x
+				} else {
+					//anything else than 24bpp (and 1bpp): palette
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+						info.nProgress = (int)(100*x/newWidth); //<Anatoly Ivasyuk>
+						x2=newWidth-x-1;
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+							imgDest.SetPixelIndex(x, y, BlindGetPixelIndex(y, x2));
+						}//for y
+					}//for x
+				}//if (version selection)
+#if CXIMAGE_SUPPORT_ALPHA
+				if (AlphaIsValid()) {
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+						x2=newWidth-x-1;
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+							imgDest.AlphaSet(x,y,BlindAlphaGet(y, x2));
+						}//for y
+					}//for x
+				}//if (alpha channel)
+#endif //CXIMAGE_SUPPORT_ALPHA
+
+#if CXIMAGE_SUPPORT_SELECTION
+				if (SelectionIsValid()) {
+					imgDest.info.rSelectionBox.left = newWidth-info.rSelectionBox.top;
+					imgDest.info.rSelectionBox.right = newWidth-info.rSelectionBox.bottom;
+					imgDest.info.rSelectionBox.bottom = info.rSelectionBox.left;
+					imgDest.info.rSelectionBox.top = info.rSelectionBox.right;
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+						x2=newWidth-x-1;
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+							imgDest.SelectionSet(x,y,BlindSelectionGet(y, x2));
+						}//for y
+					}//for x
+				}//if (selection)
+#endif //CXIMAGE_SUPPORT_SELECTION
+			}//for ys
+		}//for xs
+	}//if
+
+	//select the destination
+	if (iDst) iDst->Transfer(imgDest);
+	else Transfer(imgDest);
+#endif
+	return true;
+}
+bool CImageFile::RotateRight(CImageFile* iDst/* = NULL*/)
+{
+#ifdef __FINISHED_
+	if (!pDib) return false;
+
+	int newWidth = GetHeight();
+	int newHeight = GetWidth();
+
+	CImageFile imgDest;
+	imgDest.CopyInfo(*this);
+	imgDest.Create(newWidth,newHeight,GetBpp(),GetType());
+	imgDest.SetPalette(GetPalette());
+
+#if CXIMAGE_SUPPORT_ALPHA
+	if (AlphaIsValid()) imgDest.AlphaCreate();
+#endif
+
+#if CXIMAGE_SUPPORT_SELECTION
+	if (SelectionIsValid()) imgDest.SelectionCreate();
+#endif
+
+	int x,y,y2;
+	// Speedy rotate for BW images <Robert Abram>
+	if (head.biBitCount == 1) {
+	
+		BYTE *sbits, *dbits, *dbitsmax, bitpos, *nrow,*srcdisp;
+		ldiv_t div_r;
+
+		BYTE *bsrc = GetBits(), *bdest = imgDest.GetBits();
+		dbitsmax = bdest + imgDest.head.biSizeImage - 1;
+
+		imgDest.Clear(0);
+		for (y = 0; y < head.biHeight; y++) {
+			// Figure out the Column we are going to be copying to
+			div_r = ldiv(y, (int)8);
+			// set bit pos of src column byte				
+			bitpos = (BYTE)(128 >> div_r.rem);
+			srcdisp = bsrc + y * info.dwEffWidth;
+			for (x = 0; x < (int)info.dwEffWidth; x++) {
+				// Get Source Bits
+				sbits = srcdisp + x;
+				// Get destination column
+				nrow = bdest + (imgDest.head.biHeight-1-(x*8)) * imgDest.info.dwEffWidth + div_r.quot;
+				for (int z = 0; z < 8; z++) {
+				   // Get Destination Byte
+					dbits = nrow - z * imgDest.info.dwEffWidth;
+					if ((dbits < bdest) || (dbits > dbitsmax)) break;
+					if (*sbits & (128 >> z)) *dbits |= bitpos;
+				}
+			}
+		}
+
+#if CXIMAGE_SUPPORT_ALPHA
+		if (AlphaIsValid()){
+			for (y = 0; y < newHeight; y++){
+				y2=newHeight-y-1;
+				for (x = 0; x < newWidth; x++){
+					imgDest.AlphaSet(x,y,BlindAlphaGet(y2, x));
+				}
+			}
+		}
+#endif //CXIMAGE_SUPPORT_ALPHA
+
+#if CXIMAGE_SUPPORT_SELECTION
+		if (SelectionIsValid()){
+			imgDest.info.rSelectionBox.left = info.rSelectionBox.bottom;
+			imgDest.info.rSelectionBox.right = info.rSelectionBox.top;
+			imgDest.info.rSelectionBox.bottom = newHeight-info.rSelectionBox.right;
+			imgDest.info.rSelectionBox.top = newHeight-info.rSelectionBox.left;
+			for (y = 0; y < newHeight; y++){
+				y2=newHeight-y-1;
+				for (x = 0; x < newWidth; x++){
+					imgDest.SelectionSet(x,y,BlindSelectionGet(y2, x));
+				}
+			}
+		}
+#endif //CXIMAGE_SUPPORT_SELECTION
+
+	} else {
+		//anything else but BW
+		BYTE *srcPtr, *dstPtr;                        //source and destionation for 24-bit version
+		int xs, ys;                                   //x-segment and y-segment
+		for (xs = 0; xs < newWidth; xs+=RBLOCK) {
+			for (ys = 0; ys < newHeight; ys+=RBLOCK) {
+				if (head.biBitCount==24) {
+					//RGB24 optimized pixel access:
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+						info.nProgress = (int)(100*y/newHeight); //<Anatoly Ivasyuk>
+						y2=newHeight-y-1;
+						dstPtr = (BYTE*) imgDest.BlindGetPixelPointer(xs,y);
+						srcPtr = (BYTE*) BlindGetPixelPointer(y2, xs);
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+							//imgDest.SetPixelColor(x, y, GetPixelColor(y2, x));
+							*(dstPtr) = *(srcPtr);
+							*(dstPtr+1) = *(srcPtr+1);
+							*(dstPtr+2) = *(srcPtr+2);
+							dstPtr += 3;
+							srcPtr += info.dwEffWidth;
+						}//for x
+					}//for y
+				} else {
+					//anything else than BW & RGB24: palette
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+						info.nProgress = (int)(100*y/newHeight); //<Anatoly Ivasyuk>
+						y2=newHeight-y-1;
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+							imgDest.SetPixelIndex(x, y, BlindGetPixelIndex(y2, x));
+						}//for x
+					}//for y
+				}//if
+#if CXIMAGE_SUPPORT_ALPHA
+				if (AlphaIsValid()){
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+						y2=newHeight-y-1;
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+							imgDest.AlphaSet(x,y,BlindAlphaGet(y2, x));
+						}//for x
+					}//for y
+				}//if (has alpha)
+#endif //CXIMAGE_SUPPORT_ALPHA
+
+#if CXIMAGE_SUPPORT_SELECTION
+				if (SelectionIsValid()){
+					imgDest.info.rSelectionBox.left = info.rSelectionBox.bottom;
+					imgDest.info.rSelectionBox.right = info.rSelectionBox.top;
+					imgDest.info.rSelectionBox.bottom = newHeight-info.rSelectionBox.right;
+					imgDest.info.rSelectionBox.top = newHeight-info.rSelectionBox.left;
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
+						y2=newHeight-y-1;
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
+							imgDest.SelectionSet(x,y,BlindSelectionGet(y2, x));
+						}//for x
+					}//for y
+				}//if (has alpha)
+#endif //CXIMAGE_SUPPORT_SELECTION
+			}//for ys
+		}//for xs
+	}//if
+
+	//select the destination
+	if (iDst) iDst->Transfer(imgDest);
+	else Transfer(imgDest);
+#endif
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
 /**
  * Returns true if the image has 256 colors and a linear grey scale palette.
  */
@@ -498,6 +1212,42 @@ bool CImageFile::IsGrayScale()
 		if (ppal[i].rgbBlue!=i || ppal[i].rgbGreen!=i || ppal[i].rgbRed!=i) return false;
 	}
 	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+RGBQUAD CImageFile::GetPixelColor(int x,int y, bool bGetAlpha)
+{
+//	RGBQUAD rgb={0,0,0,0};
+	RGBQUAD rgb=info.nBkgndColor; //<mpwolski>
+	if ((pDib==NULL)||(x<0)||(y<0)||
+		(x>=head.biWidth)||(y>=head.biHeight))
+	{
+		if (info.nBkgndIndex >= 0)
+		{
+			if (head.biBitCount<24)
+				return GetPaletteColor((BYTE)info.nBkgndIndex);
+			else
+				return info.nBkgndColor;
+		}
+		else if (pDib)
+			return GetPixelColor(0,0,bGetAlpha);
+		return rgb;
+	}
+
+	if (head.biClrUsed){
+		rgb = GetPaletteColor(BlindGetPixelIndex(x,y));
+	}
+	else {
+		BYTE* iDst  = info.pImage + y*info.dwEffWidth + x*3;
+		rgb.rgbBlue = *iDst++;
+		rgb.rgbGreen= *iDst++;
+		rgb.rgbRed  = *iDst;
+	}
+#if CImageFile_SUPPORT_ALPHA
+	if (pAlpha && bGetAlpha) rgb.rgbReserved = BlindAlphaGet(x,y);
+#else
+	rgb.rgbReserved = 0;
+#endif //CImageFile_SUPPORT_ALPHA
+	return rgb;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**

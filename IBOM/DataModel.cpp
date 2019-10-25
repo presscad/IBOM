@@ -1420,6 +1420,8 @@ void CDataCmpModel::ToBomModelBuffer(CBuffer &buffer,CXhPtrSet<IRecoginizer::BOM
 		pNode->pDataObj->cPartType=cPartType;
 		pNode->pDataObj->siSubType=pBomPart->siSubType;
 		pNode->pDataObj->fPieceWeight=pBomPart->weight;
+		pNode->pDataObj->fSumWeight = pBomPart->calSumWeight;
+		pNode->pDataObj->fMapSumWeight = pBomPart->sumWeight;
 		pNode->pDataObj->AddPart(pBomPart->count);
 		if(pBomPart->iSeg==-1||pBomPart->iSeg<=0)
 		{

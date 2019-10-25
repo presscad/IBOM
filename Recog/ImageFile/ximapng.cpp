@@ -107,6 +107,7 @@ bool CImageFilePng::ReadImageFile(FILE *fp,BYTE* lpExterRawBitsBuff/*=NULL*/,UIN
 	if (channels == 2) pixel_depth=8;
 	if (channels >= 3) pixel_depth=24;
 
+
 	if (!Create(info_ptr->width, info_ptr->height, pixel_depth, CXIMAGE_FORMAT_PNG,lpExterRawBitsBuff,uiBitsBuffSize)){
 		longjmp(png_ptr->jmpbuf, 1);
 	}

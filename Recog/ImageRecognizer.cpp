@@ -3180,7 +3180,7 @@ void CImageCellRegion::SplitImageCharSet(WORD iBitStart/*=0*/,WORD wGuessCharWid
 			MIN_RECOG_MATCHCOEF=0.3;
 	}
 	//if(flag.IsHasCellTextType(CImageCellRegion::PARTNO&&listCharSects.Count>=5
-	CDepthCounter visitor(&m_nIterDepth);
+	CDepthCounter<int> visitor(&m_nIterDepth);
 	if(m_nIterDepth>robot.MAX_SPLIT_IMG_ITER_DEPTH)//>15
 	{		//可能会出现Q345-8X358之类的规格字符串，故防死循环检测深度设为15
 		logerr.Log("SplitImageCharSet fall into death lock loop");
@@ -7467,6 +7467,8 @@ bool CImageDataFile::InitImageFileHeader(const char* imagefile)
 		this->m_ciRawImageFileType=2;
 	else if(stricmp(ext,".pdf")==0)
 		this->m_ciRawImageFileType=3;
+	else if (stricmp(ext, ".tif") == 0)
+		this->m_ciRawImageFileType = 4;
 	else
 		this->m_ciRawImageFileType=0;
 	BYTE exterbyte;
@@ -7483,16 +7485,18 @@ bool CImageDataFile::InitImageFile(const char* imagefile,const char* file_path,b
 		m_sPathFileName.Copy(imagefile);
 	int len=sPathFileName.GetLength();
 	char* ext=((char*)sPathFileName)+(len-4);
-	if(stricmp(ext,".jpg")==0)
-		this->m_ciRawImageFileType=RAW_IMAGE_JPG;
-	else if(stricmp(ext,".png")==0)
-		this->m_ciRawImageFileType=RAW_IMAGE_PNG;
-	else if(stricmp(ext,".pdf")==0)
-		this->m_ciRawImageFileType=RAW_IMAGE_PDF;
+	if (stricmp(ext, ".jpg") == 0)
+		this->m_ciRawImageFileType = RAW_IMAGE_JPG;
+	else if (stricmp(ext, ".png") == 0)
+		this->m_ciRawImageFileType = RAW_IMAGE_PNG;
+	else if (stricmp(ext, ".pdf") == 0)
+		this->m_ciRawImageFileType = RAW_IMAGE_PDF;
+	else if (stricmp(ext, "*.tif") == 0)
+		this->m_ciRawImageFileType = RAW_IMAGE_TIF;
 	else
 		this->m_ciRawImageFileType=RAW_IMAGE_NONE;
 	bool retcode=false;
-	if(m_ciRawImageFileType==3)
+	if(m_ciRawImageFileType== RAW_IMAGE_PDF)
 	{
 		if(pPDFConfig)
 			retcode=image.ReadPdfFile(sPathFileName,*pPDFConfig,m_nMonoForwardPixels);

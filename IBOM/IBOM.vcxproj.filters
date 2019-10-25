@@ -351,20 +351,17 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\TempFile.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\LicenseVirtualRentalPage.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\LicenseVirtualRentalPage.h">
       <Filter>XhLmd\头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\XhLmd.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\XhLmd.h">
       <Filter>XhLmd\头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\LinkLabel.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\LinkLabel.h">
       <Filter>XhLmd\头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Toolkits\TowerCad\LicFuncDef.h">
       <Filter>TowerCad</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\XhLmd\Aes\aes.h">
-      <Filter>XhLicAgent\AES</Filter>
     </ClInclude>
     <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\WMIQuery.h">
       <Filter>XhLicAgent\Computer</Filter>
@@ -378,16 +375,13 @@
     <ClInclude Include="..\..\XhLmd\XhLicAgent\Computer\IdentityRouter.h">
       <Filter>XhLicAgent\Computer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\Des\DES.h">
-      <Filter>XhLicAgent\DES</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\XhLmd\DogDrvs\Gsmh.h">
       <Filter>XhLicAgent\DogDrvs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_api.h">
       <Filter>XhLicAgent\DogDrvs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\Markup.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\Markup.h">
       <Filter>XhLicAgent\DogDrvs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\XhLmd\DogDrvs\NetDogAPI.h">
@@ -405,7 +399,7 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\MD5.H">
       <Filter>XhLicAgent\头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\MsgDef.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\MsgDef.h">
       <Filter>XhLicAgent\头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Toolkits\TowerCad\ProductFeature.h">
@@ -477,7 +471,7 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\QRCode.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\XhLmdI.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\XhLmdI.h">
       <Filter>XhLmd\头文件</Filter>
     </ClInclude>
     <ClInclude Include="database.h">
@@ -609,7 +603,7 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\ServerObject.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\PayQRCodeDlg.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\PayQRCodeDlg.h">
       <Filter>XhLmd\源文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Toolkits\ToolCode\MonoBmpFile.h">
@@ -621,29 +615,38 @@
     <ClInclude Include="..\..\Toolkits\ToolCode\LogBinaryFile.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\ApplyCreditResultDlg.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\ApplyCreditResultDlg.h">
       <Filter>XhLmd\源文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\EndUserApplyDlg.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\EndUserApplyDlg.h">
       <Filter>XhLmd\源文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Toolkits\ToolCode\WxPayAPI.h">
       <Filter>XhLmd\ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\LDS\LDS\BOM\BOM.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\XhCore\PartLib\BoltLibrary.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\LicenseAuthorizeDlg.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\LicenseAuthorizeDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\XhLmd\LicenseServerActivatePage.h">
+    <ClInclude Include="..\..\XhLmd\XhLmd\LicenseServerActivatePage.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\Recog\Recog.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLmd\Aes\aes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhLmd\XhLmd\Des\DES.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Recog\ImageFile\ximatif.h">
+      <Filter>RecogCode\ImageCoreFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\LDS\LDS\BOM\BOM.h">
+      <Filter>BOM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -749,19 +752,19 @@
     <ClCompile Include="..\..\Toolkits\ToolCode\TempFile.cpp">
       <Filter>ToolCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\LicenseAuthorizeDlg.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\LicenseAuthorizeDlg.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\XhLmd.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\XhLmd.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\LicenseServerActivatePage.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\LicenseServerActivatePage.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\LicenseVirtualRentalPage.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\LicenseVirtualRentalPage.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\LinkLabel.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\LinkLabel.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Toolkits\TowerCad\LicFuncDef.cpp">
@@ -980,7 +983,7 @@
     <ClCompile Include="..\..\Toolkits\ToolCode\ServerObject.cpp">
       <Filter>ToolCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\PayQRCodeDlg.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\PayQRCodeDlg.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Toolkits\ToolCode\MonoBmpFile.cpp">
@@ -992,10 +995,7 @@
     <ClCompile Include="..\..\Toolkits\ToolCode\LogBinaryFile.cpp">
       <Filter>ToolCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\XhLmd\ApplyCreditResultDlg.cpp">
-      <Filter>XhLmd\源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\XhLmd\EndUserApplyDlg.cpp">
+    <ClCompile Include="..\..\XhLmd\XhLmd\EndUserApplyDlg.cpp">
       <Filter>XhLmd\源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Toolkits\ToolCode\WxPayAPI.cpp">
@@ -1033,6 +1033,12 @@
     </ClCompile>
     <ClCompile Include="..\Recog\TimerCount.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhLmd\XhLmd\ApplyCreditResultDlg.cpp">
+      <Filter>XhLmd\源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Recog\ImageFile\ximatif.cpp">
+      <Filter>RecogCode\ImageCoreFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -207,7 +207,7 @@ public:
 	BYTE GetPixelGraynessThresold(int x,int y);	//指定像素点黑白阈值
 	bool IsBlackPixel(int x,int y,int nMonoForwardBalance=0);	//指定象素点是否为黑点
 	void ClearImage();
-	bool ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,int nMonoForward=20);
+	bool ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,int nMonoForward=20);
 	bool ReadImageFile(const char* file_path,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,int nMonoForward=20);	//读取图片
 	bool ReadPdfFile(char* file_path,const PDF_FILE_CONFIG& pdfConfig,int nMonoForward=20,RectD *pRect=NULL,BOOL bInitGrayBitMap=FALSE);
 	bool RetrievePdfRegion(RectD *pRect,double zoom_scale,CImageTransform &image);

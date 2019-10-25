@@ -16,7 +16,7 @@
 #define CXIMAGE_SUPPORT_JPG 1
 #define CXIMAGE_SUPPORT_PNG 1
 #define CXIMAGE_SUPPORT_ICO 0
-#define CXIMAGE_SUPPORT_TIF 0
+#define CXIMAGE_SUPPORT_TIF 1
 #define CXIMAGE_SUPPORT_TGA 0
 #define CXIMAGE_SUPPORT_PCX 0
 #define CXIMAGE_SUPPORT_WBMP 0
@@ -152,12 +152,22 @@ public:
 	struct rgb_color { BYTE r,g,b; };
     BITMAPINFOHEADER    head; //standard header
 	CIMAGEINFO			info; //extended information
-	virtual bool ReadImageFile(FILE* fp,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0)=0;
-	virtual bool WriteImageFile(FILE* fp)=0;
+	/*virtual bool ReadImageFile(FILE* fp) {
+		return false;
+	}
+	virtual bool WriteImageFile(FILE* fp) {
+		return false;
+	}*/
+	virtual bool ReadImageFile(FILE* fp, BYTE* lpExterRawBitsBuff = NULL, UINT uiBitsBuffSize = 0) {
+		return false;
+	}
+	virtual bool WriteImageFile(FILE* fp) {
+		return false;
+	}
 	CImageFile();
 	virtual ~CImageFile();
 	DWORD GetBitmapBits(DWORD dwCount, BYTE* lpBits);
-	void*	Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype = 0,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0);
+	void*	Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype = 0, BYTE* lpExterRawBitsBuff = NULL, UINT uiBitsBuffSize = 0);
 	bool	Destroy();
 	static DWORD GetTypeIndexFromId(const DWORD id);
 
@@ -170,6 +180,8 @@ public:
 	bool	SetCodecOption(DWORD opt, DWORD imagetype = 0);
 
 	void RGBtoBGR(BYTE *buffer, int length);
+	COLORREF RGBQUADtoRGB (RGBQUAD c);
+	RGBQUAD RGBtoRGBQUAD(COLORREF cr);
 	DWORD	GetHeight() const{return head.biHeight;}
 	DWORD	GetWidth() const{return head.biWidth;}
 	DWORD	GetEffWidth() const{return info.dwEffWidth;}
@@ -185,6 +197,7 @@ public:
 	WORD    GetBpp() const{return head.biBitCount;}
 	DWORD	GetType() const{return info.dwType;}
 	bool IsInside(long x, long y){return (0<=y && y<head.biHeight && 0<=x && x<head.biWidth);}
+	bool Transfer(CImageFile &from);//,bool bTransferFrames =true);
 
 	DWORD	GetPaletteSize(){return (head.biClrUsed * sizeof(RGBQUAD));}
 	RGBQUAD* GetPalette() const;
@@ -192,11 +205,13 @@ public:
 	void	SetPalette(rgb_color *rgb,DWORD nColors=256);
 	void	SetPaletteColor(BYTE idx, BYTE r, BYTE g, BYTE b, BYTE alpha=0);
 	void	SetPaletteColor(BYTE idx, RGBQUAD c);
+	void	SetPaletteColor(BYTE idx, COLORREF cr);
 	RGBQUAD GetPaletteColor(BYTE idx);
 	bool	GetPaletteColor(BYTE i, BYTE* r, BYTE* g, BYTE* b);
 	void	SetGrayPalette();
 
 	RGBQUAD	GetTransColor();
+	BYTE GetNearestIndex(RGBQUAD c);
 /** \addtogroup Palette
  * These functions have no effects on RGB images and in this case the returned value is always 0.
  * @{ */
@@ -204,6 +219,11 @@ public:
 	void	SwapIndex(BYTE idx1, BYTE idx2);
 protected:
 /** \addtogroup Protected */ //@{
+	BYTE GetPixelIndex(int x,int y);
+	void SetPixelIndex(int x,int y,BYTE i);
+	void SetPixelColor(int x,int y,RGBQUAD c, bool bSetAlpha = false);
+	void SetPixelColor(int x,int y,COLORREF cr);
+	RGBQUAD GetPixelColor(int x,int y,bool bGetAlpha=false);
 	bool EncodeSafeCheck(FILE *fp);
 //@}
 	BYTE BlindGetPixelIndex(const long x,const long y);
@@ -212,5 +232,17 @@ protected:
 	bool AlphaIsValid(){return pAlpha!=0;}
 	BYTE AlphaGet(const long x,const long y);
 
+	bool IsValid() const { return pDib!=NULL; }
+//#if CXIMAGE_SUPPORT_BASICTRANSFORMATIONS
+/** \addtogroup BasicTransformations */ //@{
+	bool GrayScale();
+	bool Flip(bool bFlipSelection = false, bool bFlipAlpha = true);
+	bool Mirror(bool bMirrorSelection = false, bool bMirrorAlpha = true);
+	bool Negative();
+	bool RotateLeft(CImageFile* iDst = NULL);
+	bool RotateRight(CImageFile* iDst = NULL);
+	bool IncreaseBpp(int nbit);
+//@}
+//#endif
 };
 #endif // !defined(AFX_IMAGEFILE_H__01662188_548F_4D9A_B515_99F84A94B1D1__INCLUDED_)

@@ -351,6 +351,7 @@ static BOOL ModifySettingValue(CPropertyList* pPropList,CPropTreeItem* pItem,CSt
 	else if(CSettingDlg::GetPropID("m_fWeightEPS")==pItem->m_idProp)
 	{
 		CConfig::m_fWeightEPS=atof(valueStr);
+		AfxGetApp()->WriteProfileString(_T("Settings"), _T("WeightEPS"), CXhChar16(CConfig::m_fWeightEPS));
 	}
 	return true;
 }
@@ -561,6 +562,8 @@ int CSettingDlg::GetImageFilePropValueStr(long id, char *valueStr,UINT nMaxStrBu
 			sText.Copy("3.Pdf矢量文件");
 		else if(IImageFile::RAW_IMAGE_PDF_IMG==biFileType)
 			sText.Copy("4.Pdf图像文件");
+		else if(IImageFile::RAW_IMAGE_TIF==biFileType)
+			sText.Copy("5.TIF图像文件");
 		else if(IImageFile::RAW_IMAGE_NONE==biFileType)
 			sText.Copy("0.未知类型");
 	}

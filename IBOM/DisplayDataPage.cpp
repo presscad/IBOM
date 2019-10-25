@@ -179,7 +179,7 @@ static CSuperGridCtrl::CTreeItem* InsertOrUpdatePartTreeItem(CSuperGridCtrl &xLi
 		{
 			if(pPart->arrItemWarningLevel[6]!=2&&fabs(fCalWeight-fSumWeight)>fabs(CConfig::m_fWeightEPS))
 				pPart->arrItemWarningLevel[6]=1;
-			lpInfo->SetSubItemText(7,CXhChar50("%.1f",fSumWeight),FALSE);
+			lpInfo->SetSubItemText(7,CXhChar50("%.1f",fSumWeight),bReadOnly);
 			if((clr=GetBomPartCellBackColor(xListCtrl,pPart,7))>0)
 				lpInfo->SetSubItemColor(7,clr);
 		}
@@ -577,7 +577,7 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 	{
 		if( biCurCol==CDisplayDataPage::COL_LABEL||biCurCol==CDisplayDataPage::COL_LEN||
 			biCurCol==CDisplayDataPage::COL_SPEC||biCurCol==CDisplayDataPage::COL_WEIGHT||
-			biCurCol==CDisplayDataPage::COL_COUNT)
+			biCurCol==CDisplayDataPage::COL_COUNT||biCurCol==CDisplayDataPage::COL_MAP_SUM_WEIGHT)
 		{
 			//CString sText=pItem->m_lpNodeInfo->GetSubItemText(biCurCol);
 			pListCtrl->DisplayCellCtrl(pItem->GetIndex(),biCurCol,NULL);
@@ -639,16 +639,18 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 			{	//其它列重复前一列
 				CString sText=pPrevItem->m_lpNodeInfo->GetSubItemText(biCurCol);
 				pListCtrl->SetSubItemText(pItem,biCurCol,sText);
-				if(biCurCol==1)
-					strcpy(pCurPart->materialStr,sText);
-				else if(biCurCol==2)
-					strcpy(pCurPart->sSizeStr,sText);
-				else if(biCurCol==3)
-					pCurPart->length=atoi(sText);
-				else if(biCurCol==4)
-					pCurPart->count=atoi(sText);
-				else if(biCurCol==5)
-					pCurPart->weight=atof(sText);
+				if (biCurCol == 1)
+					strcpy(pCurPart->materialStr, sText);
+				else if (biCurCol == 2)
+					strcpy(pCurPart->sSizeStr, sText);
+				else if (biCurCol == 3)
+					pCurPart->length = atoi(sText);
+				else if (biCurCol == 4)
+					pCurPart->count = atoi(sText);
+				else if (biCurCol == 5)
+					pCurPart->weight = atof(sText);
+				else if (biCurCol == CDisplayDataPage::COL_MAP_SUM_WEIGHT)
+					pCurPart->sumWeight = atof(sText);
 			}
 			//修改完之后跳转至下一行
 			wVKey=CConfig::CFG_VK_DOWN;
@@ -889,6 +891,11 @@ static BOOL FireModifyValue(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 			sTextValue.Format("%.2f",pCurPart->weight);
 			SimplifiedNumString(sTextValue);
 		}
+		else if (biCurCol == CDisplayDataPage::COL_MAP_SUM_WEIGHT)
+		{
+			sTextValue.Format("%.2f", pCurPart->sumWeight);
+			SimplifiedNumString(sTextValue);
+		}
 		return TRUE;	//输入点表示重复上一次，已经在FireKeyDown中处理
 	}
 	if(biCurCol==CDisplayDataPage::COL_LABEL)
@@ -911,6 +918,9 @@ static BOOL FireModifyValue(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 		{
 			if(sTextValue.FindOneOf("L")>=0||sTextValue.FindOneOf("-")>=0)
 				sTextValue.Replace('*','X');
+			//输入内容包括钢管标识符，识别为钢管 wht 19-10-23
+			else if (sTextValue.FindOneOf("Φ")|| sTextValue.FindOneOf("φ"))
+				sTextValue.Replace('*', 'X');
 			else 
 				sTextValue.Format("L%s",sTextValue);
 			StrCopy(pCurPart->sSizeStr,sTextValue,16);
@@ -956,6 +966,15 @@ static BOOL FireModifyValue(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 		bChange=fabs(fWeight-pCurPart->weight)>EPS;
 		if(bChange)
 			pCurPart->ciSrcFromMode|=IRecoginizer::BOMPART::MODIFY_WEIGHT;
+	}
+	else if (biCurCol == CDisplayDataPage::COL_MAP_SUM_WEIGHT)
+	{
+		double fSumWeight = pCurPart->sumWeight;
+		if (sTextValue.GetLength() > 0)
+			pCurPart->sumWeight = atof(sTextValue);
+		bChange = fabs(fSumWeight - pCurPart->sumWeight) > EPS;
+		if (bChange)
+			pCurPart->ciSrcFromMode |= IRecoginizer::BOMPART::MODIFY_MAP_SUM_WEIGHT;
 	}
 	CheckBomPartByRule(pCurPart);
 	if(bChange)
@@ -1550,7 +1569,8 @@ CSuperGridCtrl::CTreeItem* CDisplayDataPage::RefreshListCtrl(long idSelProp/*=0*
 					i==CDisplayDataPage::COL_SPEC||
 					i==CDisplayDataPage::COL_LEN||
 					i==CDisplayDataPage::COL_COUNT||
-					i==CDisplayDataPage::COL_WEIGHT))
+					i==CDisplayDataPage::COL_WEIGHT||
+					i==CDisplayDataPage::COL_MAP_SUM_WEIGHT))
 					pItem->m_lpNodeInfo->SetSubItemReadOnly(i,FALSE);
 			}
 			InsertOrUpdatePartTreeItem(m_listDataCtrl1,pBomPart);

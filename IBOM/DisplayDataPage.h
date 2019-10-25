@@ -41,6 +41,8 @@ public:
 	static const BYTE COL_LEN		= 3;
 	static const BYTE COL_COUNT		= 4;
 	static const BYTE COL_WEIGHT	= 5;
+	static const BYTE COL_SUM_WEIGHT = 6;
+	static const BYTE COL_MAP_SUM_WEIGHT = 7;
 	//
 	static const BYTE LAYOUT_BROWSE = 2;	//数据区域信息(查看模式)
 	static const BYTE LAYOUT_COLREV = 3;	//数据区域按列查看校审模式

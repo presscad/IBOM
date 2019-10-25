@@ -3,6 +3,7 @@
 #include "ImageFile.h"
 #include "ximajpg.h"
 #include "ximapng.h"
+#include "ximatif.h"
 #include "ImageTransform.h"
 #include "HashTable.h"
 #include "LogFile.h"
@@ -570,10 +571,10 @@ bool CImageTransform::ReadImageFileHeader(FILE* fp,char ciBmp0Jpeg1Png2)
 	return true;
 }
 //JPG¸ñÊ½Í¼Æ¬µÄ¶ÁÐ´
-bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2,BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/,
+bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/,
 			int nMonoForward/*=20*/)
 {
-	if(ciBmp0Jpeg1Png2==0)
+	if(ciBmp0Jpeg1Png2Tif3==0)
 	{
 		if(!ReadBmpFile(fp,lpExterRawBitsBuff,uiBitsBuffSize))
 			return false;
@@ -581,9 +582,16 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2,BYTE* lpExterR
 	}
 	CImageFileJpeg jpgFile;
 	CImageFilePng  pngFile;
+	CImageFileTif  tifFile;
 	CImageFile* pImageFile=&pngFile;
-	if(ciBmp0Jpeg1Png2==1)
-		pImageFile=&jpgFile;
+	if (ciBmp0Jpeg1Png2Tif3 == 1)
+		pImageFile = &jpgFile;
+	else if (ciBmp0Jpeg1Png2Tif3 == 2)
+		pImageFile = &pngFile;
+	else if (ciBmp0Jpeg1Png2Tif3 == 3)
+		pImageFile = &tifFile;
+	else
+		return false;
 	bool readimgdata=pImageFile->ReadImageFile(fp,lpExterRawBitsBuff,uiBitsBuffSize);
 
 	m_nWidth=pImageFile->GetWidth();
@@ -865,18 +873,20 @@ bool CImageTransform::ReadImageFile(const char* file_path,BYTE* lpExterRawBitsBu
 	CFileLifeObject filelife(fp);
 	char drive[4],dir[MAX_PATH],fname[MAX_PATH],ext[MAX_PATH];
 	_splitpath(file_path,drive,dir,fname,ext);
-	char ciBmp0JpgPng2=0;
+	char ciBmp0JpgPng2Tif3=0;
 	bool retvalue=false;
 	if(stricmp(ext,".bmp")==0)
-		ciBmp0JpgPng2=0;
+		ciBmp0JpgPng2Tif3=0;
 	else if(stricmp(ext,".jpg")==0)
-		ciBmp0JpgPng2=1;
+		ciBmp0JpgPng2Tif3=1;
 	else if(stricmp(ext,".png")==0)
-		ciBmp0JpgPng2=2;
+		ciBmp0JpgPng2Tif3=2;
+	else if (stricmp(ext, ".tif") == 0)
+		ciBmp0JpgPng2Tif3 = 3;
 	else
 		return false;
-	m_ciRawImageFileType=ciBmp0JpgPng2;
-	return ReadImageFile(fp,ciBmp0JpgPng2,lpExterRawBitsBuff,uiBitsBuffSize);
+	m_ciRawImageFileType=ciBmp0JpgPng2Tif3;
+	return ReadImageFile(fp,ciBmp0JpgPng2Tif3,lpExterRawBitsBuff,uiBitsBuffSize);
 }
 bool CImageTransform::WriteImageFile(const char* file_path)
 {

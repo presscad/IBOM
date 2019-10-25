@@ -44,12 +44,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin\Debug</OutDir>
+    <OutDir>..\bin\Debug\</OutDir>
     <TargetName>IBOM</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release</OutDir>
+    <OutDir>..\bin\Release\</OutDir>
     <TargetName>IBOM</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -58,15 +58,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>__ENCRYPT_VERSION_;__WXPAY_RENTAL_ONLINE_;WITH_NONAMESPACES;__EXPORT_LOGFILE_;WIN32;_WINDOWS;_DEBUG;__IBOM_;__VS2010_;__XHLICAGENT_2_;__ALL_LICFUNC_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;APP_EMBEDDED_MODULE_ENCRYPT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\LDS\LDS\BOM;..\..\ToolKits\utils;..\..\ToolKits\MuPdf;..\..\ToolKits\MuPdf\include;..\..\ToolKits\VersionServ;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhCore\Ent;..\..\XhCore\AlgFun;..\..\XhCore\EntList;..\..\XhCore\PartLib;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\Recog;..\Recog\ImageFile</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\LDS\LDS\BOM;..\..\ToolKits\utils;..\..\ToolKits\MuPdf;..\..\ToolKits\MuPdf\include;..\..\ToolKits\VersionServ;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhCore\Ent;..\..\XhCore\AlgFun;..\..\XhCore\EntList;..\..\XhCore\PartLib;..\..\XhLmd;..\..\XhLmd\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\Recog;..\Recog\ImageFile</AdditionalIncludeDirectories>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ToolKits\MuPDF\Debug;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>unarrlib.lib;libmupdf.lib;version.lib;Jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ToolKits\QRCode\Debug;..\..\ToolKits\MuPDF\Debug;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>tiff.lib;QRCode.lib;unarrlib.lib;libmupdf.lib;version.lib;Jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -89,7 +89,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>__ENCRYPT_VERSION_;__WXPAY_RENTAL_ONLINE_;WITH_NONAMESPACES;__EXPORT_LOGFILE_;WIN32;_WINDOWS;NDEBUG;__IBOM_;__VS2010_;__XHLICAGENT_2_;__ALL_LICFUNC_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;APP_EMBEDDED_MODULE_ENCRYPT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\LDS\LDS\BOM;..\..\ToolKits\utils;..\..\ToolKits\MuPdf;..\..\ToolKits\MuPdf\include;..\..\ToolKits\VersionServ;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhCore\Ent;..\..\XhCore\AlgFun;..\..\XhCore\EntList;..\..\XhCore\PartLib;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\Recog;..\Recog\ImageFile</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\LDS\LDS\BOM;..\..\ToolKits\utils;..\..\ToolKits\MuPdf;..\..\ToolKits\MuPdf\include;..\..\ToolKits\VersionServ;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhCore\Ent;..\..\XhCore\AlgFun;..\..\XhCore\EntList;..\..\XhCore\PartLib;..\..\XhLmd;..\..\XhLmd\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\Recog;..\Recog\ImageFile</AdditionalIncludeDirectories>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
@@ -99,8 +99,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ToolKits\MuPDF\Release;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>unarrlib.lib;libmupdf.lib;version.lib;Jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ToolKits\QRCode\Release;..\..\ToolKits\MuPDF\Release;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>tiff.lib;QRCode.lib;unarrlib.lib;libmupdf.lib;version.lib;Jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -230,22 +230,22 @@
     <ClInclude Include="..\..\ToolKits\VersionServ\soapVersionServiceSoapProxy.h" />
     <ClInclude Include="..\..\ToolKits\VersionServ\stdsoap2.h" />
     <ClInclude Include="..\..\ToolKits\VersionServ\VER.h" />
-    <ClInclude Include="..\..\XhLmd\Aes\aes.h" />
-    <ClInclude Include="..\..\XhLmd\ApplyCreditResultDlg.h" />
-    <ClInclude Include="..\..\XhLmd\Des\DES.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\Aes\aes.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\ApplyCreditResultDlg.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\Des\DES.h" />
     <ClInclude Include="..\..\XhLmd\DogDrvs\Gsmh.h" />
     <ClInclude Include="..\..\XhLmd\DogDrvs\hasp_api.h" />
     <ClInclude Include="..\..\XhLmd\DogDrvs\NetDogAPI.h" />
     <ClInclude Include="..\..\XhLmd\DogDrvs\sntl_licgen.h" />
-    <ClInclude Include="..\..\XhLmd\EndUserApplyDlg.h" />
-    <ClInclude Include="..\..\XhLmd\LicenseAuthorizeDlg.h" />
-    <ClInclude Include="..\..\XhLmd\LicenseServerActivatePage.h" />
-    <ClInclude Include="..\..\XhLmd\LicenseVirtualRentalPage.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\EndUserApplyDlg.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\LicenseAuthorizeDlg.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\LicenseServerActivatePage.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\LicenseVirtualRentalPage.h" />
     <ClInclude Include="..\..\XhLmd\LicProxy\LicProxy.h" />
-    <ClInclude Include="..\..\XhLmd\LinkLabel.h" />
-    <ClInclude Include="..\..\XhLmd\Markup.h" />
-    <ClInclude Include="..\..\XhLmd\MsgDef.h" />
-    <ClInclude Include="..\..\XhLmd\PayQRCodeDlg.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\LinkLabel.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\Markup.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\MsgDef.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\PayQRCodeDlg.h" />
     <ClInclude Include="..\..\XhLmd\RSA\BigInt.h" />
     <ClInclude Include="..\..\XhLmd\XhLdsLm\ToolKits.h" />
     <ClInclude Include="..\..\XhLmd\XhLdsLm\XhLdsLm.h" />
@@ -258,8 +258,9 @@
     <ClInclude Include="..\..\XhLmd\XhLicAgent\DogAPI.h" />
     <ClInclude Include="..\..\XhLmd\XhLicAgent\LicBuffer.h" />
     <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgent.h" />
-    <ClInclude Include="..\..\XhLmd\XhLmd.h" />
-    <ClInclude Include="..\..\XhLmd\XhLmdI.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\XhLmd.h" />
+    <ClInclude Include="..\..\XhLmd\XhLmd\XhLmdI.h" />
+    <ClInclude Include="..\Recog\ImageFile\ximatif.h" />
     <ClInclude Include="AutoSaveParamDlg.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CryptBuffer.h" />
@@ -450,15 +451,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\XhLmd\Aes\aes.cpp" />
-    <ClCompile Include="..\..\XhLmd\ApplyCreditResultDlg.cpp" />
     <ClCompile Include="..\..\XhLmd\Des\DES.cpp" />
     <ClCompile Include="..\..\XhLmd\DogDrvs\Gsmh.cpp" />
-    <ClCompile Include="..\..\XhLmd\EndUserApplyDlg.cpp" />
-    <ClCompile Include="..\..\XhLmd\LicenseAuthorizeDlg.cpp" />
-    <ClCompile Include="..\..\XhLmd\LicenseServerActivatePage.cpp" />
-    <ClCompile Include="..\..\XhLmd\LicenseVirtualRentalPage.cpp" />
-    <ClCompile Include="..\..\XhLmd\LinkLabel.cpp" />
-    <ClCompile Include="..\..\XhLmd\PayQRCodeDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\ApplyCreditResultDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\EndUserApplyDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\LicenseAuthorizeDlg.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\LicenseServerActivatePage.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\LicenseVirtualRentalPage.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\LinkLabel.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\PayQRCodeDlg.cpp" />
     <ClCompile Include="..\..\XhLmd\RSA\BigInt.cpp" />
     <ClCompile Include="..\..\XhLmd\XhLdsLm\ClassDef.cpp" />
     <ClCompile Include="..\..\XhLmd\XhLdsLm\CryptLdsCode.cpp" />
@@ -476,7 +477,8 @@
     <ClCompile Include="..\..\XhLmd\XhLicAgent\SafeDecryptBuffer.cpp" />
     <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgent.cpp" />
     <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.cpp" />
-    <ClCompile Include="..\..\XhLmd\XhLmd.cpp" />
+    <ClCompile Include="..\..\XhLmd\XhLmd\XhLmd.cpp" />
+    <ClCompile Include="..\Recog\ImageFile\ximatif.cpp" />
     <ClCompile Include="AutoSaveParamDlg.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CryptBuffer.cpp" />

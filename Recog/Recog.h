@@ -156,6 +156,7 @@ struct IRecoginizer
 		static const int MODIFY_COUNT	= 0x10;
 		static const int MODIFY_WEIGHT	= 0x20;
 		static const int MODIFY_SUM_WEIGHT = 0x40;
+		static const int MODIFY_MAP_SUM_WEIGHT = 0x80;
 		BYTE arrItemWarningLevel[7];//0.件号;1.材质&规格;2.长度;3.单基数;4.单重;5.总重;6.备注 列的警示信息，越高越需要警示
 		BYTE ciSrcFromMode;	//0.图片识别，每一位代表一个属性的修改状态;
 		RECT rc;			//只有在自动识别时有效，该行构件在CImageDataRegion中对应的矩形区域
@@ -215,6 +216,7 @@ struct IImageFile{
 	static const BYTE RAW_IMAGE_PNG		= 2;	//PNG
 	static const BYTE RAW_IMAGE_PDF		= 3;	//PDF形式存储的矢量笔画图
 	static const BYTE RAW_IMAGE_PDF_IMG	= 4;	//PDF形式存储的图像
+	static const BYTE RAW_IMAGE_TIF		= 5;	//TIF
 	virtual long GetSerial()=0;
 	virtual bool InitImageFileHeader(const char* imagefile)=0;
 	virtual bool InitImageFile(const char* imagefile,const char* file_path,bool update_file_path=true,PDF_FILE_CONFIG *pPDFConfig=NULL)=0;

@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/enc_temp_folder/4f2c8279f7d7a5637474d9dd2a7453
+/enc_temp_folder/8d76f929b93afdc8015413f7594214

@@ -73,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin\Debug</OutDir>
+    <OutDir>..\bin\Debug\</OutDir>
     <TargetExt>.arx</TargetExt>
     <IgnoreImportLibrary>
     </IgnoreImportLibrary>
@@ -81,21 +81,21 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release</OutDir>
+    <OutDir>..\bin\Release\</OutDir>
     <TargetExt>.arx</TargetExt>
     <TargetName>DBP05</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release10|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release</OutDir>
+    <OutDir>..\bin\Release\</OutDir>
     <TargetExt>.arx</TargetExt>
-    <TargetName>$DBP10</TargetName>
+    <TargetName>DBP10</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release07|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release</OutDir>
+    <OutDir>..\bin\Release\</OutDir>
     <TargetExt>.arx</TargetExt>
-    <TargetName>$DBP07</TargetName>
+    <TargetName>DBP07</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>__BOM_FILE_;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;D:\ObjectARX 2005\inc;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\LDS\MapLds</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;D:\ObjectARX 2005\inc;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\LDS\MapLds;..\..\XhLmd\XhLmd</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,7 +165,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>__AFTER_ARX_2007;__BOM_FILE_;_ARX_2007;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\LDS\MapLds;D:\ObjectARX 2010\inc-win32;D:\ObjectARX 2010\inc;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\XhLmd\XhLmd;..\..\LDS\MapLds;D:\ObjectARX 2010\inc-win32;D:\ObjectARX 2010\inc;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
@@ -196,7 +196,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>__BOM_FILE_;_ARX_2007;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\LDS\MapLds;D:\ObjectARX 2007\inc;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\LDS\MapLds;D:\ObjectARX 2007\inc;..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\XhLmd\XhLmd</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4482;4800;4005;4996;</DisableSpecificWarnings>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
@@ -225,7 +225,7 @@
     <None Include="res\DBP.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\LDS\LDS\maplds\RecogPartBOM.cpp" />
+    <ClCompile Include="..\..\LDS\MapLds\RecogPartBOM.cpp" />
     <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp" />
     <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp" />
     <ClCompile Include="..\..\ToolKits\ToolCode\Buffer.cpp" />
@@ -266,7 +266,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\LDS\LDS\maplds\RecogPartBom.h" />
+    <ClInclude Include="..\..\LDS\MapLds\RecogPartBom.h" />
     <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h" />
     <ClInclude Include="..\..\XhCore\Ent\f_ent.h" />
     <ClInclude Include="..\..\LDS\maplds\Material.h" />

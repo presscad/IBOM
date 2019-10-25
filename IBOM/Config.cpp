@@ -212,8 +212,11 @@ void CConfig::LoadFromFile(const char* file_path)
 			sscanf(line_txt,"%s %d",&key_word,&m_bRecogPieceWeight);
 		else if(_stricmp(key_word,"RecogSumWeight")==0)
 			sscanf(line_txt,"%s %d",&key_word,&m_bRecogSumWeight);
-		else if(_stricmp(key_word,"WeightEPS")==0)
-			sscanf(line_txt,"%s %lf",&key_word,&m_fWeightEPS);
+		else if (_stricmp(key_word, "WeightEPS") == 0)
+		{
+			sscanf(line_txt, "%s %lf", &key_word, &m_fWeightEPS);
+			AfxGetApp()->WriteProfileString(_T("Settings"), _T("WeightEPS"), CXhChar16(m_fWeightEPS));
+		}
 	}
 	fclose(fp);
 }
@@ -378,6 +381,7 @@ void CConfig::InitDefaultSetting()
 	m_bRecogPieceWeight=FALSE;
 	m_bRecogSumWeight=FALSE;
 	m_fWeightEPS=0.5;
+	AfxGetApp()->WriteProfileString(_T("Settings"), _T("WeightEPS"), CXhChar16(m_fWeightEPS));
 }
 
 void CConfig::ReadSysParaFromReg()
@@ -395,4 +399,5 @@ void CConfig::WriteSysParaToReg()
 	AfxGetApp()->WriteProfileString(_T("Settings"),_T("Operator"),m_sOperator);
 	AfxGetApp()->WriteProfileString(_T("Settings"),_T("Auditor"),m_sAuditor);
 	AfxGetApp()->WriteProfileString(_T("Settings"),_T("Critic"),m_sCritic);
+	AfxGetApp()->WriteProfileString(_T("Settings"), _T("WeightEPS"), CXhChar16(m_fWeightEPS));
 }

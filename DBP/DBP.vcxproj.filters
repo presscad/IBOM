@@ -94,7 +94,7 @@
     <ClCompile Include="..\..\ToolKits\TowerCad\ProductFeature.cpp">
       <Filter>TowerCad</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\LDS\LDS\maplds\RecogPartBOM.cpp" />
+    <ClCompile Include="..\..\LDS\MapLds\RecogPartBOM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuFunc.h" />
@@ -191,10 +191,10 @@
     <ClInclude Include="..\..\ToolKits\TowerCad\SegI.h">
       <Filter>TowerCad</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\LDS\LDS\maplds\RecogPartBom.h" />
     <ClInclude Include="..\..\ToolKits\TowerCad\LicFuncDef.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\LDS\MapLds\RecogPartBom.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DBP.rc" />
