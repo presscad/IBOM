@@ -49,6 +49,60 @@ void RegisterServerComponents ()
 		&RecogizePartBomToBomdFile);            // Function pointer
 #endif
 }
+char* SearchChar(char* srcStr, char ch, bool reverseOrder/*=false*/)
+{
+	if (!reverseOrder)
+		return strchr(srcStr, ch);
+	else
+	{
+		int len = strlen(srcStr);
+		for (int i = len - 1; i >= 0; i--)
+		{
+			if (srcStr[i] == ch)
+				return &srcStr[i];
+		}
+	}
+	return NULL;
+}
+bool DetectSpecifiedHaspKeyFile(const char* default_file)
+{
+	FILE* fp = fopen(default_file, "rt");
+	if (fp == NULL)
+		return false;
+	bool detected = false;
+	CXhChar200 line_txt;//[MAX_PATH];
+	CXhChar200 scope_xmlstr;
+	scope_xmlstr.Append(
+		"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+		"<haspscope>");
+	while (!feof(fp))
+	{
+		if (fgets(line_txt, line_txt.GetLengthMax(), fp) == NULL)
+			break;
+		line_txt.Replace("＝", "=");
+		char* final = SearchChar(line_txt, ';', true);
+		if (final != NULL)
+			*final = 0;
+		char *skey = strtok(line_txt, " =,");
+		//常规设置
+		if (_stricmp(skey, "Key") == 0)
+		{
+			if (skey = strtok(NULL, "=,"))
+			{
+				scope_xmlstr.Append("<hasp id=\"");
+				scope_xmlstr.Append(skey);
+				scope_xmlstr.Append("\" />");
+				detected = true;
+			}
+		}
+	}
+	fclose(fp);
+	scope_xmlstr.Append("</haspscope>");
+	if (detected)
+		SetHaspLoginScope(scope_xmlstr);
+	return detected;
+}
+
 char g_sAppPath[MAX_PATH]={0};
 void InitApplication()
 {
@@ -69,6 +123,13 @@ void InitApplication()
 	_splitpath(lic_file,drive,dir,fname,ext);
 	strcpy(g_sAppPath,drive);
 	strcat(g_sAppPath,dir);
+	//查找是否存在指定加密锁号的文件 wht-2019.11.05
+	char key_file[MAX_PATH];
+	strcpy(key_file, lic_file);
+	char* separator = SearchChar(key_file, '.', true);
+	strcpy(separator, ".key");
+	DetectSpecifiedHaspKeyFile(key_file);
+	//
 	ULONG retCode=ImportLicFile(lic_file,PRODUCT_IBOM,version);
 	if(retCode!=0)
 	{
@@ -95,6 +156,10 @@ void InitApplication()
 			errormsgstr.Copy("9#授权过期，请续借授权");
 		else if(retCode==10)
 			errormsgstr.Copy("10#程序缺少相应执行权限，请以管理员权限运行程序");
+		else if (retCode == 11)
+			errormsgstr.Copy("11#授权异常，请使用管理员权限重新申请证书");
+		else
+			errormsgstr.Printf("未知错误，错误代码%d#", retCode);
 		errormsgstr.Append(CXhChar200(" 证书路径%s",lic_file));
 		AfxMessageBox(errormsgstr);
 		exit(0);
@@ -107,21 +172,6 @@ void InitApplication()
 	HWND hWnd = adsw_acadMainWnd();
 	::SetWindowText(hWnd,"DBP");
 	RegisterServerComponents();
-}
-char* SearchChar(char* srcStr,char ch,bool reverseOrder/*=false*/)
-{
-	if(!reverseOrder)
-		return strchr(srcStr,ch);
-	else
-	{
-		int len=strlen(srcStr);
-		for(int i=len-1;i>=0;i--)
-		{
-			if(srcStr[i]==ch)
-				return &srcStr[i];
-		}
-	}
-	return NULL;
 }
 void UnloadApplication()
 {
@@ -173,7 +223,6 @@ extern "C" int APIENTRY
 	}
 	return 1;   // 确定
 }
-//extern "C" void ads_queueexpr( ACHAR *);
 extern "C" AcRx::AppRetCode acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt)
 {
 	switch (msg) {

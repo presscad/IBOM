@@ -157,6 +157,8 @@ struct IRecoginizer
 		static const int MODIFY_WEIGHT	= 0x20;
 		static const int MODIFY_SUM_WEIGHT = 0x40;
 		static const int MODIFY_MAP_SUM_WEIGHT = 0x80;
+
+		static const int WARNING_ARR_LEN = 7;	//警告色数组长度 wht 19-10-25
 		BYTE arrItemWarningLevel[7];//0.件号;1.材质&规格;2.长度;3.单基数;4.单重;5.总重;6.备注 列的警示信息，越高越需要警示
 		BYTE ciSrcFromMode;	//0.图片识别，每一位代表一个属性的修改状态;
 		RECT rc;			//只有在自动识别时有效，该行构件在CImageDataRegion中对应的矩形区域

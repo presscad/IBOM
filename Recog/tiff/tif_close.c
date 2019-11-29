@@ -54,7 +54,10 @@ TIFFCleanup(TIFF* tif)
 	TIFFFreeDirectory(tif);
 
 	if (tif->tif_dirlist)
+	{
 		_TIFFfree(tif->tif_dirlist);
+		tif->tif_dirlist = NULL;
+	}
 
 	/* Clean up client info links */
 	while( tif->tif_clientinfo )
@@ -67,7 +70,10 @@ TIFFCleanup(TIFF* tif)
 	}
 
 	if (tif->tif_rawdata && (tif->tif_flags&TIFF_MYBUFFER))
+	{
 		_TIFFfree(tif->tif_rawdata);
+		tif->tif_rawdata = NULL;
+	}
 	if (isMapped(tif))
 		TIFFUnmapFileContents(tif, tif->tif_base, tif->tif_size);
 

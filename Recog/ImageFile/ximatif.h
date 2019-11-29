@@ -35,7 +35,7 @@ public:
 	void  TIFFCloseEx(TIFF* tif);
 	bool ReadImageFile(FILE *fp, BYTE* lpExterRawBitsBuff = NULL, UINT uiBitsBuffSize = 0);
 	bool ReadImageFile(const char* szTiffFileName);
-	bool Decode(int niPageIndex);//CxIOFile * hFile)
+	bool Decode(int niPageIndex,bool blConvertMonoImg=false);//CxIOFile * hFile)
 	//bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE

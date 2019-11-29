@@ -13,7 +13,7 @@ void CopyBomPartProp(IRecoginizer::BOMPART *pSrcPart,IRecoginizer::BOMPART *pDes
 	strcpy(pDestPart->sLabel,pSrcPart->sLabel);
 	strcpy(pDestPart->sSizeStr,pSrcPart->sSizeStr);
 	strcpy(pDestPart->materialStr,pSrcPart->materialStr);
-	memcpy(pDestPart->arrItemWarningLevel,pSrcPart->arrItemWarningLevel,7);
+	memcpy(pDestPart->arrItemWarningLevel,pSrcPart->arrItemWarningLevel, IRecoginizer::BOMPART::WARNING_ARR_LEN);
 	pDestPart->rc=pSrcPart->rc;
 	pDestPart->count=pSrcPart->count;
 	pDestPart->length=pSrcPart->length;

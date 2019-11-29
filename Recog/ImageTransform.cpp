@@ -595,9 +595,9 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 	bool readimgdata=pImageFile->ReadImageFile(fp,lpExterRawBitsBuff,uiBitsBuffSize);
 
 	m_nWidth=pImageFile->GetWidth();
-	m_nEffByteWidth=pImageFile->GetEffWidth();
+	m_nEffByteWidth= m_nWidth*3+(4-(m_nWidth*3)%4);
 	m_nHeight=pImageFile->GetHeight();
-	m_uBitcount=pImageFile->GetBpp();
+	m_uBitcount=24;
 	if(!readimgdata)
 		return false;
 	DWORD dwCount=m_nEffByteWidth*m_nHeight;
@@ -614,12 +614,33 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 		m_lpRawBits=new BYTE[dwCount];
 		m_bInternalRawBitsBuff=true;
 	}
-	//Jpeg与Png格式的默认行扫描模式为自下至上upward,应统一为自上至下downward模式
-	for(int i=0;i<m_nHeight;i++)
+	if (pImageFile->GetBpp() == 1)
 	{
-		int rowi=pImageFile->head.biHeight-1-i;
-		BYTE* pImgRowData=pImageFile->GetBits(i);
-		memcpy(&m_lpRawBits[rowi*m_nEffByteWidth],pImgRowData,m_nEffByteWidth);
+		const BYTE xarrConstBitBytes[8] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
+		for (int row = 0; row < m_nHeight; row++)
+		{
+			BYTE* pFrom = pImageFile->GetBits(m_nHeight - row - 1);	//info.pImage
+			BYTE* pTo = m_lpRawBits+row* m_nEffByteWidth;
+			for (int xi = 0; xi < m_nWidth; xi++)
+			{
+				int ibyte = xi / 8, ibit = xi % 8;
+				BYTE cbByte = *(pFrom + ibyte);
+				if (cbByte&xarrConstBitBytes[ibit])	//通过异或操作得出dwFlag的补码
+					*(pTo + 2) = *(pTo + 1) = *pTo = 255;
+				else
+					*(pTo + 2) = *(pTo + 1) = *pTo = 0;
+				pTo += 3;
+			}
+		}
+	}
+	else
+	{	//Jpeg与Png格式的默认行扫描模式为自下至上upward,应统一为自上至下downward模式
+		for (int i = 0; i < m_nHeight; i++)
+		{
+			int rowi = pImageFile->head.biHeight - 1 - i;
+			BYTE* pImgRowData = pImageFile->GetBits(i);
+			memcpy(&m_lpRawBits[rowi*m_nEffByteWidth], pImgRowData, m_nEffByteWidth);
+		}
 	}
 	//
 	return UpdateGreyImageBits(true,nMonoForward);
@@ -870,7 +891,7 @@ bool CImageTransform::ReadImageFile(const char* file_path,BYTE* lpExterRawBitsBu
 	FILE* fp=fopen(file_path,"rb");
 	if(fp==NULL)
 		return false;
-	CFileLifeObject filelife(fp);
+	//CFileLifeObject filelife(fp);
 	char drive[4],dir[MAX_PATH],fname[MAX_PATH],ext[MAX_PATH];
 	_splitpath(file_path,drive,dir,fname,ext);
 	char ciBmp0JpgPng2Tif3=0;
@@ -1258,29 +1279,38 @@ bool CImageTransform::IntelliRecogMonoPixelThreshold(int nMonoForward/*=20*/)
 	return true;
 }
 //图像进行灰白化处理
-bool CImageTransform::UpdateGreyImageBits(bool bUpdateMonoThreshold/*=false*/,int nMonoForward/*=20*/)
+bool CImageTransform::UpdateGreyImageBits(bool bUpdateMonoThreshold/*=false*/, int nMonoForward/*=20*/)
 {
-	if(m_lpRawBits==NULL||m_nWidth==0||m_nHeight==0)
+	if (m_lpRawBits == NULL || m_nWidth == 0 || m_nHeight == 0)
 		return false;
-	if(m_lpGrayBitsMap)
-		delete []m_lpGrayBitsMap;
-	m_lpGrayBitsMap = new BYTE[m_nWidth*m_nHeight];
-	for(int i=0;i<m_nWidth;i++)
+	if (m_lpGrayBitsMap)
+		delete[]m_lpGrayBitsMap;
+	if (m_uBitcount == 24)
 	{
-		for(int j=0;j<m_nHeight;j++)
+		m_lpGrayBitsMap = new BYTE[m_nWidth*m_nHeight];
+		for (int i = 0; i < m_nWidth; i++)
 		{
+			for (int j = 0; j < m_nHeight; j++)
+			{
 #ifndef __ENCRYPT_VERSION_
-			BYTE r=m_lpRawBits[j*m_nEffByteWidth+i*3+2];
-			BYTE g=m_lpRawBits[j*m_nEffByteWidth+i*3+1];
-			BYTE b=m_lpRawBits[j*m_nEffByteWidth+i*3+0];
-			//RGB按照300:300:400比例分配
-			//字体颜色RGB(103,101,114)  综合值106.8
-			//背景颜色RGB(165,166,171)  综合值150.6
-			m_lpGrayBitsMap[j*m_nWidth+i]=(b*114+g*587+r*299)/1000;
+				BYTE r = m_lpRawBits[j*m_nEffByteWidth + i * 3 + 2];
+				BYTE g = m_lpRawBits[j*m_nEffByteWidth + i * 3 + 1];
+				BYTE b = m_lpRawBits[j*m_nEffByteWidth + i * 3 + 0];
+				//RGB按照300:300:400比例分配
+				//字体颜色RGB(103,101,114)  综合值106.8
+				//背景颜色RGB(165,166,171)  综合值150.6
+				m_lpGrayBitsMap[j*m_nWidth + i] = (b * 114 + g * 587 + r * 299) / 1000;
 #else		//替换为加密函数
-			m_lpGrayBitsMap[j*m_nWidth+i]=CMindRobot::ToGreyPixelByte(&m_lpRawBits[j*m_nEffByteWidth+i*3]);
+				m_lpGrayBitsMap[j*m_nWidth + i] = CMindRobot::ToGreyPixelByte(&m_lpRawBits[j*m_nEffByteWidth + i * 3]);
 #endif
+			}
 		}
+	}
+	else
+	{
+		DWORD dwCount = m_nEffByteWidth * m_nHeight;
+		m_lpGrayBitsMap = new BYTE[dwCount];
+		memcpy(m_lpGrayBitsMap, m_lpRawBits, dwCount);
 	}
 	if(bUpdateMonoThreshold)
 		IntelliRecogMonoPixelThreshold(nMonoForward);

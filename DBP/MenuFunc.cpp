@@ -189,19 +189,40 @@ void RecogizePartBom()
 		acdbGetObjectId(entId,entname);
 		acdbOpenObject(pEnt,entId,AcDb::kForRead);
 		AcGePoint3d acad_start,acad_end;
-		if(pEnt->isKindOf(AcDbLine::desc()))
+		if(pEnt->isKindOf(AcDbLine::desc())||pEnt->isKindOf(AcDbPolyline::desc()))
 		{
-			pLine=(AcDbLine*)pEnt;
-			acad_start=pLine->startPoint();
-			acad_end=pLine->endPoint();
+			if(pEnt->isKindOf(AcDbLine::desc()))
+			{
+				pLine=(AcDbLine*)pEnt;
+				acad_start=pLine->startPoint();
+				acad_end=pLine->endPoint();
+			}
+			else if(pEnt->isKindOf(AcDbPolyline::desc()))
+			{
+				pPolyline=(AcDbPolyline*)pEnt;
+				int nNumVertexs=pPolyline->numVerts();
+				if(nNumVertexs==2)
+				{
+					pPolyline->getPointAt(0,acad_start);
+					pPolyline->getPointAt(1,acad_end);
+				}
+				else
+				{
+					acad_start.set(0,0,0);
+					acad_end.set(0,0,0);
+				}
+			}
 			Cpy_Pnt(line.startPt,acad_start);
 			Cpy_Pnt(line.endPt,acad_end);
-			if( fabs(line.startPt.x-line.endPt.x)<EPS &&
-				_LocalIsInteralLineInRect(line.startPt,line.endPt,rgn_vert[0],rgn_vert[2]))
-				arrVertLines.append(line);	//竖线
-			else if(fabs(line.startPt.y-line.endPt.y)<EPS &&
-				_LocalIsInteralLineInRect(line.startPt,line.endPt,rgn_vert[0],rgn_vert[2]))
-				arrHoriLines.append(line);	//横线
+			if(DISTANCE(line.startPt,line.endPt)>0)
+			{
+				if( fabs(line.startPt.x-line.endPt.x)<EPS &&
+					_LocalIsInteralLineInRect(line.startPt,line.endPt,rgn_vert[0],rgn_vert[2]))
+					arrVertLines.append(line);	//竖线
+				else if(fabs(line.startPt.y-line.endPt.y)<EPS &&
+					_LocalIsInteralLineInRect(line.startPt,line.endPt,rgn_vert[0],rgn_vert[2]))
+					arrHoriLines.append(line);	//横线
+			}
 		}
 		else if(pEnt->isKindOf(AcDbText::desc()))
 		{
@@ -236,6 +257,17 @@ void RecogizePartBom()
 	CHeapSort<f3dLine>::HeapSort(arrHoriLines.m_pData,arrHoriLines.GetSize(),_LocalCompareHoriLines);
 	CHeapSort<f3dLine>::HeapSort(arrVertLines.m_pData,arrVertLines.GetSize(),_LocalCompareVertLines);
 	int row,col;
+	if(arrHoriLines.GetSize()>0&&arrVertLines.GetSize()>1)
+	{
+		f3dLine line1;
+		int iTail=arrVertLines.GetSize()-1;
+		line1.startPt=(arrVertLines[0].startPt.y<arrVertLines[0].endPt.y)?arrVertLines[0].endPt:arrVertLines[0].startPt;
+		line1.endPt=(arrVertLines[iTail].startPt.y<arrVertLines[iTail].endPt.y)?arrVertLines[iTail].endPt:arrVertLines[iTail].startPt;
+		if(fabs(line1.startPt.y-line1.endPt.y)<gap&&(line1.startPt.y-arrHoriLines[0].startPt.y)>1)
+		{	//补齐第一行顶部水平线 wht 18-07-31
+			arrHoriLines.insert(line1,0);
+		}
+	}
 	ARRAY_LIST<f3dLine>rowlines(0,arrHoriLines.GetSize()),collines(0,arrVertLines.GetSize());
 	for(row=0;row<arrHoriLines.GetSize();row++)
 	{

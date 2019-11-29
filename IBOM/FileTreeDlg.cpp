@@ -604,8 +604,8 @@ void CFileTreeDlg::OnImportImageFile()
 {	//选择图片
 	CLogErrorLife logErrLift;
 	DWORD nFileNumbers = 500;    //CFileDialog最大选择文件数量
-	//CString filter="BOM明细表|*.PDF;*.jpg;*.png;*.bmp;*.tif|PDF(*.pdf)|*.pdf|图片(*.jpg)|*.jpg|图片(*.bmp)|*.bmp|图片(*.png)|*.png|图片(*.tif)|*.tif|所有文件(*.*)|*.*||";
-	CString filter = "BOM明细表|*.PDF;*.jpg;*.png;*.bmp|PDF(*.pdf)|*.pdf|图片(*.jpg)|*.jpg|图片(*.bmp)|*.bmp|图片(*.png)|*.png|所有文件(*.*)|*.*||";
+	CString filter="BOM明细表|*.PDF;*.jpg;*.png;*.bmp;*.tif|PDF(*.pdf)|*.pdf|图片(*.jpg)|*.jpg|图片(*.bmp)|*.bmp|图片(*.png)|*.png|图片(*.tif)|*.tif|所有文件(*.*)|*.*||";
+	//CString filter = "BOM明细表|*.PDF;*.jpg;*.png;*.bmp|PDF(*.pdf)|*.pdf|图片(*.jpg)|*.jpg|图片(*.bmp)|*.bmp|图片(*.png)|*.png|所有文件(*.*)|*.*||";
 	CFileDialog fileDlg(TRUE,"pdf","PDF.pdf",
 		OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_ALLOWMULTISELECT,filter);
 	fileDlg.m_ofn.lpstrTitle="选择图纸数据的图片文件";

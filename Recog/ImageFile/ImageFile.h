@@ -132,7 +132,7 @@ class CImageFile
 		bool	bEnabled;			///< enables the painting functions
 		long	xOffset;
 		long	yOffset;
-		DWORD	dwCodecOpt[1];//CMAX_IMAGE_FORMATS];	///< for GIF, TIF : 0=def.1=unc,2=fax3,3=fax4,4=pack,5=jpg
+		DWORD	dwCodecOpt[CMAX_IMAGE_FORMATS];	///< for GIF, TIF : 0=def.1=unc,2=fax3,3=fax4,4=pack,5=jpg
 		RGBQUAD last_c;				///< for GetNearestIndex optimization
 		BYTE	last_c_index;
 		bool	last_c_isvalid;
@@ -152,12 +152,6 @@ public:
 	struct rgb_color { BYTE r,g,b; };
     BITMAPINFOHEADER    head; //standard header
 	CIMAGEINFO			info; //extended information
-	/*virtual bool ReadImageFile(FILE* fp) {
-		return false;
-	}
-	virtual bool WriteImageFile(FILE* fp) {
-		return false;
-	}*/
 	virtual bool ReadImageFile(FILE* fp, BYTE* lpExterRawBitsBuff = NULL, UINT uiBitsBuffSize = 0) {
 		return false;
 	}
@@ -167,6 +161,7 @@ public:
 	CImageFile();
 	virtual ~CImageFile();
 	DWORD GetBitmapBits(DWORD dwCount, BYTE* lpBits);
+	DWORD GetBitmap(BITMAP* bitmap);
 	void*	Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype = 0, BYTE* lpExterRawBitsBuff = NULL, UINT uiBitsBuffSize = 0);
 	bool	Destroy();
 	static DWORD GetTypeIndexFromId(const DWORD id);
@@ -244,5 +239,38 @@ protected:
 	bool IncreaseBpp(int nbit);
 //@}
 //#endif
+#if CXIMAGE_SUPPORT_ALPHA
+/** \addtogroup Alpha */ //@{
+	//void AlphaClear();
+	bool AlphaCreate();
+	void AlphaDelete();
+	//void AlphaInvert();
+	//bool AlphaMirror();
+	bool AlphaFlip();
+	//bool AlphaCopy(CxImage &from);
+	//bool AlphaSplit(CxImage *dest);
+	//void AlphaStrip();
+	//bool AlphaSet(CxImage &from);
+	void AlphaSet(BYTE level);
+	void AlphaSet(const int x,const int y,const int level);
+	BYTE AlphaGet(const int x,const int y);
+	/*uint8_t AlphaGetMax() const;
+	void AlphaSetMax(uint8_t nAlphaMax);
+	bool AlphaIsValid();
+	uint8_t* AlphaGetPointer(const int32_t x = 0,const int32_t y = 0);
+	bool AlphaFromTransparency();
+
+	void AlphaPaletteClear();
+	void AlphaPaletteEnable(bool enable=true);
+	bool AlphaPaletteIsEnabled();
+	bool AlphaPaletteIsValid();
+	bool AlphaPaletteSplit(CxImage *dest);*/
+//@}
+
+protected:
+/** \addtogroup Protected */ //@{
+	BYTE BlindAlphaGet(const int x,const int y);
+//@}
+#endif //CXIMAGE_SUPPORT_ALPHA
 };
 #endif // !defined(AFX_IMAGEFILE_H__01662188_548F_4D9A_B515_99F84A94B1D1__INCLUDED_)

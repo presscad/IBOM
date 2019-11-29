@@ -5043,7 +5043,7 @@ bool CImageDataRegion::EnumFirstBomPart(IRecoginizer::BOMPART* pRawBomPart)
 	pRawBomPart->weight=pBomPart->fPieceWeight;
 	pRawBomPart->sumWeight=pBomPart->fSumWeight;
 	pRawBomPart->length=pBomPart->length;
-	memcpy(pRawBomPart->arrItemWarningLevel,pBomPart->arrItemWarningLevel,7);
+	memcpy(pRawBomPart->arrItemWarningLevel,pBomPart->arrItemWarningLevel,IRecoginizer::BOMPART::WARNING_ARR_LEN);
 	return true;
 }
 bool CImageDataRegion::EnumNextBomPart(IRecoginizer::BOMPART* pRawBomPart)

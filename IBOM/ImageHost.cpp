@@ -978,7 +978,7 @@ void CImageFileHost::SummarizePartInfo()
 			pSumPart->width=pRegPart->width;
 			pSumPart->thick=pRegPart->thick;
 			pSumPart->ciSrcFromMode=pRegPart->ciSrcFromMode;
-			memcpy(pSumPart->arrItemWarningLevel,pRegPart->arrItemWarningLevel,7);
+			memcpy(pSumPart->arrItemWarningLevel,pRegPart->arrItemWarningLevel, IRecoginizer::BOMPART::WARNING_ARR_LEN);
 		}
 	}
 }

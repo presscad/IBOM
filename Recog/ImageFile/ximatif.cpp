@@ -39,7 +39,7 @@ CImageFileTif::~CImageFileTif()
 //#if CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 //#define catch(char* message) cx_catch
-bool CImageFileTif::Decode(int niPageIndex)
+bool CImageFileTif::Decode(int niPageIndex,bool blConvertMonoImg/*=false*/)
 {
 	//Comment this line if you need more information on errors
 	// TIFFSetErrorHandler(NULL);	//<Patrick Hoffmann>
@@ -57,188 +57,228 @@ bool CImageFileTif::Decode(int niPageIndex)
 	uint16 compression=1;
 	uint16 orientation=ORIENTATION_TOPLEFT; //<vho>
 	uint16 res_unit; //<Trifon>
-	UINT x, y;
-	float resolution, offset;
+	UINT x,y;
+	float resolution,offset;
 	BOOL isRGB;
 	BYTE *bits;		//pointer to source data
 	BYTE *bits2;	//pointer to destination data
 
-  try
-  {
-	//check if it's a tiff file
-	if (!m_tif)
-		throw ("Error encountered while opening TIFF file");
-
-	// <Robert Abram> - 12/2002 : get NumFrames directly, instead of looping
-	// info.nNumFrames=0;
-	// while(TIFFSetDirectory(m_tif,(uint16)info.nNumFrames)) info.nNumFrames++;
-	info.nNumFrames = TIFFNumberOfDirectories(m_tif);
-	if(niPageIndex>=info.nNumFrames)
+	try
 	{
-		throw "Page index overflowed!";
-		return false;
-	}
-	info.nFrame=niPageIndex;
-	if (!TIFFSetDirectory(m_tif, (uint16)info.nFrame))
-		throw ("Error: page not present in TIFF file");			
+		//check if it's a tiff file
+		if (!m_tif)
+			throw ("Error encountered while opening TIFF file");
 
-	//get image info
-	TIFFGetField(m_tif, TIFFTAG_IMAGEWIDTH, &width);
-	TIFFGetField(m_tif, TIFFTAG_IMAGELENGTH, &height);
-	TIFFGetField(m_tif, TIFFTAG_SAMPLESPERPIXEL, &samplesperpixel);
-	TIFFGetField(m_tif, TIFFTAG_BITSPERSAMPLE, &bitspersample);
-	TIFFGetField(m_tif, TIFFTAG_ROWSPERSTRIP, &rowsperstrip);   
-	TIFFGetField(m_tif, TIFFTAG_PHOTOMETRIC, &photometric);
-	TIFFGetField(m_tif, TIFFTAG_ORIENTATION, &orientation);
+		// <Robert Abram> - 12/2002 : get NumFrames directly, instead of looping
+		// info.nNumFrames=0;
+		// while(TIFFSetDirectory(m_tif,(uint16)info.nNumFrames)) info.nNumFrames++;
+		info.nNumFrames = TIFFNumberOfDirectories(m_tif);
+		if (niPageIndex>=info.nNumFrames)
+		{
+			throw "Page index overflowed!";
+			return false;
+		}
+		info.nFrame=niPageIndex;
+		if (!TIFFSetDirectory(m_tif,(uint16)info.nFrame))
+			throw ("Error: page not present in TIFF file");
 
-	if (info.nEscape == -1) {
-		// Return output dimensions only
-		head.biWidth = width;
-		head.biHeight = height;
-		info.dwType = CXIMAGE_FORMAT_TIF;
-		throw ("output dimensions returned");
-	}
+		//get image info
+		TIFFGetField(m_tif,TIFFTAG_IMAGEWIDTH,&width);
+		TIFFGetField(m_tif,TIFFTAG_IMAGELENGTH,&height);
+		TIFFGetField(m_tif,TIFFTAG_SAMPLESPERPIXEL,&samplesperpixel);
+		TIFFGetField(m_tif,TIFFTAG_BITSPERSAMPLE,&bitspersample);
+		TIFFGetField(m_tif,TIFFTAG_ROWSPERSTRIP,&rowsperstrip);
+		TIFFGetField(m_tif,TIFFTAG_PHOTOMETRIC,&photometric);
+		TIFFGetField(m_tif,TIFFTAG_ORIENTATION,&orientation);
 
-	TIFFGetFieldDefaulted(m_tif, TIFFTAG_RESOLUTIONUNIT, &res_unit);
-	if (TIFFGetField(m_tif, TIFFTAG_XRESOLUTION, &resolution))
-	{
-		if (res_unit == RESUNIT_CENTIMETER) resolution = (float)(resolution*2.54f + 0.5f);
-		SetXDPI((int)resolution);
-	}
-	if (TIFFGetField(m_tif, TIFFTAG_YRESOLUTION, &resolution))
-	{
-		if (res_unit == RESUNIT_CENTIMETER) resolution = (float)(resolution*2.54f + 0.5f);
-		SetYDPI((int)resolution);
-	}
+		if (info.nEscape == -1) {
+			// Return output dimensions only
+			head.biWidth = width;
+			head.biHeight = height;
+			info.dwType = CXIMAGE_FORMAT_TIF;
+			throw ("output dimensions returned");
+		}
 
-	if (TIFFGetField(m_tif, TIFFTAG_XPOSITION, &offset))	info.xOffset = (int)offset;
-	if (TIFFGetField(m_tif, TIFFTAG_YPOSITION, &offset))	info.yOffset = (int)offset;
+		TIFFGetFieldDefaulted(m_tif,TIFFTAG_RESOLUTIONUNIT,&res_unit);
+		if (TIFFGetField(m_tif,TIFFTAG_XRESOLUTION,&resolution))
+		{
+			if (res_unit == RESUNIT_CENTIMETER) resolution = (float)(resolution*2.54f + 0.5f);
+			SetXDPI((int)resolution);
+		}
+		if (TIFFGetField(m_tif,TIFFTAG_YRESOLUTION,&resolution))
+		{
+			if (res_unit == RESUNIT_CENTIMETER) resolution = (float)(resolution*2.54f + 0.5f);
+			SetYDPI((int)resolution);
+		}
 
-	head.biClrUsed=0;
-	info.nBkgndIndex =-1;
+		if (TIFFGetField(m_tif,TIFFTAG_XPOSITION,&offset))	info.xOffset = (int)offset;
+		if (TIFFGetField(m_tif,TIFFTAG_YPOSITION,&offset))	info.yOffset = (int)offset;
 
-	if (rowsperstrip>height){
-		rowsperstrip=height;
-		TIFFSetField(m_tif, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
-	}
+		head.biClrUsed=0;
+		info.nBkgndIndex =-1;
 
-	isRGB = /*(bitspersample >= 8) && (VK: it is possible so for RGB to have < 8 bpp!)*/
-		(photometric == PHOTOMETRIC_RGB) ||
-		(photometric == PHOTOMETRIC_YCBCR) ||
-		(photometric == PHOTOMETRIC_SEPARATED) ||
-		(photometric == PHOTOMETRIC_LOGL) ||
-		(photometric == PHOTOMETRIC_LOGLUV);
+		if (rowsperstrip>height) {
+			rowsperstrip=height;
+			TIFFSetField(m_tif,TIFFTAG_ROWSPERSTRIP,rowsperstrip);
+		}
 
-	if (isRGB){
-		head.biBitCount=24;
-	}else{
-		if ((photometric==PHOTOMETRIC_MINISBLACK)||(photometric==PHOTOMETRIC_MINISWHITE)||(photometric==PHOTOMETRIC_PALETTE)){
-			if	(bitspersample == 1){
+		isRGB = /*(bitspersample >= 8) && (VK: it is possible so for RGB to have < 8 bpp!)*/
+			(photometric == PHOTOMETRIC_RGB) ||
+			(photometric == PHOTOMETRIC_YCBCR) ||
+			(photometric == PHOTOMETRIC_SEPARATED) ||
+			(photometric == PHOTOMETRIC_LOGL) ||
+			(photometric == PHOTOMETRIC_LOGLUV);
+		bool bMonoImgBlckIsZero=true;	//true:位值为0表示黑色;false:位值为1表示为黑色
+		if (isRGB) {
+			if(!blConvertMonoImg)
+				head.biBitCount=24;
+			else
+			{
+				bMonoImgBlckIsZero=true;
 				head.biBitCount=1;		//B&W image
 				head.biClrUsed =2;
-			} else if (bitspersample == 4) {
-				head.biBitCount=4;		//16 colors gray scale
-				head.biClrUsed =16;
-			} else {
-				head.biBitCount=8;		//gray scale
-				head.biClrUsed =256;
 			}
-		} else if (bitspersample == 4) {
-			head.biBitCount=4;			// 16 colors
-			head.biClrUsed=16;
-		} else {
-			head.biBitCount=8;			//256 colors
-			head.biClrUsed=256;
+		}
+		else {
+			if ((photometric==PHOTOMETRIC_MINISBLACK)||(photometric==PHOTOMETRIC_MINISWHITE)||(photometric==PHOTOMETRIC_PALETTE)) {
+				if (bitspersample == 1) {
+					head.biBitCount=1;		//B&W image
+					head.biClrUsed =2;
+				}
+				else if (bitspersample == 4) {
+					head.biBitCount=4;		//16 colors gray scale
+					head.biClrUsed =16;
+				}
+				else {
+					head.biBitCount=8;		//gray scale
+					head.biClrUsed =256;
+				}
+			}
+			else if (bitspersample == 4) {
+				head.biBitCount=4;			// 16 colors
+				head.biClrUsed=16;
+			}
+			else {
+				head.biBitCount=8;			//256 colors
+				head.biClrUsed=256;
+			}
+
+			if ((bitspersample > 8) && (photometric==PHOTOMETRIC_PALETTE))	// + VK + (BIG palette! => convert to RGB)
+			{
+				head.biBitCount=24;
+				head.biClrUsed =0;
+			}
 		}
 
-		if ((bitspersample > 8) && (photometric==PHOTOMETRIC_PALETTE))	// + VK + (BIG palette! => convert to RGB)
-		{	head.biBitCount=24;
-			head.biClrUsed =0;
-		}
-	}
+		if (info.nEscape) throw ("Cancelled"); // <vho> - cancel decoding
 
-	if (info.nEscape) throw ("Cancelled"); // <vho> - cancel decoding
-
-	Create(width,height,head.biBitCount,CXIMAGE_FORMAT_TIF);	//image creation
-	if (!pDib) throw ("CImageFileTif can't create image");
+		Create(width,height,head.biBitCount,CXIMAGE_FORMAT_TIF);	//image creation
+		if (!pDib) throw ("CImageFileTif can't create image");
 
 #if CXIMAGE_SUPPORT_ALPHA
-	if (samplesperpixel==4) AlphaCreate();	//add alpha support for 32bpp tiffs
-	if (samplesperpixel==2 && bitspersample==8) AlphaCreate();	//add alpha support for 8bpp + alpha
+		if (samplesperpixel==4) AlphaCreate();	//add alpha support for 32bpp tiffs
+		if (samplesperpixel==2 && bitspersample==8) AlphaCreate();	//add alpha support for 8bpp + alpha
 #endif //CXIMAGE_SUPPORT_ALPHA
 
-	TIFFGetField(m_tif, TIFFTAG_COMPRESSION, &compression);
-	SetCodecOption(compression); // <DPR> save original compression type
+		TIFFGetField(m_tif,TIFFTAG_COMPRESSION,&compression);
+		SetCodecOption(compression); // <DPR> save original compression type
 
-	if (isRGB) {
-		// Read the whole image into one big RGBA buffer using
-		// the traditional TIFFReadRGBAImage() API that we trust.
-		uint32* raster;		// retrieve RGBA image
-		uint32 *row;
-		raster = (uint32*)_TIFFmalloc(width * height * sizeof (UINT));
-		if (raster == NULL) throw ("No space for raster buffer");
-			
-		// Read the image in one chunk into an RGBA array
-		if(!TIFFReadRGBAImage(m_tif, width, height, raster, 1)) {
+		if (isRGB) {
+			// Read the whole image into one big RGBA buffer using
+			// the traditional TIFFReadRGBAImage() API that we trust.
+			UINT* raster;		// retrieve RGBA image
+			UINT *row;
+
+			raster = (UINT*)_TIFFmalloc(width * height * sizeof (UINT));
+			if (raster == NULL) throw ("No space for raster buffer");
+
+			// Read the image in one chunk into an RGBA array
+			if (!TIFFReadRGBAImage(m_tif,width,height,raster,1)) {
 				_TIFFfree(raster);
 				throw ("Corrupted TIFF file!");
-		}
-
-		// read the raster lines and save them in the DIB
-		// with RGB mode, we have to change the order of the 3 samples RGB
-		row = &raster[0];
-		bits2 = info.pImage;
-		for (y = 0; y < height; y++) {
-
-			if (info.nEscape){ // <vho> - cancel decoding
-				_TIFFfree(raster);
-				throw ("Cancelled");
 			}
 
-			bits = bits2;
-			for (x = 0; x < width; x++) {
-				*bits++ = (BYTE)TIFFGetB(row[x]);
-				*bits++ = (BYTE)TIFFGetG(row[x]);
-				*bits++ = (BYTE)TIFFGetR(row[x]);
+			// read the raster lines and save them in the DIB
+			// with RGB mode, we have to change the order of the 3 samples RGB
+			row = &raster[0];
+			bits2 = info.pImage;
+			const BYTE xarrConstBitBytes[8]={ 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
+			for (y = 0; y < height; y++) {
+
+				if (info.nEscape) { // <vho> - cancel decoding
+					_TIFFfree(raster);
+					throw ("Cancelled");
+				}
+
+				bits = bits2;
+				BYTE r,g,b;
+				for (x = 0; x < width; x++) {
+					r = (BYTE)TIFFGetB(row[x]);
+					g = (BYTE)TIFFGetG(row[x]);
+					b = (BYTE)TIFFGetR(row[x]);
+					if (head.biBitCount==24)
+					{
+						*bits++=r;
+						*bits++=g;
+						*bits++=b;
+					}
+					else
+					{
+						int ibyte=x/8,ibit=x%8;
+						BYTE* pByte=bits+ibyte;
+						if (r+g+b>=384)	//白点
+							*pByte|=xarrConstBitBytes[ibit];
+						else
+						{
+							BYTE flag=0XFF^xarrConstBitBytes[ibit];	//通过异或操作得出dwFlag的补码
+							*pByte&=flag;	//通过位与操作清除dwFlag中的标识位
+						}
+					}
 #if CXIMAGE_SUPPORT_ALPHA
-				if (samplesperpixel==4) AlphaSet(x,y,(BYTE)TIFFGetA(row[x]));
+					if (samplesperpixel==4) AlphaSet(x,y,(BYTE)TIFFGetA(row[x]));
 #endif //CXIMAGE_SUPPORT_ALPHA
+				}
+				row += width;
+				bits2 += info.dwEffWidth;
 			}
-			row += width;
-			bits2 += info.dwEffWidth;
+			_TIFFfree(raster);
 		}
-		_TIFFfree(raster);
-	} else {
-		int BIG_palette = (bitspersample > 8) &&	// + VK
-						  (photometric==PHOTOMETRIC_PALETTE);		
-		if (BIG_palette && (bitspersample > 24))	// + VK
-			throw ("Too big palette to handle");		// + VK
+		else {
+			int BIG_palette = (bitspersample > 8) &&	// + VK
+				(photometric==PHOTOMETRIC_PALETTE);
+			if (BIG_palette && (bitspersample > 24))	// + VK
+				throw ("Too big palette to handle");		// + VK
 
-		RGBQUAD *pal;
-		pal=(RGBQUAD*)calloc(BIG_palette ? 1<<bitspersample : 256,sizeof(RGBQUAD)); 
+			RGBQUAD *pal;
+			pal=(RGBQUAD*)calloc(BIG_palette ? 1<<bitspersample : 256,sizeof(RGBQUAD));
 			// ! VK: it coasts nothing but more correct to use 256 as temp palette storage
 			// ! VK: but for case of BIG palette it just copied
-		if (pal==NULL) throw ("Unable to allocate TIFF palette");
+			if (pal==NULL) throw ("Unable to allocate TIFF palette");
 
-		int bpp = bitspersample <= 8 ? bitspersample : 8; // + VK (to use instead of bitspersample for case of > 8)
+			int bpp = bitspersample <= 8 ? bitspersample : 8; // + VK (to use instead of bitspersample for case of > 8)
 
-		// set up the colormap based on photometric	
-		switch(photometric) {
+			// set up the colormap based on photometric	
+			switch (photometric) {
 			case PHOTOMETRIC_MINISBLACK:	// bitmap and greyscale image types
 			case PHOTOMETRIC_MINISWHITE:
 				if (bitspersample == 1) {	// Monochrome image
 					if (photometric == PHOTOMETRIC_MINISBLACK) {
 						pal[1].rgbRed = pal[1].rgbGreen = pal[1].rgbBlue = 255;
-					} else {
-						pal[0].rgbRed = pal[0].rgbGreen = pal[0].rgbBlue = 255;
+						bMonoImgBlckIsZero=true;
 					}
-				} else {		// need to build the scale for greyscale images
+					else {
+						pal[0].rgbRed = pal[0].rgbGreen = pal[0].rgbBlue = 255;
+						bMonoImgBlckIsZero=false;
+					}
+				}
+				else {		// need to build the scale for greyscale images
 					if (photometric == PHOTOMETRIC_MINISBLACK) {
-						for (int i=0; i<(1<<bpp); i++){
+						for (int i=0; i<(1<<bpp); i++) {
 							pal[i].rgbRed = pal[i].rgbGreen = pal[i].rgbBlue = (BYTE)(i*(255/((1<<bpp)-1)));
 						}
-					} else {
-						for (int i=0; i<(1<<bpp); i++){
+					}
+					else {
+						for (int i=0; i<(1<<bpp); i++) {
 							pal[i].rgbRed = pal[i].rgbGreen = pal[i].rgbBlue = (BYTE)(255-i*(255/((1<<bpp)-1)));
 						}
 					}
@@ -248,7 +288,7 @@ bool CImageFileTif::Decode(int niPageIndex)
 				uint16 *red;
 				uint16 *green;
 				uint16 *blue;
-				TIFFGetField(m_tif, TIFFTAG_COLORMAP, &red, &green, &blue); 
+				TIFFGetField(m_tif,TIFFTAG_COLORMAP,&red,&green,&blue);
 
 				// Is the palette 16 or 8 bits ?
 				BOOL Palette16Bits = /*FALSE*/ BIG_palette;
@@ -263,310 +303,324 @@ bool CImageFileTif::Decode(int niPageIndex)
 				}
 
 				// load the palette in the DIB
-				for (int i = (1 << ( BIG_palette ? bitspersample : bpp )) - 1; i >= 0; i--) {
+				for (int i = (1 << (BIG_palette ? bitspersample : bpp)) - 1; i >= 0; i--) {
 					if (Palette16Bits) {
-						pal[i].rgbRed =(BYTE) CVT(red[i]);
-						pal[i].rgbGreen = (BYTE) CVT(green[i]);
-						pal[i].rgbBlue = (BYTE) CVT(blue[i]);           
-					} else {
-						pal[i].rgbRed = (BYTE) red[i];
-						pal[i].rgbGreen = (BYTE) green[i];
-						pal[i].rgbBlue = (BYTE) blue[i];        
+						pal[i].rgbRed =(BYTE)CVT(red[i]);
+						pal[i].rgbGreen = (BYTE)CVT(green[i]);
+						pal[i].rgbBlue = (BYTE)CVT(blue[i]);
+					}
+					else {
+						pal[i].rgbRed = (BYTE)red[i];
+						pal[i].rgbGreen = (BYTE)green[i];
+						pal[i].rgbBlue = (BYTE)blue[i];
 					}
 				}
 				break;
-		}
-		if (!BIG_palette) { // + VK (BIG palette is stored until image is ready)
-			SetPalette((rgb_color*)pal,/*head.biClrUsed*/ 1<<bpp);	//palette assign // * VK
-			free(pal); 
-			pal = NULL; 
-		}
+			}
+			if (!BIG_palette) { // + VK (BIG palette is stored until image is ready)
+				SetPalette((rgb_color*)pal,/*head.biClrUsed*/ 1<<bpp);	//palette assign // * VK
+				free(pal);
+				pal = NULL;
+			}
 
-		// read the tiff lines and save them in the DIB
-		UINT nrow;
-		UINT ys;
-		int line = CalculateLine(width, bitspersample * samplesperpixel);
-		
-		int bitsize = TIFFStripSize(m_tif);
-		//verify bitsize: could be wrong if StripByteCounts is missing.
-		if (bitsize>(int)(head.biSizeImage*samplesperpixel))
-			bitsize = head.biSizeImage*samplesperpixel;
-		if (bitsize<(int)(info.dwEffWidth*rowsperstrip))
-			bitsize = info.dwEffWidth*rowsperstrip;
+			// read the tiff lines and save them in the DIB
+			UINT nrow;
+			UINT ys;
+			int line = CalculateLine(width,bitspersample * samplesperpixel);
 
-		if ((bitspersample > 8) && (bitspersample != 16))	// + VK (for bitspersample == 9..15,17..32..64
-			bitsize *= (bitspersample + 7)/8; 
+			int bitsize = TIFFStripSize(m_tif);
+			//verify bitsize: could be wrong if StripByteCounts is missing.
+			if (bitsize>(int)(head.biSizeImage*samplesperpixel))
+				bitsize = head.biSizeImage*samplesperpixel;
+			if (bitsize<(int)(info.dwEffWidth*rowsperstrip))
+				bitsize = info.dwEffWidth*rowsperstrip;
 
-		int tiled_image = TIFFIsTiled(m_tif);
-		UINT tw=0, tl=0;
-		BYTE* tilebuf=NULL;
-		if (tiled_image){
-			TIFFGetField(m_tif, TIFFTAG_TILEWIDTH, &tw);
-			TIFFGetField(m_tif, TIFFTAG_TILELENGTH, &tl);
-			rowsperstrip = tl;
-			bitsize = TIFFTileSize(m_tif) * (int)(1+width/tw);
-			tilebuf = (BYTE*)malloc(TIFFTileSize(m_tif));
-		}
-		
-		bits = (BYTE*)malloc(bitspersample==16? bitsize*2 : bitsize); // * VK
-		BYTE * bits16 = NULL;										  // + VK
-		int line16    = 0;											  // + VK
+			if ((bitspersample > 8) && (bitspersample != 16))	// + VK (for bitspersample == 9..15,17..32..64
+				bitsize *= (bitspersample + 7)/8;
 
-		if (!tiled_image && bitspersample==16) {					  // + VK +
-			line16 = line;
-			line   = CalculateLine(width, 8 * samplesperpixel);
-			bits16 = bits;
-			bits   = (BYTE*)malloc(bitsize);
-		}
+			int tiled_image = TIFFIsTiled(m_tif);
+			UINT tw=0,tl=0;
+			BYTE* tilebuf=NULL;
+			if (tiled_image) {
+				TIFFGetField(m_tif,TIFFTAG_TILEWIDTH,&tw);
+				TIFFGetField(m_tif,TIFFTAG_TILELENGTH,&tl);
+				rowsperstrip = tl;
+				bitsize = TIFFTileSize(m_tif) * (int)(1+width/tw);
+				tilebuf = (BYTE*)malloc(TIFFTileSize(m_tif));
+			}
 
-		if (bits==NULL){
-			if (bits16) free(bits16);								  // + VK
-			if (pal)	free(pal);									  // + VK
-			if (tilebuf)free(tilebuf);								  // + VK	
-			throw ("CImageFileTif can't allocate memory");
-		}
+			bits = (BYTE*)malloc(bitspersample==16? bitsize*2 : bitsize); // * VK
+			BYTE * bits16 = NULL;										  // + VK
+			int line16    = 0;											  // + VK
+
+			if (!tiled_image && bitspersample==16) {					  // + VK +
+				line16 = line;
+				line   = CalculateLine(width,8 * samplesperpixel);
+				bits16 = bits;
+				bits   = (BYTE*)malloc(bitsize);
+			}
+
+			if (bits==NULL) {
+				if (bits16) free(bits16);								  // + VK
+				if (pal)	free(pal);									  // + VK
+				if (tilebuf)free(tilebuf);								  // + VK	
+				throw ("CImageFileTif can't allocate memory");
+			}
 
 #ifdef FIX_16BPP_DARKIMG // + VK: for each line, store shift count bits used to fix it
-		BYTE* row_shifts = NULL;
-		if (bits16) row_shifts = (BYTE*)malloc(height); 
+			BYTE* row_shifts = NULL;
+			if (bits16) row_shifts = (BYTE*)malloc(height);
 #endif
 
-		for (ys = 0; ys < height; ys += rowsperstrip) {
+			for (ys = 0; ys < height; ys += rowsperstrip) {
 
-			if (info.nEscape){ // <vho> - cancel decoding
-				free(bits);
-				throw ("Cancelled");
-			}
-
-			nrow = (ys + rowsperstrip > height ? height - ys : rowsperstrip);
-
-			if (tiled_image){
-				UINT imagew = TIFFScanlineSize(m_tif);
-				UINT tilew  = TIFFTileRowSize(m_tif);
-				int iskew = imagew - tilew;
-				BYTE* bufp = (BYTE*) bits;
-
-				UINT colb = 0;
-				for (UINT col = 0; col < width; col += tw) {
-					if (TIFFReadTile(m_tif, tilebuf, col, ys, 0, 0) < 0){
-						free(tilebuf);
-						free(bits);
-						throw ("Corrupted tiled TIFF file!");
-					}
-
-					if (colb + tw > imagew) {
-						UINT owidth = imagew - colb;
-						UINT oskew = tilew - owidth;
-						TileToStrip(bufp + colb, tilebuf, nrow, owidth, oskew + iskew, oskew );
-					} else {
-						TileToStrip(bufp + colb, tilebuf, nrow, tilew, iskew, 0);
-					}
-					colb += tilew;
+				if (info.nEscape) { // <vho> - cancel decoding
+					free(bits);
+					throw ("Cancelled");
 				}
 
-			} else {
-				if (TIFFReadEncodedStrip(m_tif, TIFFComputeStrip(m_tif, ys, 0), 
-					(bits16? bits16 : bits), nrow * (bits16 ? line16 : line)) == -1) { // * VK
+				nrow = (ys + rowsperstrip > height ? height - ys : rowsperstrip);
+
+				if (tiled_image) {
+					UINT imagew = TIFFScanlineSize(m_tif);
+					UINT tilew  = TIFFTileRowSize(m_tif);
+					int iskew = imagew - tilew;
+					BYTE* bufp = (BYTE*)bits;
+
+					UINT colb = 0;
+					for (UINT col = 0; col < width; col += tw) {
+						if (TIFFReadTile(m_tif,tilebuf,col,ys,0,0) < 0) {
+							free(tilebuf);
+							free(bits);
+							throw ("Corrupted tiled TIFF file!");
+						}
+
+						if (colb + tw > imagew) {
+							UINT owidth = imagew - colb;
+							UINT oskew = tilew - owidth;
+							TileToStrip(bufp + colb,tilebuf,nrow,owidth,oskew + iskew,oskew);
+						}
+						else {
+							TileToStrip(bufp + colb,tilebuf,nrow,tilew,iskew,0);
+						}
+						colb += tilew;
+					}
+
+				}
+				else {
+					if (TIFFReadEncodedStrip(m_tif,TIFFComputeStrip(m_tif,ys,0),
+						(bits16? bits16 : bits),nrow * (bits16 ? line16 : line)) == -1) { // * VK
 
 #ifdef NOT_IGNORE_CORRUPTED
-					free(bits);
-					if (bits16) free(bits16);  // + VK
-					throw ("Corrupted TIFF file!");
+						free(bits);
+						if (bits16) free(bits16);  // + VK
+						throw ("Corrupted TIFF file!");
 #else
-					break;
+						break;
 #endif
+					}
 				}
-			}
 
-			for (y = 0; y < nrow; y++) {
-				int offset=(nrow-y-1)*line;
-				if ((bitspersample==16) && !BIG_palette) {	// * VK
-					int offset16 = (nrow-y-1)*line16;		// + VK
-					if (bits16)	{							// + VK +
+				for (y = 0; y < nrow; y++) {
+					int offset=(nrow-y-1)*line;
+					if ((bitspersample==16) && !BIG_palette) {	// * VK
+						int offset16 = (nrow-y-1)*line16;		// + VK
+						if (bits16) {							// + VK +
 #ifdef FIX_16BPP_DARKIMG
-						int the_shift;
-						BYTE hi_byte, hi_max=0;
-						UINT xi;
-						for (xi=0;xi<(UINT)line;xi++) {
-							hi_byte = bits16[xi*2+offset16+1];
-							if(hi_byte>hi_max)
-								hi_max = hi_byte;
-						}
-						the_shift = (hi_max == 0) ? 8 : 0;
-						if (!the_shift)
-							while( ! (hi_max & 0x80) ) {
-								the_shift++;
-								hi_max <<= 1;
+							int the_shift;
+							BYTE hi_byte,hi_max=0;
+							UINT xi;
+							for (xi=0;xi<(UINT)line;xi++) {
+								hi_byte = bits16[xi*2+offset16+1];
+								if (hi_byte>hi_max)
+									hi_max = hi_byte;
 							}
-						row_shifts[height-ys-nrow+y] = the_shift;
-						the_shift = 8 - the_shift;
-						for (xi=0;xi<(UINT)line;xi++) 
-							bits[xi+offset]= ((bits16[xi*2+offset16+1]<<8) | bits16[xi*2+offset16]) >> the_shift;
+							the_shift = (hi_max == 0) ? 8 : 0;
+							if (!the_shift)
+								while (!(hi_max & 0x80)) {
+									the_shift++;
+									hi_max <<= 1;
+								}
+							row_shifts[height-ys-nrow+y] = the_shift;
+							the_shift = 8 - the_shift;
+							for (xi=0;xi<(UINT)line;xi++)
+								bits[xi+offset]= ((bits16[xi*2+offset16+1]<<8) | bits16[xi*2+offset16]) >> the_shift;
 #else
-						for (UINT xi=0;xi<(UINT)line;xi++) 
-							bits[xi+offset]=bits16[xi*2+offset16+1];
+							for (UINT xi=0;xi<(UINT)line;xi++)
+								bits[xi+offset]=bits16[xi*2+offset16+1];
 #endif
-					} else {
-						for (UINT xi=0;xi<width;xi++)
-							bits[xi+offset]=bits[xi*2+offset+1];
-							}
-				}
-				if (samplesperpixel==1) { 
-					if (BIG_palette)
-						if (bits16) {
-							int offset16 = (nrow-y-1)*line16;		// + VK
-							MoveBitsPal( info.pImage + info.dwEffWidth * (height-ys-nrow+y),
-									 bits16 + offset16, width, bitspersample, pal );
-						} else
-							MoveBitsPal( info.pImage + info.dwEffWidth * (height-ys-nrow+y),
-									 bits + offset, width, bitspersample, pal );
-					else if ((bitspersample == head.biBitCount) || 
-						(bitspersample == 16))	//simple 8bpp, 4bpp image or 16bpp
-						memcpy(info.pImage+info.dwEffWidth*(height-ys-nrow+y),bits+offset,min((unsigned)line, info.dwEffWidth));
-					else
-						MoveBits( info.pImage + info.dwEffWidth * (height-ys-nrow+y),
-								  bits + offset, width, bitspersample );
-				} else if (samplesperpixel==2) { //8bpp image with alpha layer
-					int xi=0;
-					int ii=0;
-					int yi=height-ys-nrow+y;
-#if CXIMAGE_SUPPORT_ALPHA
-					if (!pAlpha) AlphaCreate();			// + VK
-#endif //CXIMAGE_SUPPORT_ALPHA
-					while (ii<line){
-						SetPixelIndex(xi,yi,bits[ii+offset]);
-#if CXIMAGE_SUPPORT_ALPHA
-						AlphaSet(xi,yi,bits[ii+offset+1]);
-#endif //CXIMAGE_SUPPORT_ALPHA
-						ii+=2;
-						xi++;
-						if (xi>=(int)width){
-							yi--;
-							xi=0;
+						}
+						else {
+							for (UINT xi=0;xi<width;xi++)
+								bits[xi+offset]=bits[xi*2+offset+1];
 						}
 					}
-				} else { //photometric==PHOTOMETRIC_CIELAB
-					if (head.biBitCount!=24){ //fix image
-						Create(width,height,24,CXIMAGE_FORMAT_TIF);
-#if CXIMAGE_SUPPORT_ALPHA
-						if (samplesperpixel==4) AlphaCreate();
-#endif //CXIMAGE_SUPPORT_ALPHA
+					if (samplesperpixel==1) {
+						if (BIG_palette)
+							if (bits16) {
+								int offset16 = (nrow-y-1)*line16;		// + VK
+								MoveBitsPal(info.pImage + info.dwEffWidth * (height-ys-nrow+y),
+									bits16 + offset16,width,bitspersample,pal);
+							}
+							else
+								MoveBitsPal(info.pImage + info.dwEffWidth * (height-ys-nrow+y),
+									bits + offset,width,bitspersample,pal);
+						else if ((bitspersample == head.biBitCount) || (bitspersample == 16))	//simple 8bpp, 4bpp image or 16bpp
+						{
+							BYTE* pRowBytes=info.pImage+info.dwEffWidth*(height-ys-nrow+y);
+							memcpy(pRowBytes,bits+offset,min((unsigned)line,info.dwEffWidth));
+							if (head.biBitCount==1&&!bMonoImgBlckIsZero)
+							{	//黑白反色
+								for (UINT k=0;k<info.dwEffWidth;k++)
+									*(pRowBytes+k)^=0xff;
+							}
+						}
+						else
+							MoveBits(info.pImage + info.dwEffWidth * (height-ys-nrow+y),
+								bits + offset,width,bitspersample);
 					}
+					else if (samplesperpixel==2) { //8bpp image with alpha layer
+						int xi=0;
+						int ii=0;
+						int yi=height-ys-nrow+y;
+#if CXIMAGE_SUPPORT_ALPHA
+						if (!pAlpha) AlphaCreate();			// + VK
+#endif //CXIMAGE_SUPPORT_ALPHA
+						while (ii<line) {
+							SetPixelIndex(xi,yi,bits[ii+offset]);
+#if CXIMAGE_SUPPORT_ALPHA
+							AlphaSet(xi,yi,bits[ii+offset+1]);
+#endif //CXIMAGE_SUPPORT_ALPHA
+							ii+=2;
+							xi++;
+							if (xi>=(int)width) {
+								yi--;
+								xi=0;
+							}
+						}
+					}
+					else { //photometric==PHOTOMETRIC_CIELAB
+						if (head.biBitCount!=24) { //fix image
+							Create(width,height,24,CXIMAGE_FORMAT_TIF);
+#if CXIMAGE_SUPPORT_ALPHA
+							if (samplesperpixel==4) AlphaCreate();
+#endif //CXIMAGE_SUPPORT_ALPHA
+						}
 
-					int xi=0;
-					UINT ii=0;
-					int yi=height-ys-nrow+y;
-					RGBQUAD c;
-					int l,a,b,bitsoffset;
-					double p,cx,cy,cz,cr,cg,cb;
-					while (ii</*line*/width){		// * VK
-						bitsoffset = ii*samplesperpixel+offset;
-						l=bits[bitsoffset];
-						a=bits[bitsoffset+1];
-						b=bits[bitsoffset+2];
-						if (a>127) a-=256;
-						if (b>127) b-=256;
-						// lab to xyz
-						p = (l/2.55 + 16) / 116.0;
-						cx = pow( p + a * 0.002, 3);
-						cy = pow( p, 3);
-						cz = pow( p - b * 0.005, 3);
-						// white point
-						cx*=0.95047;
-						//cy*=1.000;
-						cz*=1.0883;
-						// xyz to rgb
-						cr =  3.240479 * cx - 1.537150 * cy - 0.498535 * cz;
-						cg = -0.969256 * cx + 1.875992 * cy + 0.041556 * cz;
-						cb =  0.055648 * cx - 0.204043 * cy + 1.057311 * cz;
+						int xi=0;
+						UINT ii=0;
+						int yi=height-ys-nrow+y;
+						RGBQUAD c;
+						int l,a,b,bitsoffset;
+						double p,cx,cy,cz,cr,cg,cb;
+						while (ii</*line*/width) {		// * VK
+							bitsoffset = ii*samplesperpixel+offset;
+							l=bits[bitsoffset];
+							a=bits[bitsoffset+1];
+							b=bits[bitsoffset+2];
+							if (a>127) a-=256;
+							if (b>127) b-=256;
+							// lab to xyz
+							p = (l/2.55 + 16) / 116.0;
+							cx = pow(p + a * 0.002,3);
+							cy = pow(p,3);
+							cz = pow(p - b * 0.005,3);
+							// white point
+							cx*=0.95047;
+							//cy*=1.000;
+							cz*=1.0883;
+							// xyz to rgb
+							cr =  3.240479 * cx - 1.537150 * cy - 0.498535 * cz;
+							cg = -0.969256 * cx + 1.875992 * cy + 0.041556 * cz;
+							cb =  0.055648 * cx - 0.204043 * cy + 1.057311 * cz;
 
-						if ( cr > 0.00304 ) cr = 1.055 * pow(cr,0.41667) - 0.055;
+							if (cr > 0.00304) cr = 1.055 * pow(cr,0.41667) - 0.055;
 							else            cr = 12.92 * cr;
-						if ( cg > 0.00304 ) cg = 1.055 * pow(cg,0.41667) - 0.055;
+							if (cg > 0.00304) cg = 1.055 * pow(cg,0.41667) - 0.055;
 							else            cg = 12.92 * cg;
-						if ( cb > 0.00304 ) cb = 1.055 * pow(cb,0.41667) - 0.055;
+							if (cb > 0.00304) cb = 1.055 * pow(cb,0.41667) - 0.055;
 							else            cb = 12.92 * cb;
 
-						c.rgbRed  =(BYTE)max(0,min(255,(int)(cr*255)));
-						c.rgbGreen=(BYTE)max(0,min(255,(int)(cg*255)));
-						c.rgbBlue =(BYTE)max(0,min(255,(int)(cb*255)));
+							c.rgbRed  =(BYTE)max(0,min(255,(int)(cr*255)));
+							c.rgbGreen=(BYTE)max(0,min(255,(int)(cg*255)));
+							c.rgbBlue =(BYTE)max(0,min(255,(int)(cb*255)));
 
-						SetPixelColor(xi,yi,c);
+							SetPixelColor(xi,yi,c);
 #if CXIMAGE_SUPPORT_ALPHA
-						if (samplesperpixel==4) AlphaSet(xi,yi,bits[bitsoffset+3]);
+							if (samplesperpixel==4) AlphaSet(xi,yi,bits[bitsoffset+3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
-						ii++;
-						xi++;
-						if (xi>=(int)width){
-							yi--;
-							xi=0;
+							ii++;
+							xi++;
+							if (xi>=(int)width) {
+								yi--;
+								xi=0;
+							}
 						}
 					}
 				}
 			}
-		}
-		free(bits);
-		if (bits16) free(bits16);
+			free(bits);
+			if (bits16) free(bits16);
 
 #ifdef FIX_16BPP_DARKIMG
-		if (row_shifts && (samplesperpixel == 1) && (bitspersample==16) && !BIG_palette) {
-			// 1. calculate maximum necessary shift
-			int min_row_shift = 8;
-			for( y=0; y<height; y++ ) {
-				if (min_row_shift > row_shifts[y]) min_row_shift = row_shifts[y];
-			}
-			// 2. for rows having less shift value, correct such rows:
-			for( y=0; y<height; y++ ) {
-				if (min_row_shift < row_shifts[y]) {
-					int need_shift = row_shifts[y] - min_row_shift;
-					BYTE* data = info.pImage + info.dwEffWidth * y;
-					for( x=0; x<width; x++, data++ )
-						*data >>= need_shift;
+			if (row_shifts && (samplesperpixel == 1) && (bitspersample==16) && !BIG_palette) {
+				// 1. calculate maximum necessary shift
+				int min_row_shift = 8;
+				for (y=0; y<height; y++) {
+					if (min_row_shift > row_shifts[y]) min_row_shift = row_shifts[y];
+				}
+				// 2. for rows having less shift value, correct such rows:
+				for (y=0; y<height; y++) {
+					if (min_row_shift < row_shifts[y]) {
+						int need_shift = row_shifts[y] - min_row_shift;
+						BYTE* data = info.pImage + info.dwEffWidth * y;
+						for (x=0; x<width; x++,data++)
+							*data >>= need_shift;
+					}
 				}
 			}
-		}
-		if (row_shifts)	free( row_shifts );
+			if (row_shifts)	free(row_shifts);
 #endif
 
-		if (tiled_image) free(tilebuf);
-		if (pal)		 free(pal);
+			if (tiled_image) free(tilebuf);
+			if (pal)		 free(pal);
 
-		switch(orientation){
-		case ORIENTATION_TOPRIGHT: /* row 0 top, col 0 rhs */
-			Mirror();
-			break;
-		case ORIENTATION_BOTRIGHT: /* row 0 bottom, col 0 rhs */
-			Flip();
-			Mirror();
-			break;
-		case ORIENTATION_BOTLEFT: /* row 0 bottom, col 0 lhs */
-			Flip();
-			break;
-		case ORIENTATION_LEFTTOP: /* row 0 lhs, col 0 top */
-			RotateRight();
-			Mirror();
-			break;
-		case ORIENTATION_RIGHTTOP: /* row 0 rhs, col 0 top */
-			RotateLeft();
-			break;
-		case ORIENTATION_RIGHTBOT: /* row 0 rhs, col 0 bottom */
-			RotateLeft();
-			Mirror();
-			break;
-		case ORIENTATION_LEFTBOT: /* row 0 lhs, col 0 bottom */
-			RotateRight();
-			break;
+			switch (orientation) {
+			case ORIENTATION_TOPRIGHT: /* row 0 top, col 0 rhs */
+				Mirror();
+				break;
+			case ORIENTATION_BOTRIGHT: /* row 0 bottom, col 0 rhs */
+				Flip();
+				Mirror();
+				break;
+			case ORIENTATION_BOTLEFT: /* row 0 bottom, col 0 lhs */
+				Flip();
+				break;
+			case ORIENTATION_LEFTTOP: /* row 0 lhs, col 0 top */
+				RotateRight();
+				Mirror();
+				break;
+			case ORIENTATION_RIGHTTOP: /* row 0 rhs, col 0 top */
+				RotateLeft();
+				break;
+			case ORIENTATION_RIGHTBOT: /* row 0 rhs, col 0 bottom */
+				RotateLeft();
+				Mirror();
+				break;
+			case ORIENTATION_LEFTBOT: /* row 0 lhs, col 0 bottom */
+				RotateRight();
+				break;
+			}
+
 		}
-
 	}
-  } 
-  catch(char* message) {
-	  if (strcmp(message,"")) strncpy(info.szLastError,message,255);
-	  if (m_tif) TIFFClose(m_tif);
-	  if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_TIF) return true;
-	  return false;
-  }
-	TIFFClose(m_tif);
+	catch (char* message) {
+		if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+		if (m_tif) TIFFClose(m_tif);
+		if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_TIF) return true;
+		return false;
+	}
+	//TIFFClose(m_tif);
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -928,7 +982,7 @@ bool CImageFileTif::ReadImageFile(FILE* fp, BYTE* lpExterRawBitsBuff/* = NULL*/,
 	bool bRet = m_tif1 != NULL;
 	if (m_tif1 != NULL&&m_pages>=1)
 	{	//默认加载第一页
-		bRet=Decode(0);
+		bRet=Decode(0,true);
 	}
 	return bRet;
 }

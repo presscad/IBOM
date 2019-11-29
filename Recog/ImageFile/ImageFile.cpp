@@ -42,8 +42,95 @@ CImageFile::CImageFile()
 CImageFile::~CImageFile()
 {
 	if (pDib&&m_bInternalRawBitsBuff)
-		delete []pDib;
+		Destroy();
 }
+#if CXIMAGE_SUPPORT_ALPHA
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Sets the alpha level for the whole image.
+ * \param level : from 0 (transparent) to 255 (opaque)
+ */
+void CImageFile::AlphaSet(BYTE level)
+{
+	if (pAlpha)	memset(pAlpha,level,head.biWidth * head.biHeight);
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Sets the alpha level for a single pixel 
+ */
+void CImageFile::AlphaSet(const int x,const int y,const int level)
+{
+	if (pAlpha && IsInside(x,y)) pAlpha[x+y*head.biWidth]=level;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Gets the alpha level for a single pixel 
+ */
+BYTE CImageFile::AlphaGet(const int x,const int y)
+{
+	if (pAlpha && IsInside(x,y)) return pAlpha[x+y*head.biWidth];
+	return 0;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Allocates an empty (opaque) alpha channel.
+ */
+bool CImageFile::AlphaCreate()
+{
+	if (pAlpha==NULL) {
+		pAlpha = (BYTE*)malloc(head.biWidth * head.biHeight);
+		if (pAlpha) memset(pAlpha,255,head.biWidth * head.biHeight);
+	}
+	return (pAlpha!=0);
+}
+////////////////////////////////////////////////////////////////////////////////
+void CImageFile::AlphaDelete()
+{
+	if (pAlpha) { free(pAlpha); pAlpha=0; }
+}
+////////////////////////////////////////////////////////////////////////////////
+bool CImageFile::AlphaFlip()
+{
+	if (!pAlpha) return false;
+
+	BYTE *buff = (BYTE*)malloc(head.biWidth);
+	if (!buff) return false;
+
+	BYTE *iSrc,*iDst;
+	iSrc = pAlpha + (head.biHeight-1)*head.biWidth;
+	iDst = pAlpha;
+	for (int i=0; i<(head.biHeight/2); ++i)
+	{
+		memcpy(buff, iSrc, head.biWidth);
+		memcpy(iSrc, iDst, head.biWidth);
+		memcpy(iDst, buff, head.biWidth);
+		iSrc-=head.biWidth;
+		iDst+=head.biWidth;
+	}
+
+	free(buff);
+
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Get alpha value without boundscheck (a bit faster). Pixel must be inside the image.
+ *
+ * \author ***bd*** 2.2004
+ */
+BYTE CImageFile::BlindAlphaGet(const int x,const int y)
+{
+#ifdef _DEBUG
+	if (!IsInside(x,y) || (pAlpha==0))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		return 0;
+  #endif
+#endif
+	return pAlpha[x+y*head.biWidth];
+}
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * swaps the blue and red components (for RGB images)
@@ -352,13 +439,56 @@ BYTE* CImageFile::GetBits(DWORD row)
 	}
 	return NULL;
 }
+DWORD CImageFile::GetBitmap(BITMAP* bitmap)
+{
+	BYTE* pTo=(BYTE*)bitmap->bmBits;
+	////////////////////////////////
+	//初始化BITMAP
+	if(pTo)
+		delete []pTo;
+	memset(bitmap,0,sizeof(BITMAP));
+	bitmap->bmType=0;
+	bitmap->bmPlanes=1;
+	bitmap->bmBitsPixel=32;
+	bitmap->bmWidth=head.biWidth;
+	bitmap->bmHeight=head.biHeight;
+	bitmap->bmWidthBytes=head.biWidth*4;
+	UINT niBytesCount=bitmap->bmWidthBytes*bitmap->bmHeight;
+	bitmap->bmBits=pTo=new BYTE[niBytesCount];
+	////////////////////////////////
+	const BYTE xarrConstBitBytes[8]={ 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
+	for (int row=0;row<head.biHeight;row++)
+	{
+		BYTE* pFrom=GetBits(head.biHeight-row-1);	//info.pImage
+		for (int xi=0;xi<head.biWidth;xi++)
+		{
+			if (head.biBitCount==32)
+				memcpy(pTo,pFrom+xi*4,4);
+			else if (head.biBitCount==24)
+			{
+				memcpy(pTo,pFrom+xi*3,3);
+				*(pTo+3)=255;
+			}
+			else if (head.biBitCount==1)
+			{
+				int ibyte=xi/8,ibit=xi%8;
+				BYTE cbByte=*(pFrom+ibyte);
+				if (cbByte&xarrConstBitBytes[ibit])	//通过异或操作得出dwFlag的补码
+					*(pTo+3)=*(pTo+2)=*(pTo+1)=*pTo=255;
+				else
+					*(pTo+3)=*(pTo+2)=*(pTo+1)=*pTo=0;
+			}
+			else
+				return 0;	//logerr.Log("error");
+			pTo+=4;
+		}
+	}
+	return niBytesCount;
+}
 DWORD CImageFile::GetBitmapBits(DWORD dwCount, BYTE* lpBits)
 {
-	DWORD dwActualRead;
-	if(dwCount<=GetEffWidth()*GetHeight())
-		dwActualRead=dwCount;
-	else
-		dwActualRead=GetEffWidth()*GetHeight();
+	DWORD dwSummBytes=GetEffWidth()*GetHeight();
+	DWORD dwActualRead=dwCount<=dwSummBytes?dwCount:dwSummBytes;
 	memcpy(lpBits,GetBits(),dwActualRead);
 	return dwActualRead;
 }
