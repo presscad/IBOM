@@ -263,6 +263,9 @@ struct IImageFile{
 	virtual IImageRegion* EnumFirstRegion()=0;
 	virtual IImageRegion* EnumNextRegion()=0;
 	virtual void UpdateImageRegions()=0;
+	virtual void SetTurnCount(int count)=0;
+	virtual int GetTurnCount() = 0;
+	virtual bool IsNeedTurnImage() = 0;
 };
 struct RECOG_API IMonoImage{
 	virtual long Serial()=0;

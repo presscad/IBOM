@@ -1720,6 +1720,13 @@ int CDisplayDataPage::StretchBlt(HDC hDC,CImageFileHost* pImageFile)
 		pImageFile->Get24BitsImageData(&m_xCurrImageData);
 		m_xCurrImageData.imagedata=new char[m_xCurrImageData.nEffWidth*m_xCurrImageData.nHeight];
 		pImageFile->Get24BitsImageData(&m_xCurrImageData);
+		if (m_xCurrImageData.nHeight == width && m_xCurrImageData.nWidth == height)
+		{	//长宽翻转，需要重新设置widht、height、bytesize、extrabytes wht 19-11-30
+			width = m_xCurrImageData.nWidth;
+			height = m_xCurrImageData.nHeight;
+			extrabytes = (4 - (width * 3) % 4) % 4;
+			bytesize = (width * 3 + extrabytes)*height;
+		}
 		//IMAGE_FILE_DATA中的图像行扫描模式为自上至下downward，应转为StretchDIBits所需的upward模式
 		int imagebytes_size=m_xCurrImageData.nEffWidth*m_xCurrImageData.nHeight;
 		CHAR_ARRAY imagebits(imagebytes_size);

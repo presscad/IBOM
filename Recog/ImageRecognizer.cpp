@@ -6172,6 +6172,7 @@ CImageDataFile::CImageDataFile(DWORD key/*=0*/)
 	m_ciRawImageFileType=0;
 	m_nMonoForwardPixels=20;
 	m_bLowBackgroundNoise=m_bThinFontText=false;
+	m_nTurnCount = 0;
 }
 CImageDataFile::~CImageDataFile()
 {
@@ -7715,15 +7716,32 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 {
 	bool loadrawdata_from_vm=false;
 	int count=image.GetEffWidth()*image.GetHeight();
+	int nHeight = image.GetHeight();
+	int nWidth = image.GetWidth();
+	int nEffWidth = image.GetEffWidth();
+	if (IsNeedTurnImage())
+	{	//¸ù¾İÍ¼Æ¬·­×ªĞÅÏ¢ÖØĞÂ¼ÆËã¿í¶È¸ß¶È wht 19-11-30
+		int nTurnCount = abs(GetTurnCount());
+		bool bClockwise = GetTurnCount() > 0;
+		for (int i = 0; i < nTurnCount; i++)
+		{
+			int W1 = nHeight;
+			int H1 = nWidth;
+			nEffWidth = ((W1 * 3 + 3) / 4) * 4;
+			nWidth = W1;
+			nHeight = H1;
+		}
+		count = nEffWidth*nHeight;
+	}
 	if(imagedata->imagedata&&(imagedata->nEffWidth*imagedata->nHeight)>=count)
 	{
-		imagedata->nHeight=image.GetHeight();
-		imagedata->nWidth=image.GetWidth();
-		imagedata->nEffWidth=image.GetEffWidth();
+		imagedata->nHeight=nHeight;
+		imagedata->nWidth=nWidth;
+		imagedata->nEffWidth=nEffWidth;
 		if(image.GetRawBits()!=NULL)
 		{
 			memcpy(imagedata->imagedata,image.GetRawBits(),count);
-			if(image.GetEffWidth()*image.GetHeight()>=0x2000000)
+			if(nEffWidth*nHeight>=0x2000000)
 			{
 				UnloadRawImageBytes();
 				UnloadGreyBytes();
@@ -7736,8 +7754,15 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 		bool loadgreydata_from_vm=false;
 		if(image.ReadImageFile(m_sPathFileName))
 		{
+			if (IsNeedTurnImage())
+			{	//¸ù¾İÍ¼Æ¬·­×ªĞÅÏ¢ÖØĞÂ¼ÆËã¿í¶È¸ß¶È wht 19-11-30
+				int nTurnCount = abs(GetTurnCount());
+				bool bClockwise = GetTurnCount() > 0;
+				for (int i = 0; i < nTurnCount; i++)
+					image.Turn90(bClockwise);
+			}
 			memcpy(imagedata->imagedata,image.GetRawBits(),count);
-			if(image.GetEffWidth()*image.GetHeight()>=0x2000000)
+			if(nEffWidth*nHeight >=0x2000000)
 			{
 				UnloadGreyBytes();
 				if(!loadrawdata_from_vm)
@@ -7773,9 +7798,10 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 	}
 	else
 	{
-		imagedata->nHeight=image.GetHeight();
-		imagedata->nWidth=image.GetWidth();
-		imagedata->nEffWidth=image.GetEffWidth();
+		imagedata->nHeight=nHeight;
+		imagedata->nWidth=nWidth;
+		imagedata->nEffWidth=nEffWidth;
+		
 	}
 	return count;
 }
@@ -7826,6 +7852,8 @@ bool CImageDataFile::TurnClockwise90()		//½«ÎÄ¼şÖĞÍ¼ÏñË³Ê±Õë×ª90¶È£¬Ğı×ª²»Ó°ÏìÒÑ
 		LoadGreyBytes(&loadGreyFromVM);
 	}
 	bool retcode=image.Turn90(true);
+	//Ğı×ªÖ®ºó¸üĞÂm_nTurnCount,±£Ö¤Ğı×ª½Ç¶ÈÓëĞı×ª´ÎÊıÒ»ÖÂ£¬·ñÔò»á´¥·¢JPGÍ¼ÏñÎÄ¼şÄÚ²¿Ğı×ª wht 19-11-30
+	m_nTurnCount = image.GetPdfConfig().rotation / 90;
 	if(loadRawImgFromVM)
 		UnloadRawImageBytes();
 	if(loadGreyFromVM)
@@ -7841,12 +7869,25 @@ bool CImageDataFile::TurnAntiClockwise90()	//½«ÎÄ¼şÖĞÍ¼ÏñÄæÊ±Õë×ª90¶È£¬Ğı×ª²»Ó°Ï
 		LoadGreyBytes(&loadGreyFromVM);
 	}
 	bool retcode=image.Turn90(false);
+	//Ğı×ªÖ®ºó¸üĞÂm_nTurnCount,±£Ö¤Ğı×ª½Ç¶ÈÓëĞı×ª´ÎÊıÒ»ÖÂ£¬·ñÔò»á´¥·¢JPGÍ¼ÏñÎÄ¼şÄÚ²¿Ğı×ª wht 19-11-30
+	m_nTurnCount = image.GetPdfConfig().rotation / 90;
 	if(loadRawImgFromVM)
 		UnloadRawImageBytes();
 	if(loadGreyFromVM)
 		UnloadGreyBytes();
 	return retcode;
 }
+
+bool CImageDataFile::IsNeedTurnImage()
+{
+	PDF_FILE_CONFIG cfg = image.GetPdfConfig();
+	int nTurnCount = cfg.rotation / 90;
+	if (nTurnCount != m_nTurnCount)
+		return true;
+	else
+		return false;
+}
+
 bool CImageDataFile::IsBlackPixel(int i,int j)
 {
 	if(i<0||j<0||i>=Width||j>=Height)

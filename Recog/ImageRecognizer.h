@@ -787,6 +787,7 @@ private:
 	int m_nMonoForwardPixels;		//划分黑白点间的界限调整平衡系数,取值-0.5~0.5;0时对应最高频率像素前移20位
 	CTempFileBuffer vmRawBytes;		//原始图像的虚拟内存
 	CTempFileBuffer vmGreyBytes;	//灰度图及阈值图的虚拟内存
+	int m_nTurnCount;				//设置需要旋转的次数 wht 19-11-30
 	double CalPdfRegionZoomScaleBySample(CImageDataRegion *pRegion);
 	bool RetrievePdfRegionImageBits(CImageDataRegion *pRegion,CImageTransform &regionImage);
 public:
@@ -903,6 +904,9 @@ public:
 	virtual double GetMonoThresholdBalanceCoef();
 	//balancecoef 划分黑白点间的界限调整平衡系数,取值-0.5~0.5;0时对应最高频率像素前移20位
 	static double CalMonoThresholdBalanceCoef(int monoforwardpixels=20);
+	virtual void SetTurnCount(int count) { m_nTurnCount = count; }
+	virtual int GetTurnCount() { return m_nTurnCount; }
+	virtual bool IsNeedTurnImage();
 };
 class CAlphabets : public IAlphabets
 {

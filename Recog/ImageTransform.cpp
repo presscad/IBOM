@@ -600,7 +600,7 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 	else
 		return false;
 	bool readimgdata=pImageFile->ReadImageFile(fp,lpExterRawBitsBuff,uiBitsBuffSize);
-
+	m_nWidth = pImageFile->GetWidth();
 	m_nEffByteWidth = pImageFile->GetEffWidth();
 	m_nHeight = pImageFile->GetHeight();
 	m_uBitcount = pImageFile->GetBpp();
@@ -1041,12 +1041,14 @@ bool CImageTransform::Turn90(bool byClockwise)		//将文件中图像顺时针转90度
 	this->m_nWidth=W1;
 	this->m_nHeight=H1;
 	m_nEffByteWidth=((W1*3+3)/4)*4;
-	//
-	if(byClockwise)
-		m_xPdfCfg.rotation+=90;
-	else
-		m_xPdfCfg.rotation-=90;
-	m_xPdfCfg.rotation=m_xPdfCfg.rotation%360;
+	if (m_lpRawBits!=NULL)
+	{
+		if (byClockwise)
+			m_xPdfCfg.rotation += 90;
+		else
+			m_xPdfCfg.rotation -= 90;
+		m_xPdfCfg.rotation = m_xPdfCfg.rotation % 360;
+	}
 	return m_lpRawBits!=NULL;
 }
 BYTE CImageTransform::CalGreynessThreshold()

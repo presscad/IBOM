@@ -226,22 +226,81 @@ public:
 	virtual bool IsBlackPixel(int i,int j);
 	virtual RECT GetImageDisplayRect(DWORD dwRegionKey=0);
 	virtual bool DeleteImageRegion(long idRegionSerial);
-	virtual void InitImageShowPara(RECT showRect){return m_pInternalImgFile->InitImageShowPara(showRect);}
-	virtual double Zoom(short zDelta,POINT* pxScrPoint=NULL){return m_pInternalImgFile->Zoom(zDelta,pxScrPoint);}
-	virtual double ZoomRatio(){return m_pInternalImgFile->ZoomRatio();}
-	virtual bool FocusPoint(POINT xImgPoint,POINT* pxScrPoint=NULL,double scaleofScr2Img=2.0){
-		return m_pInternalImgFile->FocusPoint(xImgPoint,pxScrPoint,scaleofScr2Img);
+	virtual void InitImageShowPara(RECT showRect){
+		if(m_pInternalImgFile)
+			return m_pInternalImgFile->InitImageShowPara(showRect);
 	}
-	virtual bool IsCanZoom(){return m_pInternalImgFile->IsCanZoom();}
-	virtual void SetScrOffset(SIZE offset){m_pInternalImgFile->SetScrOffset(offset);}
-	virtual SIZE GetScrOffset(){return m_pInternalImgFile->GetScrOffset();}
-	virtual POINT MappingToScrOrg(){return m_pInternalImgFile->MappingToScrOrg();}
-	virtual RECT  MappingToScrRect(){return m_pInternalImgFile->MappingToScrRect();}
+	virtual double Zoom(short zDelta,POINT* pxScrPoint=NULL){
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->Zoom(zDelta, pxScrPoint);
+		else
+			return 1;
+	}
+	virtual double ZoomRatio(){
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->ZoomRatio();
+		else
+			return 1;
+	}
+	virtual bool FocusPoint(POINT xImgPoint,POINT* pxScrPoint=NULL,double scaleofScr2Img=2.0){
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->FocusPoint(xImgPoint, pxScrPoint, scaleofScr2Img);
+		else
+			return false;
+	}
+	virtual bool IsCanZoom()
+	{
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->IsCanZoom();
+		else
+			return false;
+	}
+	virtual void SetScrOffset(SIZE offset){
+		if (m_pInternalImgFile)
+			m_pInternalImgFile->SetScrOffset(offset);
+	}
+	virtual SIZE GetScrOffset(){
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->GetScrOffset();
+		else
+			return SIZE();
+	}
+	virtual POINT MappingToScrOrg(){
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->MappingToScrOrg();
+		else
+			return POINT();
+	}
+	virtual RECT  MappingToScrRect(){
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->MappingToScrRect();
+		else
+			return RECT();
+	}
 	virtual bool IntelliRecogCornerPoint(const POINT& pick,POINT* pCornerPoint,
 					char ciType_LT0_RT1_RB2_LB3=0,int *pyjHoriTipOffset=NULL,UINT uiTestWidth=300,UINT uiTestHeight=200);
 	virtual IImageRegion* AddImageRegion();
 	virtual IImageRegion* AddImageRegion(POINT topLeft,POINT btmLeft,POINT btmRight,POINT topRight);
 	virtual IImageRegion* EnumFirstRegion();
 	virtual IImageRegion* EnumNextRegion();
-	virtual void UpdateImageRegions(){this->m_pInternalImgFile->UpdateImageRegions();}
+	virtual void UpdateImageRegions(){
+		if(m_pInternalImgFile)
+			m_pInternalImgFile->UpdateImageRegions();
+	}
+	virtual void SetTurnCount(int count) { 
+		if(m_pInternalImgFile)
+			m_pInternalImgFile->SetTurnCount(count); 
+	}
+	virtual int GetTurnCount() {
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->GetTurnCount();
+		else
+			return 0;
+	}
+	virtual bool IsNeedTurnImage() {
+		if (m_pInternalImgFile)
+			return m_pInternalImgFile->IsNeedTurnImage();
+		else
+			return false;
+	}
 };
