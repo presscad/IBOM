@@ -2076,12 +2076,13 @@ int IImageNoiseDetect::StatNearBlackPixels(int i,int j,DETECT_MAP* pDetectMap/*=
 	if( blackPixels<maxBlackPixels&&(cDetectFlag&DETECT_RIGHT)>0 &&
 		!pDetectMap->IsDetect(i+1,j))
 		blackPixels+=StatNearBlackPixels(i+1,j,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
-	//if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_RIGHT)>0||(cDetectFlag&DETECT_UP)>0) && 
-	//	!pDetectMap->IsDetect(i+1,j+1))
-	//	blackPixels+=StatNearBlackPixels(i+1,j+1,pDetectMap,pValidRgn,maxBlackPixels-blackPixels);
-	//if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_RIGHT)>0||(cDetectFlag&DETECT_DOWN)>0)
-	//	&& !pDetectMap->IsDetect(i+1,j-1))
-	//	blackPixels+=StatNearBlackPixels(i+1,j-1,pDetectMap,pValidRgn,maxBlackPixels-blackPixels);
+	//孤岛检测时添加对斜对角连通的情况，如'1'字符的顶部斜线有可能是仅斜连通 wjh-2019.11.28
+	if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_RIGHT)>0||(cDetectFlag&DETECT_UP)>0) && 
+		!pDetectMap->IsDetect(i+1,j+1))
+		blackPixels+=StatNearBlackPixels(i+1,j+1,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
+	if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_RIGHT)>0||(cDetectFlag&DETECT_DOWN)>0)
+		&& !pDetectMap->IsDetect(i+1,j-1))
+		blackPixels+=StatNearBlackPixels(i+1,j-1,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
 	if( blackPixels<maxBlackPixels&&(cDetectFlag&DETECT_UP)>0 &&
 		!pDetectMap->IsDetect(i  ,j+1))
 		blackPixels+=StatNearBlackPixels(i  ,j+1,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
@@ -2091,12 +2092,12 @@ int IImageNoiseDetect::StatNearBlackPixels(int i,int j,DETECT_MAP* pDetectMap/*=
 	if( blackPixels<maxBlackPixels&&(cDetectFlag&DETECT_LEFT)>0 && 
 		!pDetectMap->IsDetect(i-1,j))
 		blackPixels+=StatNearBlackPixels(i-1,j,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
-	//if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_LEFT)>0||(cDetectFlag&DETECT_UP)>0) &&
-	//	!pDetectMap->IsDetect(i-1,j+1))
-	//	blackPixels+=StatNearBlackPixels(i-1,j+1,pDetectMap,pValidRgn,maxBlackPixels-blackPixels);
-	//if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_LEFT)>0||(cDetectFlag&DETECT_DOWN)>0) && 
-	//	!pDetectMap->IsDetect(i-1,j-1))
-	//	blackPixels+=StatNearBlackPixels(i-1,j-1,pDetectMap,pValidRgn,maxBlackPixels-blackPixels);
+	if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_LEFT)>0||(cDetectFlag&DETECT_UP)>0) &&
+		!pDetectMap->IsDetect(i-1,j+1))
+		blackPixels+=StatNearBlackPixels(i-1,j+1,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
+	if( blackPixels<maxBlackPixels&&((cDetectFlag&DETECT_LEFT)>0||(cDetectFlag&DETECT_DOWN)>0) && 
+		!pDetectMap->IsDetect(i-1,j-1))
+		blackPixels+=StatNearBlackPixels(i-1,j-1,pDetectMap,pValidRgn,listStatPixels,maxBlackPixels-blackPixels);
 	return blackPixels;
 }
 bool IImageNoiseDetect::IsNoisePixel(int i,int j,RECT* pValidRgn/*=NULL*/,int maxIslandBlackPixels/*=5*/,BYTE cDetectFlag/*=0x0f*/,DETECT_MAP* pDetectMap/*=NULL*/)
@@ -2867,7 +2868,10 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 	if(pCharSectList==NULL)
 		pCharSectList=&listCharSects;
 	//1.检测单元格是否为空单元格
-	WORD wMinCharWidth=f2i(STDFONT_HEIGHT*robot.MIN_CHAR_WIDTH_SCALE);//0.15),2/10;
+	double dfMinWtoHcoefOfChar1=Alphabets->m_fMinWtoHcoefOfChar1>0?Alphabets->m_fMinWtoHcoefOfChar1:1.0/7;
+	WORD wMinCharWidth=f2i(STDFONT_HEIGHT*dfMinWtoHcoefOfChar1);//robot.MIN_CHAR_WIDTH_SCALE);//0.15),2/10;
+	//4的左半部分宽约10像素（字高40），故设定10范围内要求全分断时才视为字符分断。 wjh-2019.11.29
+	WORD wMinCharWidth2=f2i(STDFONT_HEIGHT*0.25);//robot.MIN_CHAR_WIDTH_SCALE);//0.15)
 	WORD wMaxCharWidth=f2i(STDFONT_HEIGHT*robot.MAX_CHAR_WIDTH_SCALE);//8/10;
 	WORD wMinCharAllWidth=f2i(STDFONT_HEIGHT*0.33);	//全宽字符的最小宽度，如'Q','X','0',2~9字符等
 	WORD wPreferCharWidth=f2i(STDFONT_HEIGHT*robot.PREFER_CHAR_WIDTH_SCALE);//6/10;
@@ -2948,16 +2952,19 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 			}
 		}
 		wColMaxBlackHits=max(wColMaxBlackHits,wColVertConnBlackHits);
-		wColMaxBlackHits=min(wColMaxBlackHits,wColRightConnBlackHits);
+		if(i>iBitStart+wMinCharWidth2)//极限超窄范围内分割字符要求完全分割（斜角连通情况视为连通，如'1'左上撇) wjh-2019.11.28
+			wColMaxBlackHits=min(wColMaxBlackHits,wColRightConnBlackHits);
 		xarrColBlckPixels.Set(xiPixel,wColMaxBlackHits);
 	}
 	xarrColBlckPixels.Set(iBitStart+wMinCharWidth-1,100);	//预置一较大黑点数
 	xarrColBlckPixels.Set(iBitStart+wMinCharWidth-2,100);	//预置一较大黑点数
-	WORD wiPrevSplitPos=iBitStart,xiScanStart=iBitStart+wMinCharWidth,xiScanEnd=iBitStart+wMaxCharWidth;
+	WORD wiPrevSplitPos=iBitStart,xiScanStart=iBitStart+max(2,wMinCharWidth),xiScanEnd=iBitStart+wMaxCharWidth;
 	do{
 		bool findSplitPos=false;
 		WORD wnBlckPixels=0xffff;
-		for(BYTE ciTolerancePixels=2;!findSplitPos&&ciTolerancePixels<=6;ciTolerancePixels++)
+		//在细字体时发现ciTolerancePixels=2容易把一个字符如'L'，给截断 wjh-2019.11.28
+		//for(BYTE ciTolerancePixels=2;!findSplitPos&&ciTolerancePixels<=6;ciTolerancePixels++)
+		for(BYTE ciTolerancePixels=1;!findSplitPos&&ciTolerancePixels<=6;ciTolerancePixels++)
 		{
 			findSplitPos=false;
 			for(i=xiScanStart;i<xiScanEnd&&i<iBitEnd-1;i++)
@@ -4300,6 +4307,8 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 	int FRAMELINE_TOLERANCE=max(2,f2i(1.5*vfScaleCoef));	//识别时锚定角点距离表格线的搜索容差范围
 	int MINPIXELS_OF_TEXTVERTLINE=max(1,f2i(1*vfScaleCoef));	//单元格内横线或竖线识别为空白的最多像素数，既文本区域竖线中最少像素数
 	int MARGIN=f2i(3*vfScaleCoef);	//防止因上下边框线引起的噪音点误判为文本区横向起止位置 wjh-2018.3.29
+	if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
+		MINPIXELS_OF_TEXTVERTLINE=1;	//低噪点背景下可不考虑噪声点影响，不考虑列最少有效黑点数 wjh-2019.11.28
 	//因为单元格中仅有一行文字，故先判断文本区域左侧起始位置
 	bool bFindBlankMargin=false;
 	int minBlackColI=rcCell.left,minBlackPixels=m_nHeight;
@@ -4385,6 +4394,8 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 	}
 	//文本区域横线中最少像素数12=0.7*17,极端情况一些字体较细可能出现f2i((xEnd-xStart+1)/12.0)=0 wjh-2018.3.30
 	int MINPIXELS_OF_TEXTHORZLINE=max(1,f2i((xEnd-xStart+1)/12.0));
+	if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
+		MINPIXELS_OF_TEXTHORZLINE=1;	//低噪点背景下可不考虑噪声点影响，不考虑行最少有效黑点数 wjh-2019.11.28
 	PREFER_BAND prefer,band;
 	static bool poolbytes[1024],poolbytes2[1024];
 	DYN_ARRAY<bool>prevrow(xEnd+1,false,poolbytes,1024),nextrow(xEnd+1,false,poolbytes,1024);
@@ -4494,8 +4505,12 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 					nBlack++;
 				}
 			}
+			//顶行黑点的起止区间占文本整宽的比例值(高噪声时影响真实文本Y向区域限制） wjh-2019.11.28
+			double TOPLINE_BLCKPIXELS_MINSCALECOEF=0.7;
+			if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
+				TOPLINE_BLCKPIXELS_MINSCALECOEF=0;
 			double fScopeScale=(iEndBlack-iFirstBlack+1)/(double)nWidth;
-			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>0.7)
+			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>TOPLINE_BLCKPIXELS_MINSCALECOEF)
 			{
 				yStart=j;
 				break;
@@ -4523,7 +4538,9 @@ void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStar
 	//if(iDataType==CImageCellRegion::GUIGE)	//'-'字符像素较少
 	if(iDataType==CImageCellRegion::NUM)
 		MAX_ISLAND_PIXELS=max(15,f2i(15*vfScaleCoef));
-	this->RemoveNoisePixels(&rcCell,MAX_ISLAND_PIXELS);
+	long liNoisePixels=this->RemoveNoisePixels(&rcCell,MAX_ISLAND_PIXELS);
+	if (liNoisePixels<10 && BelongImageData())	//自动设定为低噪声背景状态 wjh-2019.11.28
+		BelongImageData()->SetLowBackgroundNoise(true);
 #ifdef _TIMER_COUNT
 	timer.Relay(4002);
 #endif
@@ -4663,7 +4680,7 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 	//初始化文本单元,拆分识别字符
 	CImageCellRegion cell;
 	//笔画矢量图生成的图像，这种图像几乎不存在失真，故最大程度保留了各字符的特征信息，适用于特征识别优先 wjh-2018.8.31
-	cell.m_bStrokeVectorImage=(BelongImageData()->GetRawFileType()==CImageDataFile::RAW_IMAGE_PDF);
+	cell.m_bStrokeVectorImage=(BelongImageData() && BelongImageData()->GetRawFileType()==CImageDataFile::RAW_IMAGE_PDF);
 	//static const int NUM		= 4;
 	//static const int PIECE_W	= 5;
 	//static const int SUM_W		= 6;
@@ -4697,6 +4714,11 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 	DWORD dwStart402Tick=timer.Relay(401);
 #endif
 	//TODO:将来应根据cell的有效区域智能识别ABNORMAL_TXT_REGION异常 wjh-18.4.16
+	CAlphabets* pAlphabets=(CAlphabets*)IMindRobot::GetAlphabetKnowledge();
+	double dfNewStackValue=pAlphabets->m_fMinWtoHcoefOfChar1;
+	if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())//IsThinFontText())
+		dfNewStackValue=0.1;	//细字体时，以标准40高字体，横向‘1'字符最宽处最少应具备4个像素 wjh-2019.11.28
+	CStackVariant<double> stackvar(&pAlphabets->m_fMinWtoHcoefOfChar1,dfNewStackValue);
 	cell.xWarningLevel.uiWarning=0;
 	cell.SplitImageCharSet(0,0,true,imagedata,CELLTYPE_FLAG(idCellTextType,true));		//拆分识别字符
 	if(pcbWarningLevel)
@@ -5026,7 +5048,10 @@ void CImageDataRegion::UpdateImageRegion()
 }
 bool CImageDataRegion::Destroy()	//BelongImageData()->DeleteImageRegion(GetSerial())
 {
-	return BelongImageData()->DeleteImageRegion(m_dwKey);
+	if (BelongImageData())
+		return BelongImageData()->DeleteImageRegion(m_dwKey);
+	else
+		return false;
 }
 bool CImageDataRegion::EnumFirstBomPart(IRecoginizer::BOMPART* pRawBomPart)
 {
@@ -6146,6 +6171,7 @@ CImageDataFile::CImageDataFile(DWORD key/*=0*/)
 	m_fDisplayRatio=1;
 	m_ciRawImageFileType=0;
 	m_nMonoForwardPixels=20;
+	m_bLowBackgroundNoise=m_bThinFontText=false;
 }
 CImageDataFile::~CImageDataFile()
 {
@@ -8544,7 +8570,7 @@ void CAlphabets::PracticeFontRecogChance(WORD wiFontSerial,double matchcoef)
 }
 int CAlphabets::GetRecogTmplChars(CImageChar* pHeadTmplChar,CImageCharPtr* ppTmplChars,int nMaxTmplCharCount/*=0*/)
 {
-	PRESET_ARRAY4<CImageChar*> chars;
+	PRESET_ARRAY8<CImageChar*> chars;
 	CImageChar* pTmplChar=pHeadTmplChar;
 	UINT i,hits=0,max_active_font_count=2,actfont=0;
 	for(i=0;i<xarrFontPreferGrade.Count;i++)
@@ -8606,7 +8632,10 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 #endif
 	if(minMatchCoef==0)
 		minMatchCoef=LowestRecogSimilarity();
-	int nMinTextW_CHAR_1=f2i(GetTemplateH()/7.0);	//40字高存在宽为6的'1'字符
+	double dfActualMinWtoHcoefOfChar1=m_fMinWtoHcoefOfChar1;
+	if (dfActualMinWtoHcoefOfChar1<=0)
+		dfActualMinWtoHcoefOfChar1=1.0/7;	//0.143
+	int nMinTextW_CHAR_1=max(1,f2i(GetTemplateH()*dfActualMinWtoHcoefOfChar1));	//40字高存在宽为6的'1'字符
 	for(CImageChar* pTemplChar=listChars.GetFirst();pTemplChar;pTemplChar=listChars.GetNext())
 	{
 		if(!pTemplChar->m_bTemplEnabled)
@@ -8667,8 +8696,8 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 		}
 		else //if(checkfeature==0)
 		{
-			PRESET_ARRAY4<CImageChar*> tmplchars;
-			int charcount=GetRecogTmplChars(pTemplChar,tmplchars.Data(),4);
+			PRESET_ARRAY8<CImageChar*> tmplchars;
+			int charcount=GetRecogTmplChars(pTemplChar,tmplchars.Data(),8);
 			tmplchars.ReSize(charcount);
 			pTemplChar=tmplchars[0];
 			pMatch->matchcoef=pTemplChar->CalMatchCoef(pSafeText,&pMatch->ciOffsetX,&pMatch->ciOffsetY);
@@ -8677,7 +8706,7 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 			{
 				for(WORD j=1;j<tmplchars.Count;j++)
 				{
-					CImageChar* pChildTmplChar=tmplchars[j];
+					CImageChar* pChildTmplChar=tmplchars.At(j);
 					MATCHCOEF matchcoef=pChildTmplChar->CalMatchCoef(pSafeText,&pMatch->ciOffsetX,&pMatch->ciOffsetY);
 					if(pMatch->matchcoef.CompareWith(matchcoef)<0)
 					{

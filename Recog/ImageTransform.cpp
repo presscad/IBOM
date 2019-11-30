@@ -1,9 +1,11 @@
-#include "stdafx.h"
+#include <stdafx.h>
 #include "math.h"
 #include "ImageFile.h"
 #include "ximajpg.h"
 #include "ximapng.h"
+#ifdef _SUPPORT_TIFF_IMG_
 #include "ximatif.h"
+#endif
 #include "ImageTransform.h"
 #include "HashTable.h"
 #include "LogFile.h"
@@ -401,6 +403,7 @@ bool CImageTransform::InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette/*=NULL*/, 
 	//填写图像数据
 	m_nWidth=image.bmWidth;
 	m_nHeight=image.bmHeight;
+	this->m_uBitcount=24;
 	m_nEffByteWidth=((m_nWidth*3+3)/4)*4;
 	DWORD dwCount=m_nEffByteWidth*m_nHeight;
 	//获取原始图像位图内存池m_lpRawBits
@@ -435,8 +438,8 @@ bool CImageTransform::InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette/*=NULL*/, 
 			if(image.bmBitsPixel==1)
 			{	//单色图
 				int ibyte=row*image.bmWidthBytes+i/8;
-				if(lpBmBits[ibyte]&byteConstArr[i%8])
-					crPixelColor.rgbBlue=crPixelColor.rgbGreen=crPixelColor.rgbRed=255;
+				if (lpBmBits[ibyte]&byteConstArr[i%8])
+					crPixelColor=pPalette[1];//crPixelColor.rgbBlue=crPixelColor.rgbGreen=crPixelColor.rgbRed=255;
 				else
 					crPixelColor=pPalette[0];
 			}
@@ -582,22 +585,30 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 	}
 	CImageFileJpeg jpgFile;
 	CImageFilePng  pngFile;
+#ifdef _SUPPORT_TIFF_IMG_
 	CImageFileTif  tifFile;
+#endif
 	CImageFile* pImageFile=&pngFile;
 	if (ciBmp0Jpeg1Png2Tif3 == 1)
 		pImageFile = &jpgFile;
 	else if (ciBmp0Jpeg1Png2Tif3 == 2)
 		pImageFile = &pngFile;
+#ifdef _SUPPORT_TIFF_IMG_
 	else if (ciBmp0Jpeg1Png2Tif3 == 3)
 		pImageFile = &tifFile;
+#endif
 	else
 		return false;
 	bool readimgdata=pImageFile->ReadImageFile(fp,lpExterRawBitsBuff,uiBitsBuffSize);
 
+	m_nEffByteWidth = pImageFile->GetEffWidth();
+	m_nHeight = pImageFile->GetHeight();
+	m_uBitcount = pImageFile->GetBpp();
+	/*
 	m_nWidth=pImageFile->GetWidth();
 	m_nEffByteWidth= m_nWidth*3+(4-(m_nWidth*3)%4);
 	m_nHeight=pImageFile->GetHeight();
-	m_uBitcount=24;
+	m_uBitcount=24;*/
 	if(!readimgdata)
 		return false;
 	DWORD dwCount=m_nEffByteWidth*m_nHeight;
@@ -614,7 +625,7 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 		m_lpRawBits=new BYTE[dwCount];
 		m_bInternalRawBitsBuff=true;
 	}
-	if (pImageFile->GetBpp() == 1)
+	/*if (pImageFile->GetBpp() == 1)
 	{
 		const BYTE xarrConstBitBytes[8] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
 		for (int row = 0; row < m_nHeight; row++)
@@ -633,7 +644,7 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 			}
 		}
 	}
-	else
+	else*/
 	{	//Jpeg与Png格式的默认行扫描模式为自下至上upward,应统一为自上至下downward模式
 		for (int i = 0; i < m_nHeight; i++)
 		{
@@ -1285,7 +1296,7 @@ bool CImageTransform::UpdateGreyImageBits(bool bUpdateMonoThreshold/*=false*/, i
 		return false;
 	if (m_lpGrayBitsMap)
 		delete[]m_lpGrayBitsMap;
-	if (m_uBitcount == 24)
+	//if (m_uBitcount == 24)
 	{
 		m_lpGrayBitsMap = new BYTE[m_nWidth*m_nHeight];
 		for (int i = 0; i < m_nWidth; i++)
@@ -1306,12 +1317,12 @@ bool CImageTransform::UpdateGreyImageBits(bool bUpdateMonoThreshold/*=false*/, i
 			}
 		}
 	}
-	else
+	/*else
 	{
 		DWORD dwCount = m_nEffByteWidth * m_nHeight;
 		m_lpGrayBitsMap = new BYTE[dwCount];
 		memcpy(m_lpGrayBitsMap, m_lpRawBits, dwCount);
-	}
+	}*/
 	if(bUpdateMonoThreshold)
 		IntelliRecogMonoPixelThreshold(nMonoForward);
 	return true;

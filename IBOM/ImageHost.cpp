@@ -1085,6 +1085,20 @@ BYTE CImageFileHost::GetRawFileType()
 {
 	return m_pInternalImgFile->GetRawFileType();
 }
+//背景是否为低噪点 wjh-2019.11.28
+bool CImageFileHost::SetLowBackgroundNoise(bool blValue){
+	return m_pInternalImgFile->SetLowBackgroundNoise(blValue);
+}
+bool CImageFileHost::IsLowBackgroundNoise()const{
+	return m_pInternalImgFile->IsLowBackgroundNoise();
+}
+//是否为细笔划字体
+bool CImageFileHost::SetThinFontText(bool blValue){
+	return m_pInternalImgFile->SetThinFontText(blValue);
+}
+bool CImageFileHost::IsThinFontText()const{
+	return m_pInternalImgFile->IsThinFontText();
+}
 bool CImageFileHost::IsSrcFromPdfFile()
 {
 	return m_pInternalImgFile->IsSrcFromPdfFile();

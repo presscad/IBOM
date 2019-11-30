@@ -211,6 +211,12 @@ public:
 	DECLARE_READONLY_PROPERTY(int, Height){return GetHeight();}
 	virtual BYTE GetRawFileType();
 	DECLARE_READONLY_PROPERTY(BYTE, RawFileType){return GetRawFileType();}
+	//背景是否为低噪点 wjh-2019.11.28
+	virtual bool SetLowBackgroundNoise(bool blValue);
+	virtual bool IsLowBackgroundNoise()const;
+	//是否为细笔划字体
+	virtual bool SetThinFontText(bool blValue);
+	virtual bool IsThinFontText()const;
 	virtual bool IsSrcFromPdfFile();
 	virtual int Get24BitsImageEffWidth();
 	virtual int Get24BitsImageData(IMAGE_DATA* imagedata);

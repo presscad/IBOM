@@ -232,6 +232,12 @@ struct IImageFile{
 	virtual int GetHeight()=0;
 	virtual int GetWidth()=0;
 	virtual BYTE GetRawFileType()=0;
+	//背景是否为低噪点 wjh-2019.11.28
+	virtual bool SetLowBackgroundNoise(bool blValue)=0;
+	virtual bool IsLowBackgroundNoise()const=0;
+	//是否为细笔划字体
+	virtual bool SetThinFontText(bool blValue)=0;
+	virtual bool IsThinFontText()const=0;
 	virtual bool IsSrcFromPdfFile()=0;
 	virtual int Get24BitsImageEffWidth()=0;
 	virtual int Get24BitsImageData(IMAGE_DATA* imagedata)=0;

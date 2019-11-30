@@ -782,6 +782,8 @@ private:
 	double m_fDisplayRatio;			//记录图像缩放系数，绘制图片时使用
 	int m_nOffsetX,m_nOffsetY;		//记录图片偏移位置，绘制图片时使用
 	BYTE m_ciRawImageFileType;		//0.非Jpeg文件，按灰度图存储；1.Jpeg文件按原始文件存储
+	bool m_bThinFontText;			//是否为细笔划字体
+	bool m_bLowBackgroundNoise;		//背景是否为低噪点 wjh-2019.11.28
 	int m_nMonoForwardPixels;		//划分黑白点间的界限调整平衡系数,取值-0.5~0.5;0时对应最高频率像素前移20位
 	CTempFileBuffer vmRawBytes;		//原始图像的虚拟内存
 	CTempFileBuffer vmGreyBytes;	//灰度图及阈值图的虚拟内存
@@ -856,6 +858,14 @@ public:
 	virtual int GetHeight();
 	__declspec( property(get=GetWidth)) int Width;
 	__declspec( property(get=GetHeight)) int Height;
+	//背景是否为低噪点 wjh-2019.11.28
+	virtual bool SetLowBackgroundNoise(bool blValue){return m_bLowBackgroundNoise=blValue;}
+	virtual bool IsLowBackgroundNoise()const{return m_bLowBackgroundNoise;}
+	__declspec( property(put=SetLowBackgroundNoise,get=IsLowBackgroundNoise)) bool blLowBackgroundNoise;
+	//是否为细笔划字体
+	virtual bool SetThinFontText(bool blValue){return m_bThinFontText=blValue;}
+	virtual bool IsThinFontText()const{return m_bThinFontText;}
+	__declspec( property(put=SetThinFontText,get=IsThinFontText)) bool blThinFontText;
 	virtual BYTE GetRawFileType(){return m_ciRawImageFileType;}
 	virtual bool IsSrcFromPdfFile(){return m_ciRawImageFileType==RAW_IMAGE_PDF||m_ciRawImageFileType==RAW_IMAGE_PDF_IMG;}
 	//获取内部分配给m_lpRawBits内存大小
@@ -941,6 +951,7 @@ protected:	//自适应字体识别
 	int GetRecogTmplChars(CImageChar* pHeadTmplChar,CImageCharPtr* ppTmplChars,int nMaxTmplCharCount=0);
 public:
 	bool m_bPreferStrokeFeatureRecog;
+	double m_fMinWtoHcoefOfChar1;	//字体中‘1’字符最少字宽像素数与高度的比值，0.表示系统默认值 wjh-2019.11.28
 	CHashListEx<FONTINFO> hashFonts;
 	CHashListEx<CImageChar> listChars;	//模板字符列表
 	CHashListEx<CStrokeFeature> hashStrokeFeatures;	//字符特征
