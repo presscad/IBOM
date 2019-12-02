@@ -1381,34 +1381,15 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 	if(pIsland=pFirstValidIsland)
 		core_y=pIsland->y/pIsland->count;
 	double vfScaleCoef=m_nHeight/17.0;
-	if(wChar.wHz=='0')
-	{
-		if(count==0)	//个别细笔划字体在标准化时缩小后会出现不闭合情况，此时中间白色孤岛会丢失，需要后结仔细判断 wjh-2018.4.2
-			return -2;
-		if(count!=1)
-			return -1;
-		else if(pIsland->miny>m_nHeight*0.4||pIsland->maxy<m_nHeight*0.7)	//'0'孤岛上点有时也偏下，故上值取0.4较0.3更合理
-			return -1;	//孤岛的上下顶点不在合理区域内（用于区分0与6　wjh-2018.3.18
-		else if(core_y<=m_nHeight*0.4&&core_y>=m_nHeight*0.6)
-			return -1;
-		else if(pIsland->count>4)
-			return 0;//1;
-	}
-	else if(wChar.wHz=='1')
-	{
-		if(pIsland!=NULL)
-			return -1;	//'1'字符不可能有孤岛存在
-		if(m_nDestValidWidth>m_nWidth/2)
-			return -1;	//1字符过宽可能是精度不高的'4'字符　wjh-2018.3.18
-		if(wTopBlackPixels>f2i(0.35*m_nWidth))	//'1顶部有时候会向左突出一部分宽度，故取值0.35较好 wjh-2018.4.19
-			return -1;	//'1'顶部黑点过多，可能是字符'7'
+	if (wChar.wHz!='.'&&wChar.wHz!='-'&&wChar.wHz!='_')
+	{	//正常字符中间不会有空白带，这种情况一般是错误截取导致 wjh-2019.12.2
 		int yiStart=(int)(0.3*m_nHeight);
 		int yiEnd=m_nHeight-yiStart+1;
-		int irow,icol,iPrevBlackPixelStart=0,iPrevBlackPixelEnd=0;
-		for(irow=yiStart;irow<=yiEnd;irow++)
+		int iPrevBlackPixelStart=0,iPrevBlackPixelEnd=0;
+		for(int irow=yiStart;irow<=yiEnd;irow++)
 		{
-			int iBlackPixelStart=-1,iBlackPixelEnd=0;
-			for(icol=0;icol<m_nWidth;icol++)
+			int iBlackPixelStart=-1,iBlackPixelEnd=-1;
+			for(int icol=0;icol<m_nWidth;icol++)
 			{
 				if(IsBlackPixel(icol,irow))
 				{
@@ -1427,11 +1408,34 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 			}
 			int minPixelX=max(iPrevBlackPixelStart,iBlackPixelStart);
 			int maxPixelX=max(iPrevBlackPixelEnd,  iBlackPixelEnd);
-			if(maxPixelX-minPixelX+1<1)
+			if(maxPixelX-minPixelX<1)
 				return -1;	//'1'字符中间不能出现中断或黑点过少现象
 			iPrevBlackPixelStart=iBlackPixelStart;
 			iPrevBlackPixelEnd  =iBlackPixelEnd;
 		}
+	}
+	if(wChar.wHz=='0')
+	{
+		if(count==0)	//个别细笔划字体在标准化时缩小后会出现不闭合情况，此时中间白色孤岛会丢失，需要后结仔细判断 wjh-2018.4.2
+			return -2;
+		if(count!=1)
+			return -1;
+		//maxy<m_nHeight*0.7->maxy<m_nHeight*0.60下值系数对于粗笔划存在<0.7H情况，故调整为0.6 wjh-2019.12.2
+		else if(pIsland->miny>m_nHeight*0.4||pIsland->maxy<m_nHeight*0.6)	//'0'孤岛上点有时也偏下，故上值取0.4较0.3更合理
+			return -1;	//孤岛的上下顶点不在合理区域内（用于区分0与6　wjh-2018.3.18
+		else if(core_y<=m_nHeight*0.4&&core_y>=m_nHeight*0.6)
+			return -1;
+		else if(pIsland->count>4)
+			return 0;//1;
+	}
+	else if(wChar.wHz=='1')
+	{
+		if(pIsland!=NULL)
+			return -1;	//'1'字符不可能有孤岛存在
+		if (m_nDestValidWidth>m_nWidth/2)
+			return -1;	//1字符过宽可能是精度不高的'4'字符　wjh-2018.3.18
+		if (wTopBlackPixels>f2i(0.35*m_nWidth))	//'1顶部有时候会向左突出一部分宽度，故取值0.35较好 wjh-2018.4.19
+			return -1;	//'1'顶部黑点过多，可能是字符'7'
 	}
 	else if(wChar.wHz=='2')
 	{
@@ -1463,7 +1467,9 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 		int yiStart,yiEnd,irow,maxblackpixels,icol,xiMid=m_nWidth/2;
 		//1.目前暂时统计字符左下8/17~11/17之间的区域，黑点像素数不能大于4 wjh-2018.3.27
 		yiStart=(int)f2i(0.4705*m_nHeight);	//0.4705=8/17	,部分PDF字体中线下移故调为8/17更合适
-		yiEnd=(int)f2i(0.6471*m_nHeight);	//0.6471=11/17
+		//0.6471=11/17
+		//0.6471->0.58 调整原因是发现个别字体的'3'字符底部圆弧笔划上挑较多，且笔划较粗 wjh-2019.12.2
+		yiEnd=(int)f2i(0.58*m_nHeight);	//0.6471*m_nHeight
 		int iPrevBlackPixelStart=0,iPrevBlackPixelEnd=0;
 		int leftblacks=0,moveleft=f2i(2*vfScaleCoef);	//由于'3'字符右下角可能存在粘连故起始统计像素x左移
 		maxblackpixels=f2i(3*m_nHeight/17.0);
@@ -1961,6 +1967,7 @@ CImageCellRegion::CImageCellRegion()
 	m_nMaxCharCout=0;
 	m_nLeftMargin=0;
 	m_nRightMargin=0;
+	yBaseEndGap=0;
 	ClearPreSplitChar();
 }
 
@@ -3009,7 +3016,10 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 		if(wiCharWidth>wMinCharAllWidth)
 			continue;	//仅识别窄字符(如：1)
 		CImageChar text;
-		text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,pCharSect->xiEnd,m_nHeight),STDFONT_HEIGHT);
+		int niCharHeight=this->m_nHeight;
+		if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,pCharSect->xiEnd,this->m_nHeight-yBaseEndGap-2))
+			niCharHeight-=(this->yBaseEndGap);
+		text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,pCharSect->xiEnd,niCharHeight),STDFONT_HEIGHT);
 		if(Alphabets->RecognizeData(&text,0.65,&matchcoef))
 		{
 			pCharSect->wChar=text.wChar;
@@ -3064,6 +3074,71 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 		{
 			wPreferCharWidth=i;
 			break;
+		}
+	}
+	//对于不符合优先推荐字宽且识别匹配率较低的字符缩小分割阈值再查找分割线 wjh-2019.12.1
+	for (pCharSect=listCharSects.EnumObjectFirst();pCharSect;pCharSect=listCharSects.EnumObjectNext())
+	{
+		CHAR_SECT* pNextCharSect=NULL;
+		if (listCharSects.Current->next)
+			pNextCharSect=&listCharSects.Current->next->data;
+		else
+			continue;
+		int tolerance=pCharSect->xiEnd-pCharSect->xiStart+1-wPreferCharWidth;
+		MATCHCOEF match(pCharSect->ciMatchPercentO*0.01,pCharSect->ciMatchPercentW*0.01);
+		if (pCharSect->cnRightBlckPixels==0||tolerance>-4||match.CompareWith(MATCHCOEF(0.6,0.6))>=0||pNextCharSect->ciMatchPercentW>0.65)
+			continue;
+
+		bool findSplitPos=false;
+		WORD wnBlckPixels=0xffff;
+		//在细字体时发现ciTolerancePixels=2容易把一个字符如'L'，给截断 wjh-2019.11.28
+		//for(BYTE ciTolerancePixels=2;!findSplitPos&&ciTolerancePixels<=6;ciTolerancePixels++)
+		BOOL recognized=false;
+		for(BYTE ciTolerancePixels=1;!findSplitPos&&ciTolerancePixels<=6;ciTolerancePixels++)
+		{
+			findSplitPos=false;
+			xiScanStart=max(2,pCharSect->xiEnd);
+			xiScanEnd=pNextCharSect->xiEnd;
+			for(i=xiScanStart;i<xiScanEnd;i++)
+			{
+				tolerance=i-pCharSect->xiStart+1-wPreferCharWidth;
+				if ((tolerance<-4&&ciTolerancePixels>2)||
+					(tolerance<-3&&ciTolerancePixels>3)||
+					(tolerance<-2&&ciTolerancePixels>4))
+					continue;
+				if(IsSplitter(xarrColBlckPixels.GetAt(i-2),ciTolerancePixels))
+				{
+					CImageChar text;
+					int niCharHeight=this->m_nHeight;
+					if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,i,this->m_nHeight-yBaseEndGap-2))
+						niCharHeight-=(this->yBaseEndGap);
+					text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,i,niCharHeight),STDFONT_HEIGHT);
+					if(recognized=Alphabets->RecognizeData(&text,0.65,&matchcoef))
+					{
+						pCharSect->wChar=text.wChar;
+						pCharSect->ciMatchPercentW=(BYTE)(matchcoef.weighting*100+0.5);
+						pCharSect->ciMatchPercentO=(BYTE)(matchcoef.original *100+0.5);
+						pCharSect->xiEnd=i;
+						pNextCharSect->xiStart=i;
+					}
+					if (recognized)
+					{
+						niCharHeight=this->m_nHeight;
+						if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pNextCharSect->xiStart,pNextCharSect->xiEnd,this->m_nHeight-yBaseEndGap-2))
+							niCharHeight-=(this->yBaseEndGap);
+						text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pNextCharSect->xiStart,0,pNextCharSect->xiEnd,niCharHeight),STDFONT_HEIGHT);
+						if(recognized=Alphabets->RecognizeData(&text,0.65,&matchcoef))
+						{
+							pNextCharSect->wChar=text.wChar;
+							pNextCharSect->ciMatchPercentW=(BYTE)(matchcoef.weighting*100+0.5);
+							pNextCharSect->ciMatchPercentO=(BYTE)(matchcoef.original *100+0.5);
+						}
+						break;
+					}
+				}
+			}
+			if (recognized)
+				break;
 		}
 	}
 	if(wMaxCharWidth>wPreferCharWidth+wMinCharWidth+2)	//个别字体中的'-'符可能较宽，如wPreferCharWidth=25,wMinCharWidth=6,而'-'宽度则达到31 wjh-2018.11.16
@@ -3156,6 +3231,19 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 	return pCharSectList->Count;
 }
 
+bool CImageCellRegion::IsHasBelowBlckPixels(WORD iBitStart,WORD iBitEnd,WORD yBelowJ)
+{
+	int blckhits=0;
+	for (WORD i=iBitStart;i<=iBitEnd;i++)
+	{
+		for (WORD yJ=yBelowJ+1;yJ<this->m_nHeight;yJ++)
+		{
+			if (this->IsBlackPixel(i,yJ))
+				blckhits++;
+		}
+	}
+	return blckhits>=3;
+}
 void CImageCellRegion::SplitImageCharSet(WORD iBitStart/*=0*/,WORD wGuessCharWidth/*=0*/,
 	bool bIgnoreRepeatFlag/*=false*/,IMAGE_CHARSET_DATA* imagedata/*=NULL*/,BYTE cbTextTypeFlag/*=0*/)
 {
@@ -3202,7 +3290,10 @@ void CImageCellRegion::SplitImageCharSet(WORD iBitStart/*=0*/,WORD wGuessCharWid
 		CImageChar* pText=listChars.append();
 		pText->xiImgLeft=pCharSect->xiStart;
 		pText->xiImgRight=pCharSect->xiEnd;
-		pText->StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,pCharSect->xiEnd,m_nHeight),stdHeight);
+		int niCharHeight=this->m_nHeight;
+		if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,pCharSect->xiEnd,this->m_nHeight-yBaseEndGap-2))
+			niCharHeight-=(this->yBaseEndGap);
+		pText->StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,pCharSect->xiEnd,niCharHeight),stdHeight);
 		//UINT count=listChars.GetNodeNum();
 		if(Alphabets->RecognizeData(pText,0.6,&matchcoef))
 		{
@@ -3475,6 +3566,7 @@ CImageDataRegion::CImageDataRegion(DWORD key/*=0*/)
 	m_fDisplayRatio=1;
 	m_nOffsetX=0;
 	m_nOffsetY=0;
+	m_ciInitLowNoiseDetect=-1;	//-1:未初始化;0.低噪;1.高噪
 	//同一批图纸明亮度一般一致或接近，使用静态变量初始化，避免对于一张图纸重复调整明暗度 wht 18-07-22
 	m_nMonoForwardPixels=m_nInitMonoForwardPixels;
 }
@@ -3659,9 +3751,9 @@ bool CImageDataRegion::RecognizeSampleCell(IMAGE_DATA *pImageData,RECT* prcText)
 			for(;pCellBtmY;pCellBtmY=levelStartList.GetNext())
 			{
 				//计算文本的最小有效区域
-				LONG xStart=0,xEnd=0,yStart=0,yEnd=0;
+				LONG xStart=0,xEnd=0,yStart=0,yEnd=0,yBaseEnd=0;
 				RECT rcCell=RECT_C(*pCellLeft,*pCellTopY,*pCellRight,*pCellBtmY);
-				CalCharValidRect(rcCell,CImageCellRegion::PARTNO,xStart,yStart,xEnd,yEnd);
+				CalCharValidRect(rcCell,CImageCellRegion::PARTNO,xStart,yStart,xEnd,yEnd,yBaseEnd);
 				if(xEnd-xStart>0&&yEnd-yStart>4)	//找到单元格内的有效文本区域
 				{
 					if(prcText)
@@ -4045,7 +4137,7 @@ int CImageDataRegion::RecognizeLines(ATOM_LIST<int> &lineStartList,BOOL bLevel,I
 						tolerance-=dfAverageHeight;
 						iPrevPosY=iNewLineY;
 					}
-					for(i=xarrTempPosY.Count-1;i<(int)xarrTempPosY.Count;i--)
+					for(i=xarrTempPosY.Count-1;i>=0;i--)
 						xarrLevelLinePosY.Append(xarrTempPosY.At(i));
 				}
 			}
@@ -4301,7 +4393,8 @@ int CImageDataRegion::DetectConnBorderX(int xi,int xiDetectDepth,int yjTop,int y
 	else//if(!hasConnBlckPixel)
 		return xi;
 }
-void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd,int iDataType)
+//yBaseEnd指Q等含有基线以下部分的底线Y值，yEnd则指普通字符的基线Y值 wjh-2019.12.1
+void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd,LONG& yBaseEnd,int iDataType)
 {
 	int i,j,nBlack=0;
 	int FRAMELINE_TOLERANCE=max(2,f2i(1.5*vfScaleCoef));	//识别时锚定角点距离表格线的搜索容差范围
@@ -4487,6 +4580,7 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 			break;
 		}
 	}
+	yBaseEnd=yEnd;
 	//统计每行黑点数，删除噪音点
 	if(iDataType==CImageCellRegion::PARTNO||iDataType==CImageCellRegion::GUIGE)
 	{
@@ -4508,7 +4602,7 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 			//顶行黑点的起止区间占文本整宽的比例值(高噪声时影响真实文本Y向区域限制） wjh-2019.11.28
 			double TOPLINE_BLCKPIXELS_MINSCALECOEF=0.7;
 			if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
-				TOPLINE_BLCKPIXELS_MINSCALECOEF=0;
+				TOPLINE_BLCKPIXELS_MINSCALECOEF=0.1;
 			double fScopeScale=(iEndBlack-iFirstBlack+1)/(double)nWidth;
 			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>TOPLINE_BLCKPIXELS_MINSCALECOEF)
 			{
@@ -4516,10 +4610,35 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 				break;
 			}
 		}
+		for(int j=yEnd;j>0;j--)
+		{	
+			nBlack=0;	//统计每行的黑点数
+			int iFirstBlack=0,iEndBlack=0;
+			for(int i=xStart;i<=xEnd;i++)
+			{
+				if(IsBlackPixel(i,j))
+				{
+					if(iFirstBlack==0)
+						iFirstBlack=i;
+					iEndBlack=i;
+					nBlack++;
+				}
+			}
+			//顶行黑点的起止区间占文本整宽的比例值(高噪声时影响真实文本Y向区域限制） wjh-2019.11.28
+			double TOPLINE_BLCKPIXELS_MINSCALECOEF=0.7;
+			if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
+				TOPLINE_BLCKPIXELS_MINSCALECOEF=0.1;
+			double fScopeScale=(iEndBlack-iFirstBlack+1)/(double)nWidth;
+			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>TOPLINE_BLCKPIXELS_MINSCALECOEF)
+			{
+				yBaseEnd=j;
+				break;
+			}
+		}
 	}
 }
 //计算文本的最小有效区域,xEnd,yEnd分别为右侧及底部含黑点的边界
-void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd)
+void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd,LONG& yBaseEnd)
 {
 	//单元格高度按两个字高计算，初始参数统计时以字高17像素为基准，故此处以单元格高35像素为基准 wjh-2018.3.26
 	double vfScaleCoef=(data_rect.bottom-data_rect.top)/35.0;
@@ -4536,16 +4655,28 @@ void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStar
 	//TODO:未考虑小数点字符像素数较少情况　wjh-2018.3.19
 	int MAX_ISLAND_PIXELS=max(10,f2i(5*vfScaleCoef));
 	//if(iDataType==CImageCellRegion::GUIGE)	//'-'字符像素较少
-	if(iDataType==CImageCellRegion::NUM)
+	if (iDataType==CImageCellRegion::NUM)
 		MAX_ISLAND_PIXELS=max(15,f2i(15*vfScaleCoef));
 	long liNoisePixels=this->RemoveNoisePixels(&rcCell,MAX_ISLAND_PIXELS);
-	if (liNoisePixels<10 && BelongImageData())	//自动设定为低噪声背景状态 wjh-2019.11.28
+	if (m_ciInitLowNoiseDetect==0)
 		BelongImageData()->SetLowBackgroundNoise(true);
+	else if (m_ciInitLowNoiseDetect>0)
+		BelongImageData()->SetLowBackgroundNoise(false);
+	if (liNoisePixels<10 && BelongImageData())	//自动设定为低噪声背景状态 wjh-2019.11.28
+	{
+		BelongImageData()->SetLowBackgroundNoise(true);
+		m_ciInitLowNoiseDetect=0;
+	}
+	else
+	{
+		BelongImageData()->SetLowBackgroundNoise(false);
+		m_ciInitLowNoiseDetect=1;
+	}
 #ifdef _TIMER_COUNT
 	timer.Relay(4002);
 #endif
 	//Step 3. 收缩矩形到有效文本区域（判断条件从四周跳过空白区域）
-	CalCellTextRect(rcCell,vfScaleCoef,xStart,yStart,xEnd,yEnd,iDataType);
+	CalCellTextRect(rcCell,vfScaleCoef,xStart,yStart,xEnd,yEnd,yBaseEnd,iDataType);
 #ifdef _TIMER_COUNT
 	timer.Relay(4003);
 #endif
@@ -4585,7 +4716,7 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 	CXhChar50 sValue;
 	//计算文本的最小有效区域
 	LONG xStart=0,xEnd=0;
-	LONG yStart=0,yEnd=0;
+	LONG yStart=0,yEnd=0,yBaseEnd=0;
 	int i,j;
 #ifdef _DEBUG
 	CLogErrorLife life;
@@ -4620,7 +4751,7 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 #ifdef _TIMER_COUNT
 	DWORD dwStart400Tick=timer.Relay();
 #endif
-	CalCharValidRect(rcCell,idCellTextType,xStart,yStart,xEnd,yEnd);
+	CalCharValidRect(rcCell,idCellTextType,xStart,yStart,xEnd,yEnd,yBaseEnd);
 	if(xEnd-xStart<2)
 		return sValue="";	//返回空单元格
 	double fRatioOfActualHeight=(yEnd-yStart+1.0)/(data_rect.bottom-data_rect.top+1.0);
@@ -4691,6 +4822,7 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 	cell.m_nMaxCharCout=(int)(cell.m_nWidth/(0.6*cell.m_nHeight));
 	cell.m_nLeftMargin=xStart-rcCell.left;	//有效区域与单元格左侧边界线距离，用来处理表格线压字问题 wht 18-07-30
 	cell.m_nRightMargin=rcCell.right-xEnd;		//有效区域与单元格右侧边界线距离
+	cell.yBaseEndGap=max(0,yEnd-yBaseEnd);
 	if(idCellTextType!=CImageCellRegion::GUIGE&&idCellTextType!=CImageCellRegion::PARTNO)
 		cell.UpdateFontTemplCharState();	//规格列中需要根据当前识别的字符数量实时设定模版字符的识别状态
 #ifdef _DEBUG
@@ -5213,10 +5345,14 @@ void CheckPartLabel(CImageDataRegion *pRegion)
 CLogFile bomlog("D:\\summbom.txt");
 #ifdef _DEBUG
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/,int iCellRowStart/*=-1*/,int iCellRowEnd/*=-1*/,int iCellCol/*=-1*/)	//-1表示全部,>=0表示指定行或列 wjh-2018.3.14
+{
+	//iCellCol=1;
+	//iCellRowStart=0;
+	//iCellRowEnd=iCellRowStart+1;
 #else
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/)
-#endif
 {
+#endif
 	hashBomParts.Empty();
 	hashImgShieldLayer.Empty();
 #ifdef _TIMER_COUNT
@@ -7501,7 +7637,8 @@ bool CImageDataFile::InitImageFileHeader(const char* imagefile)
 	BYTE exterbyte;
 	return image.ReadImageFile(m_sPathFileName,&exterbyte,1,m_nMonoForwardPixels);
 }
-bool CImageDataFile::InitImageFile(const char* imagefile,const char* file_path,bool update_file_path/*=true*/,PDF_FILE_CONFIG *pPDFConfig/*=NULL*/)
+//szIBomFilePath参数为了与外围ImageHost.cpp中直接从IBOM文件加载图片协调一致才添加，本文件中无意义 wjh-2019.11.30
+bool CImageDataFile::InitImageFile(const char* imagefile,const char* szIBomFilePath,bool update_file_path/*=true*/,PDF_FILE_CONFIG *pPDFConfig/*=NULL*/)
 {
 	CXhChar500 sPathFileName;
 	if(imagefile!=NULL)
@@ -7531,7 +7668,9 @@ bool CImageDataFile::InitImageFile(const char* imagefile,const char* file_path,b
 			m_ciRawImageFileType=RAW_IMAGE_PDF_IMG;
 	}
 	else
+	{
 		retcode=image.ReadImageFile(sPathFileName,NULL,NULL,m_nMonoForwardPixels);
+	}
 	if(image.GetEffWidth()*image.GetHeight()>=0x2000000)
 	{
 		this->UnloadRawImageBytes();
@@ -7712,6 +7851,18 @@ int CImageDataFile::Get24BitsImageEffWidth()
 {
 	return image.GetEffWidth();
 }
+static bool _LocalTurnTransWnH(UINT uiTurnCount,int* piHeight,int* piWidth,int* pniEffWidth)
+{
+	if ((uiTurnCount%2)==0||piHeight==NULL||piWidth==NULL)
+		return false;
+	int W = *piHeight;
+	int H = *piWidth;
+	if(pniEffWidth)
+		*pniEffWidth = ((W * 3 + 3) / 4) * 4;
+	*piWidth = W;
+	*piHeight = H;
+	return true;
+}
 int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 {
 	bool loadrawdata_from_vm=false;
@@ -7721,16 +7872,7 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 	int nEffWidth = image.GetEffWidth();
 	if (IsNeedTurnImage())
 	{	//根据图片翻转信息重新计算宽度高度 wht 19-11-30
-		int nTurnCount = abs(GetTurnCount());
-		bool bClockwise = GetTurnCount() > 0;
-		for (int i = 0; i < nTurnCount; i++)
-		{
-			int W1 = nHeight;
-			int H1 = nWidth;
-			nEffWidth = ((W1 * 3 + 3) / 4) * 4;
-			nWidth = W1;
-			nHeight = H1;
-		}
+		_LocalTurnTransWnH(abs(m_nTurnCount),&nHeight,&nWidth,&nEffWidth);
 		count = nEffWidth*nHeight;
 	}
 	if(imagedata->imagedata&&(imagedata->nEffWidth*imagedata->nHeight)>=count)
@@ -7756,9 +7898,9 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 		{
 			if (IsNeedTurnImage())
 			{	//根据图片翻转信息重新计算宽度高度 wht 19-11-30
-				int nTurnCount = abs(GetTurnCount());
 				bool bClockwise = GetTurnCount() > 0;
-				for (int i = 0; i < nTurnCount; i++)
+				UINT uiTurnCount = (bClockwise ? GetTurnCount():-GetTurnCount())%4;
+				for (UINT i = 0; i < uiTurnCount; i++)
 					image.Turn90(bClockwise);
 			}
 			memcpy(imagedata->imagedata,image.GetRawBits(),count);
@@ -8754,7 +8896,7 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 						pMatch->matchcoef=matchcoef;
 						pMatch->pTemplChar=pChildTmplChar;
 					}
-					if(pMachCoef->CompareWith(mincoef)>=0)
+					if(pMatch->matchcoef.CompareWith(mincoef)>=0)
 						break;	//已找到合适字体的匹配字符
 				}
 			}
@@ -8780,21 +8922,16 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 	{
 		if(pMatch->matchcoef.CompareWith(maxcoef)>0)
 		{
-			maxcoef=pMatch->matchcoef;
 			pText->wChar=pMatch->wChar;
-			pLastMatch=pMatch;
+			maxcoef2=maxcoef=pMatch->matchcoef;
+			pMostMatch=pLastMatch=pMatch;
 		}
-		//取最匹配的一项，避免丢字符 wht 18-07-14
-		if(pText->wChar.wHz==0&&pMatch->matchcoef.CompareWith(maxcoef2)>0)
-		{
+		else if(pText->wChar.wHz==0&&pMatch->matchcoef.CompareWith(maxcoef2)>0)
+		{	//取最匹配的一项，避免丢字符 wht 18-07-14
+			pText->wChar=pMatch->wChar;
 			maxcoef2=pMatch->matchcoef;
 			pMostMatch=pMatch;
 		}
-	}
-	if(pLastMatch==NULL&&pMostMatch)
-	{
-		pText->wChar=pMostMatch->wChar;
-		pLastMatch=pMostMatch;
 	}
 	
 	if(pText->wChar.wHz==0&&pCharPoint&&pCharPoint->m_bTemplEnabled)
@@ -8804,24 +8941,24 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 			pText->wChar.wHz=0;
 	}
 #ifdef _DEBUG
-	if(CImageDataRegion::EXPORT_CHAR_RECOGNITION&&pText->wChar.wHz>0&&pLastMatch&&pLastMatch->pTemplChar)
+	if(CImageDataRegion::EXPORT_CHAR_RECOGNITION&&pText->wChar.wHz>0&&pMostMatch&&pMostMatch->pTemplChar)
 	{
-		CImageChar* pTempText=pLastMatch->pTemplChar;
+		CImageChar* pTempText=pMostMatch->pTemplChar;
 		char wch[3]={pTempText->wChar.chars[0],pTempText->wChar.chars[1],0};
 		CXhChar50 charname("D:\\Recog\\%s",wch);
 		if(pTempText->FontSerial>0)
 			charname.Append(CXhChar16("F%d",pTempText->FontSerial),'#');
-		charname.Append(CXhChar16("%.2f.txt",pLastMatch->matchcoef.weighting),'#');
+		charname.Append(CXhChar16("%.2f.txt",pMostMatch->matchcoef.weighting),'#');
 		CLogFile logchar(charname);
 		CLogErrorLife life(&logchar);
 		int i,j,blackcount=0,blackcount1=0,blackcount2=0;
-		pSafeText=pLastMatch->bReExtended?&safetext:pText;
+		pSafeText=pMostMatch->bReExtended?&safetext:pText;
 		for(j=0;j<pTempText->m_nMaxTextH;j++)
 		{
 			for(i=0;i<pTempText->m_nMaxTextH;i++)
 			{
 				bool black1=pTempText->IsBlackPixel(i,j);
-				bool black2=pSafeText->IsBlackPixel(i-pLastMatch->ciOffsetX,j-pLastMatch->ciOffsetY);
+				bool black2=pSafeText->IsBlackPixel(i-pMostMatch->ciOffsetX,j-pMostMatch->ciOffsetY);
 				if(black1)
 					blackcount1++;
 				if(black2)
@@ -8866,14 +9003,14 @@ BOOL CAlphabets::RecognizeData(CImageChar* pText,double minMatchCoef/*=0.0*/,MAT
 		countstr.ResizeLength(pTempText->m_nMaxTextH);
 		logchar.LogString(countstr,false);
 		logchar.LogString("|",false);
-		countstr.Printf("%4d(std char)",blackcount1);
+		countstr.Printf("%4d(std char#%d)",blackcount1,pTempText->FontSerial);
 		countstr.ResizeLength(pTempText->m_nMaxTextH);
 		logchar.LogString(countstr,false);
 		life.EnableShowScreen(false);
 	}
 #endif
 	if(pText->wChar.wHz>0&&pMachCoef)
-		*pMachCoef=maxcoef;
+		*pMachCoef=pLastMatch!=NULL?maxcoef:maxcoef2;
 	if(pLastMatch&&pLastMatch->pTemplChar)
 		PracticeFontRecogChance(pLastMatch->pTemplChar->FontSerial,maxcoef.weighting);
 	return pText->wChar.wHz>0;

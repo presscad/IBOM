@@ -221,7 +221,7 @@ struct IImageFile{
 	static const BYTE RAW_IMAGE_TIF		= 5;	//TIF
 	virtual long GetSerial()=0;
 	virtual bool InitImageFileHeader(const char* imagefile)=0;
-	virtual bool InitImageFile(const char* imagefile,const char* file_path,bool update_file_path=true,PDF_FILE_CONFIG *pPDFConfig=NULL)=0;
+	virtual bool InitImageFile(const char* imagefile,const char* szIBomFilePath,bool update_file_path=true,PDF_FILE_CONFIG *pPDFConfig=NULL)=0;
 	virtual void GetPathFileName(char* imagename,int maxStrBufLen=17)=0;
 	virtual BYTE ImageCompressType()=0;
 	virtual bool SetImageRawFileData(char* imagedata,UINT uiMaxDataSize,BYTE biFileType,PDF_FILE_CONFIG *pPDFConfig=NULL)=0;

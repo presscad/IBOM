@@ -556,16 +556,23 @@ bool CImageTransform::WriteBmpFile(FILE* fp)
 	free(paddedImage);
 	return true;
 }
-bool CImageTransform::ReadImageFileHeader(FILE* fp,char ciBmp0Jpeg1Png2)
+bool CImageTransform::ReadImageFileHeader(FILE* fp,char ciBmp0Jpeg1Png2tif3)
 {
 	BYTE exterbyte=0;	//仅获取文件头，不需要实际分配空间
-	if(ciBmp0Jpeg1Png2==0)
+	if(ciBmp0Jpeg1Png2tif3==0)
 		return ReadBmpFile(fp,&exterbyte,1);
 	CImageFileJpeg jpgFile;
 	CImageFilePng  pngFile;
+#ifdef _SUPPORT_TIFF_IMG_
+	CImageFileTif  tifFile;
+#endif
 	CImageFile* pImageFile=&pngFile;
-	if(ciBmp0Jpeg1Png2==1)
+	if(ciBmp0Jpeg1Png2tif3==1)
 		pImageFile=&jpgFile;
+#ifdef _SUPPORT_TIFF_IMG_
+	else if (ciBmp0Jpeg1Png2tif3==3)
+		pImageFile=&tifFile;
+#endif
 	pImageFile->ReadImageFile(fp,&exterbyte,1);
 	m_nWidth=pImageFile->GetWidth();
 	m_nEffByteWidth=pImageFile->GetEffWidth();
@@ -600,6 +607,7 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 	else
 		return false;
 	bool readimgdata=pImageFile->ReadImageFile(fp,lpExterRawBitsBuff,uiBitsBuffSize);
+	
 	m_nWidth = pImageFile->GetWidth();
 	m_nEffByteWidth = pImageFile->GetEffWidth();
 	m_nHeight = pImageFile->GetHeight();
@@ -1041,14 +1049,12 @@ bool CImageTransform::Turn90(bool byClockwise)		//将文件中图像顺时针转90度
 	this->m_nWidth=W1;
 	this->m_nHeight=H1;
 	m_nEffByteWidth=((W1*3+3)/4)*4;
-	if (m_lpRawBits!=NULL)
-	{
-		if (byClockwise)
-			m_xPdfCfg.rotation += 90;
-		else
-			m_xPdfCfg.rotation -= 90;
-		m_xPdfCfg.rotation = m_xPdfCfg.rotation % 360;
-	}
+	//
+	if (byClockwise)
+		m_xPdfCfg.rotation += 90;
+	else
+		m_xPdfCfg.rotation -= 90;
+	m_xPdfCfg.rotation = m_xPdfCfg.rotation % 360;
 	return m_lpRawBits!=NULL;
 }
 BYTE CImageTransform::CalGreynessThreshold()
@@ -1298,7 +1304,7 @@ bool CImageTransform::UpdateGreyImageBits(bool bUpdateMonoThreshold/*=false*/, i
 		return false;
 	if (m_lpGrayBitsMap)
 		delete[]m_lpGrayBitsMap;
-	//if (m_uBitcount == 24)
+	//if (m_uBitcount == 24)	//因过往代码不规范存在m_uBitcount未初始化情况所以暂不敢开放此参数 wjh-2019.11.30
 	{
 		m_lpGrayBitsMap = new BYTE[m_nWidth*m_nHeight];
 		for (int i = 0; i < m_nWidth; i++)

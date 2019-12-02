@@ -527,6 +527,7 @@ public:
 public:
 	bool m_bStrokeVectorImage;			//笔画矢量图生成的图像，这种图像几乎不存在失真，故最大程度保留了各字符的特征信息，适用于特征识别优先 wjh-2018.8.31
 	int m_nDataType;
+	int yBaseEndGap;	//字符基底线，0表示与行文本底线相同 wjh-2019.12.1
 	int m_nLeftMargin,m_nRightMargin;	//有效区域与单元格左\右侧边界线距离，用来处理表格线压字问题 wht 18-07-30
 	int m_nMaxCharCout;
 	BYTE m_biStdPartType;
@@ -544,6 +545,7 @@ public:
 	int RetrieveMatchChar(WORD iBitStart,WORD& wChar,MATCHCOEF* pMatchCoef=NULL,double min_recogmatch_coef=0.6);
 	int RetrieveMatchChar(WORD iBitStart,WORD iSplitStart,WORD iSplitEnd,WORD& wChar,MATCHCOEF* pMatchCoef=NULL,double min_recogmatch_coef=0.6);
 	void UpdateFontTemplCharState();
+	bool IsHasBelowBlckPixels(WORD iBitStart,WORD iBitEnd,WORD yBelowJ);
 	void SplitImageCharSet(WORD iBitStart=0,WORD wGuessCharWidth=0,bool bIgnoreRepeatFlag=false,
 		IMAGE_CHARSET_DATA* imagedata=NULL,BYTE cbTextTypeFlag=0);
 #ifdef _DEBUG
@@ -659,6 +661,7 @@ typedef struct tagCELL_RECT
 class CImageDataRegion : public IImageNoiseDetect,public IImageRegion
 {
 	ARRAY_LIST<int> m_arrColCellsWidth;
+	char m_ciInitLowNoiseDetect;	//-1:未初始化;0.低噪;1.高噪
 public:
 	struct PIXELLINE
 	{
@@ -691,7 +694,8 @@ private:
 	bool IsBlackPixel(int i,int j,BYTE* lpBits,WORD wBitWidth);
 
 	void CalCellInternalRect(RECT& rcCellWithFrame,double vfScaleCoef,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd);
-	void CalCellTextRect(RECT& rcCellNoneFrame,double vfScaleCoef,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd,int iDataType);
+	//yBaseEnd指Q等含有基线底Y值，yEnd则指普通字符的底(基)线Y值 wjh-2019.12.1
+	void CalCellTextRect(RECT& rcCellNoneFrame,double vfScaleCoef,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd,LONG& yBaseEnd,int iDataType);
 	int DetectConnBorderX(int xi,int xiDetectDepth,int yjTop,int yjBtm,bool* xarrColState=NULL,bool bToLeftTrueRightFalse=true);
 	int CalMaxPixelsIndex(int start,int end,BOOL bLevel,IMAGE_DATA *pImageData=NULL);
 	int StatColLinePixeCount(int start,int end,int iCol);
@@ -710,7 +714,7 @@ private:
 #endif
 public:
 	bool RecognizeSampleCell(IMAGE_DATA *pImageData,RECT* prcText);
-	void CalCharValidRect(RECT data_rect,int iDataType,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd);
+	void CalCharValidRect(RECT data_rect,int iDataType,LONG& xStart,LONG& yStart,LONG& xEnd,LONG& yEnd,LONG& yBaseEnd);
 public:
 	DWORD m_dwKey;
 	CHashListEx<BOM_PART> hashBomParts;
@@ -852,7 +856,7 @@ public:
 public:
 	virtual long GetSerial(){return m_idSerial;}
 	virtual bool InitImageFileHeader(const char* imagefile);
-	virtual bool InitImageFile(const char* imagefile,const char* file_path,bool update_file_path=true,PDF_FILE_CONFIG *pPDFConfig=NULL);
+	virtual bool InitImageFile(const char* imagefile,const char* szIBomFilePath,bool update_file_path=true,PDF_FILE_CONFIG *pPDFConfig=NULL);
 	virtual void SetPathFileName(const char* imagefilename);
 	virtual void GetPathFileName(char* imagename,int maxStrBufLen=17);
 	virtual int GetWidth();
