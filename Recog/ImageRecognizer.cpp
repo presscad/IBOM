@@ -1397,8 +1397,8 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 						iBlackPixelStart=icol;
 					iBlackPixelEnd=max(iBlackPixelEnd,icol);
 				}
-				else if(iBlackPixelStart>=0)
-					break;	//黑点已结束
+				//else if(iBlackPixelStart>=0)
+				//	break;	//黑点已结束
 			}
 			if(irow==yiStart)
 			{
@@ -2869,7 +2869,7 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 		return -1;
 	if(flag.IsHasCellTextType(CImageCellRegion::SUM_W)&&Alphabets->pCharPoint==NULL)
 		return -1;
-	int STDFONT_HEIGHT=Alphabets->GetTemplateH();
+	int STDFONT_HEIGHT=m_nHeight;//Alphabets->GetTemplateH();
 	CHAR_SECT* pCharSect;
 	CXhSimpleList<CHAR_SECT> listCharSects;
 	if(pCharSectList==NULL)
@@ -4025,7 +4025,9 @@ bool CImageDataRegion::IntelliRecogCornerPoint(const POINT& xPickPoint,const POI
 }
 //识别图片的中的行列
 int CImageDataRegion::RecognizeLines(ATOM_LIST<int> &lineStartList,BOOL bLevel,IMAGE_DATA *pImageData/*=NULL*/)
-{
+{	//移动窗口宽度取值15 wht 19-12-02
+	//行扫描时考虑一个移动窗口内有且仅有一条行线(按自高折算)
+	//列扫描时考虑一个移动窗口内有且仅有一条列线(最窄列至少有三个字符)
 	int offset=15,start=0,end=0;
 	int i,nLen=0;
 	if(bLevel)	//识别行数
@@ -4658,18 +4660,26 @@ void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStar
 	if (iDataType==CImageCellRegion::NUM)
 		MAX_ISLAND_PIXELS=max(15,f2i(15*vfScaleCoef));
 	long liNoisePixels=this->RemoveNoisePixels(&rcCell,MAX_ISLAND_PIXELS);
-	if (m_ciInitLowNoiseDetect==0)
-		BelongImageData()->SetLowBackgroundNoise(true);
-	else if (m_ciInitLowNoiseDetect>0)
-		BelongImageData()->SetLowBackgroundNoise(false);
+	if (m_ciInitLowNoiseDetect == 0)
+	{
+		if(BelongImageData())
+			BelongImageData()->SetLowBackgroundNoise(true);
+	}
+	else if (m_ciInitLowNoiseDetect > 0)
+	{
+		if (BelongImageData())
+			BelongImageData()->SetLowBackgroundNoise(false);
+	}
 	if (liNoisePixels<10 && BelongImageData())	//自动设定为低噪声背景状态 wjh-2019.11.28
 	{
-		BelongImageData()->SetLowBackgroundNoise(true);
+		if (BelongImageData())
+			BelongImageData()->SetLowBackgroundNoise(true);
 		m_ciInitLowNoiseDetect=0;
 	}
 	else
 	{
-		BelongImageData()->SetLowBackgroundNoise(false);
+		if (BelongImageData())
+			BelongImageData()->SetLowBackgroundNoise(false);
 		m_ciInitLowNoiseDetect=1;
 	}
 #ifdef _TIMER_COUNT
@@ -4717,8 +4727,8 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 	//计算文本的最小有效区域
 	LONG xStart=0,xEnd=0;
 	LONG yStart=0,yEnd=0,yBaseEnd=0;
-	int i,j;
 #ifdef _DEBUG
+	int i, j;
 	CLogErrorLife life;
 	if(bExportImgLogFile)
 	{
@@ -4759,6 +4769,7 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 		*pcbWarningLevel=0;
 	if(fRatioOfActualHeight<0.4||fRatioOfActualHeight>0.85)
 		*pcbWarningLevel=WARNING_LEVEL::ABNORMAL_TXT_REGION;
+#ifdef _DEBUG
 	if(imagedata!=NULL)
 	{	//返回单元格区域图像，以便从单元格中提取字体
 		imagedata->nWidth=xEnd-xStart+1;
@@ -4778,6 +4789,8 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 			}
 		}
 	}
+#endif
+
 #ifdef _TIMER_COUNT
 	timer.Relay(400,dwStart400Tick);
 #endif
@@ -5346,9 +5359,9 @@ CLogFile bomlog("D:\\summbom.txt");
 #ifdef _DEBUG
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/,int iCellRowStart/*=-1*/,int iCellRowEnd/*=-1*/,int iCellCol/*=-1*/)	//-1表示全部,>=0表示指定行或列 wjh-2018.3.14
 {
-	//iCellCol=1;
-	//iCellRowStart=0;
-	//iCellRowEnd=iCellRowStart+1;
+	iCellCol=0;
+	iCellRowStart=3;
+	iCellRowEnd=iCellRowStart+1;
 #else
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/)
 {
@@ -5840,6 +5853,8 @@ int CImageDataRegion::RecognizeSingleBomPart(DYN_ARRAY<CELL_RECT> &rowCells,BOOL
 int CImageDataRegion::RecognizeSingleBomPart(DYN_ARRAY<CELL_RECT> &rowCells,BOOL bTestRecog/*=FALSE*/,BYTE *pWarningLevel/*=NULL*/)
 #endif
 {	
+	if (rowCells.Size()<=0)
+		return 0;
 	//TODO:按定死比例去判断是否有列合并，存在隐患，但目前还不急迫,应参照CFormatTable处理单元格合并 wjh-2018.8.22
 	//检查第1、2、3列是否合并，前四列宽度比例为：10、25、15、10
 	const BYTE MERGE_COL1n2   = 2;
@@ -5862,42 +5877,47 @@ int CImageDataRegion::RecognizeSingleBomPart(DYN_ARRAY<CELL_RECT> &rowCells,BOOL
 	const int DETECTION_WIDTH=8;	//在分割线左右侧查找合适的分割线
 	CELL_RECT *pPrevRect=NULL;
 	//最后一个单元格，同时修订左右侧分割线，其余单元格修订左侧分割线(即前一单元格的右侧分割线)
-	for(UINT i=0;i<rowCells.Size()+1;i++)
-	{	
-		bool bLastCell=(i==rowCells.Size());
-		int iCellIndex=bLastCell?i-1:i;
-		int iCurCol=bLastCell?rowCells[iCellIndex].right:rowCells[iCellIndex].left;
-		int start=rowCells[iCellIndex].top,end=rowCells[iCellIndex].bottom;
-		const int MIN_PIXE_COUNT=end-start;
-		//1.判断当前分割线是否需要修订
-		int nCount=StatColLinePixeCount(start,end,iCurCol);
-		if(nCount<MIN_PIXE_COUNT)
-		{	//2.在当前分割线左右侧探测新的分割线
-			int iMaxColIndex=iCurCol;
-			int nMaxPixelCount=nCount;
-			for(int j=max(0,iCurCol-DETECTION_WIDTH);j<min(m_nWidth,iCurCol+DETECTION_WIDTH);j++)
-			{
-				nCount=StatColLinePixeCount(start,end,j);
-				if(nCount>nMaxPixelCount)
+	if (rowCells.Size() > 0)
+	{	//单元格数量大于0时才有必须要执行以下代码，否则修正最后一个单元格会死机 wht 19-12-02
+		for (UINT i = 0; i < rowCells.Size() + 1; i++)
+		{
+			bool bLastCell = (i == rowCells.Size());
+			int iCellIndex = bLastCell ? i - 1 : i;
+			if(iCellIndex<0)
+				break;	//rowCells.Size()==0时iCellIndex<0需跳出循环 wht 19-12-02
+			int iCurCol = bLastCell ? rowCells[iCellIndex].right : rowCells[iCellIndex].left;
+			int start = rowCells[iCellIndex].top, end = rowCells[iCellIndex].bottom;
+			const int MIN_PIXE_COUNT = end - start;
+			//1.判断当前分割线是否需要修订
+			int nCount = StatColLinePixeCount(start, end, iCurCol);
+			if (nCount < MIN_PIXE_COUNT)
+			{	//2.在当前分割线左右侧探测新的分割线
+				int iMaxColIndex = iCurCol;
+				int nMaxPixelCount = nCount;
+				for (int j = max(0, iCurCol - DETECTION_WIDTH); j < min(m_nWidth, iCurCol + DETECTION_WIDTH); j++)
 				{
-					iMaxColIndex=j;
-					nMaxPixelCount=nCount;
+					nCount = StatColLinePixeCount(start, end, j);
+					if (nCount > nMaxPixelCount)
+					{
+						iMaxColIndex = j;
+						nMaxPixelCount = nCount;
+					}
+				}
+				//3.修正分割线
+				if (nMaxPixelCount > MIN_PIXE_COUNT)
+				{
+					if (bLastCell)
+						rowCells[iCellIndex].right = iMaxColIndex;
+					else
+					{
+						rowCells[iCellIndex].left = iMaxColIndex;
+						if (pPrevRect)
+							pPrevRect->rect.right = rowCells[iCellIndex].left;
+					}
 				}
 			}
-			//3.修正分割线
-			if(nMaxPixelCount>MIN_PIXE_COUNT)
-			{
-				if(bLastCell)
-					rowCells[iCellIndex].right=iMaxColIndex;
-				else
-				{
-					rowCells[iCellIndex].left=iMaxColIndex;
-					if(pPrevRect)
-						pPrevRect->rect.right=rowCells[iCellIndex].left;
-				}
-			}
+			pPrevRect = &rowCells[i];
 		}
-		pPrevRect=&rowCells[i];
 	}
 	//3、识别每个区域的内容
 	static const BYTE PART_GENERAL			= 0;	//常规构件（角钢、钢板、钢管、扁钢、槽钢、圆钢）

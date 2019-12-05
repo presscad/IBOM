@@ -385,7 +385,10 @@ bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lp
 	image.bmBitsPixel=infoHeader.biBitCount;
 	image.bmHeight=infoHeader.biHeight;
 	int widthBits = infoHeader.biWidth*infoHeader.biBitCount;
-	image.bmWidthBytes=((widthBits+31)/32)*4;
+	//image.bmWidthBytes=((widthBits+31)/32)*4;
+	image.bmWidthBytes = widthBits/ 8;
+	if (widthBits % 8 > 0)
+		image.bmWidthBytes++;
 	if(lpExterRawBitsBuff!=NULL&&(long)uiBitsBuffSize<infoHeader.biHeight*image.bmWidthBytes)
 	{
 		//fclose(fp);
@@ -1091,9 +1094,12 @@ bool CImageTransform::UpdateRowRectPixelGrayThreshold(int xiTopLeft,int yjTopLef
 	//GRID_WIDTH滑动窗口宽度值(取经验值20)，取值过大后折痕部分会成为黑块 wht 19-01-18
 	int GRID_WIDTH=20,HALF_GRIDWIDTH=GRID_WIDTH/2;
 	int xiRight=min(m_nWidth,xiTopLeft+niRowRectWidth);	//每行的右边界(不含本身)
+	int nGrayBitsCount = m_nWidth * m_nHeight;
 	for(int xiCurrScan=0;xiCurrScan<niRowRectWidth;xiCurrScan++)
 	{
 		DWORD iPixelStartPos=yjTopLeft*m_nWidth+xiTopLeft+xiCurrScan;
+		if (iPixelStartPos >= (DWORD)nGrayBitsCount)
+			continue;	//iPixelStartPos超过最大数 wht 19-12-03
 		char ciMoveWndType='L';	//'L'表示在左边界，'R'表示在右边界，其它如'M'表示中间，中间滑动窗口只更新第xiCurrScan+HALF_GRIDWIDTH列单色分割阈值
 		if(xiCurrScan<GRID_WIDTH)
 			ciMoveWndType='L';
@@ -1106,6 +1112,8 @@ bool CImageTransform::UpdateRowRectPixelGrayThreshold(int xiTopLeft,int yjTopLef
 			int xiLeftElapsedIndex=iPixelStartPos-GRID_WIDTH;
 			for (int iy=0;iy<GRID_SIZE;iy++)
 			{
+				if (xiLeftElapsedIndex >= nGrayBitsCount)
+					break;	//超出最大数，跳出旋转 wht 19-12-03
 				arrRGBSumPixelNum[m_lpGrayBitsMap[xiLeftElapsedIndex]]--;
 				xiLeftElapsedIndex+=m_nWidth;
 			}
@@ -1113,6 +1121,8 @@ bool CImageTransform::UpdateRowRectPixelGrayThreshold(int xiTopLeft,int yjTopLef
 		int xiCurrScanPixelIndex=iPixelStartPos;
 		for (int iy=0;iy<GRID_SIZE;iy++)
 		{
+			if (xiCurrScanPixelIndex >= nGrayBitsCount)
+				break;	//超出最大数，跳出旋转 wht 19-12-03
 			arrRGBSumPixelNum[m_lpGrayBitsMap[xiCurrScanPixelIndex]]++;
 			xiCurrScanPixelIndex+=m_nWidth;
 		}
@@ -1160,6 +1170,8 @@ bool CImageTransform::UpdateRowRectPixelGrayThreshold(int xiTopLeft,int yjTopLef
 				int xiCurrSetPixelIndex=iPixelStartPos+xiCurrSetPixelX-xiCurrScan;
 				for (int iy=0;iy<GRID_SIZE;iy++)
 				{
+					if (xiCurrScanPixelIndex >= nGrayBitsCount)
+						break;	//超出最大数，跳出旋转 wht 19-12-03
 					this->m_lpPixelGrayThreshold[xiCurrSetPixelIndex]=niMonoThreshold;
 					xiCurrSetPixelIndex+=m_nWidth;
 				}

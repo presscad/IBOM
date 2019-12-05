@@ -105,7 +105,9 @@ LONG WINAPI  IBomExceptionFilter(EXCEPTION_POINTERS *pExptInfo)
 {
 	// 程序崩溃时，将写入程序目录下的ExceptionDump.dmp文件  
 	GetAppPath(APP_PATH);
-	CXhChar500 sExceptionFilePath("%s\\IBomException.dmp", APP_PATH);
+	CTime time = CTime::GetCurrentTime();
+	CString sTime = time.Format("%Y%m%d%H%M%S");
+	CXhChar500 sExceptionFilePath("%s\\IBomException(%s).dmp", APP_PATH,sTime);
 	size_t size = sExceptionFilePath.Length;
 	if (size > 0)
 	{

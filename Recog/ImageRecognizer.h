@@ -865,7 +865,7 @@ public:
 	__declspec( property(get=GetHeight)) int Height;
 	//背景是否为低噪点 wjh-2019.11.28
 	virtual bool SetLowBackgroundNoise(bool blValue){return m_bLowBackgroundNoise=blValue;}
-	virtual bool IsLowBackgroundNoise()const{return m_bLowBackgroundNoise;}
+	virtual bool IsLowBackgroundNoise()const { return m_bLowBackgroundNoise; }
 	__declspec( property(put=SetLowBackgroundNoise,get=IsLowBackgroundNoise)) bool blLowBackgroundNoise;
 	//是否为细笔划字体
 	virtual bool SetThinFontText(bool blValue){return m_bThinFontText=blValue;}
