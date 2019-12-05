@@ -58,6 +58,7 @@ public:
 	virtual int GetImageEffWidth(){return m_nEffWidth;}	//获取图像每行象素所占用的实际字节数
 	virtual int GetImageWidth(){return m_nWidth;}		//获取图像每行的有效象素数
 	virtual int GetImageHeight(){return m_nHeight;}		//获取图像每列的有效象素数
+	virtual UINT ReallocImageBits(UINT uiBytesCount);
 };
 class DETECT_MAP{
 	bool m_bExternalMemory;
@@ -739,6 +740,7 @@ public:
 	void ToBuffer(CBuffer &buffer);
 	void FromBuffer(CBuffer &buffer,long version);
 public:	//调整灰度图转为黑白图分界线阈值的相关变量及函数
+	virtual UINT ReallocImageBits(UINT uiBytesCount);
 	virtual double SetMonoThresholdBalanceCoef(double mono_balance_coef=0);
 	virtual double GetMonoThresholdBalanceCoef();
 	int get_MonoForwardPixels(){return this->m_nMonoForwardPixels;}
@@ -865,7 +867,7 @@ public:
 	__declspec( property(get=GetHeight)) int Height;
 	//背景是否为低噪点 wjh-2019.11.28
 	virtual bool SetLowBackgroundNoise(bool blValue){return m_bLowBackgroundNoise=blValue;}
-	virtual bool IsLowBackgroundNoise()const { return m_bLowBackgroundNoise; }
+	virtual bool IsLowBackgroundNoise()const;
 	__declspec( property(put=SetLowBackgroundNoise,get=IsLowBackgroundNoise)) bool blLowBackgroundNoise;
 	//是否为细笔划字体
 	virtual bool SetThinFontText(bool blValue){return m_bThinFontText=blValue;}
@@ -908,9 +910,9 @@ public:
 	virtual double GetMonoThresholdBalanceCoef();
 	//balancecoef 划分黑白点间的界限调整平衡系数,取值-0.5~0.5;0时对应最高频率像素前移20位
 	static double CalMonoThresholdBalanceCoef(int monoforwardpixels=20);
-	virtual void SetTurnCount(int count) { m_nTurnCount = count; }
+	virtual void SetTurnCount(int count);
 	virtual int GetTurnCount() { return m_nTurnCount; }
-	virtual bool IsNeedTurnImage();
+	__declspec( property(put=SetTurnCount,get=GetTurnCount)) int niTurnCount;
 };
 class CAlphabets : public IAlphabets
 {

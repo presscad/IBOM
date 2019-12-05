@@ -677,8 +677,8 @@ CImageFileHost::CImageFileHost()
 {
 	m_pInternalImgFile=NULL;
 	m_biImageSaveType=0;
-	m_dwAddressJgpFile=0;
-	m_dwSizeJgpFile=0;
+	m_dwAddressJpgFile=0;
+	m_dwSizeJpgFile=0;
 	m_pdfConfig.page_no=1;
 	m_pdfConfig.rotation=0;
 	m_pdfConfig.zoom_scale=0;
@@ -696,10 +696,10 @@ CImageFileHost::~CImageFileHost()
 }
 BOOL CImageFileHost::InitFileAddressAndSize(DWORD file_pos,DWORD file_size,BYTE save_type)
 {
-	m_dwAddressJgpFile=file_pos;
-	m_dwSizeJgpFile=file_size;
+	m_dwAddressJpgFile=file_pos;
+	m_dwSizeJpgFile=file_size;
 	m_biImageSaveType=save_type;
-	return (m_dwAddressJgpFile>0);
+	return (m_dwAddressJpgFile>0);
 }
 void CImageFileHost::FromBuffer(CBuffer& buffer,long version/*=0*/)
 {
@@ -709,9 +709,9 @@ void CImageFileHost::FromBuffer(CBuffer& buffer,long version/*=0*/)
 	//		=1.表示按原始jpg文件存储（实践证明原始的jpg文件图像压缩率更高而且不存在IBOM转换失真问题）
 	buffer.ReadByte(&m_biImageSaveType);
 	UINT uiImageSize=0;
-	m_dwAddressJgpFile=buffer.GetCursorPosition();
+	m_dwAddressJpgFile=buffer.GetCursorPosition();
 	buffer.ReadInteger(&uiImageSize);
-	m_dwSizeJgpFile=uiImageSize;
+	m_dwSizeJpgFile=uiImageSize;
 	buffer.SeekOffset(uiImageSize);
 	/*CHAR_ARRAY image(uiImageSize);
 	buffer.Read(image,uiImageSize);
@@ -797,9 +797,9 @@ BOOL CImageFileHost::InitTempFileBuffer(CBuffer &buffer,const char* sTempPath)
 		szTempFile.Printf("%sprocess-%d#image_pdf_file_%d.pdf",sTempPath,processid,GetSerial());
 	m_tempFileBuffer.CreateFile(szTempFile,0xa00000);	//缓存大小为10M
 	//
-	buffer.SeekPosition(m_dwAddressJgpFile);
+	buffer.SeekPosition(m_dwAddressJpgFile);
 	long uiImageSize=buffer.ReadInteger();
-	if(uiImageSize!=m_dwSizeJgpFile)
+	if(uiImageSize!=m_dwSizeJpgFile)
 		return FALSE;
 	CHAR_ARRAY image(uiImageSize);
 	buffer.Read(image,uiImageSize);
@@ -841,8 +841,8 @@ void CImageFileHost::ToBuffer(CBuffer& buffer,long version/*=0*/,DWORD address_f
 		buffer.WriteByte(m_biImageSaveType);
 		if(!bAutoBakSave)
 		{
-			m_dwAddressJgpFile=buffer.GetCursorPosition();
-			m_dwSizeJgpFile=uiImageSize;
+			m_dwAddressJpgFile=buffer.GetCursorPosition();
+			m_dwSizeJpgFile=uiImageSize;
 		}
 		buffer.WriteInteger(uiImageSize);
 		buffer.Write(image,uiImageSize);
@@ -859,8 +859,8 @@ void CImageFileHost::ToBuffer(CBuffer& buffer,long version/*=0*/,DWORD address_f
 	{
 		if(!bAutoBakSave)
 		{
-			m_dwAddressJgpFile=address_file_pos;
-			m_dwSizeJgpFile=file_size;
+			m_dwAddressJpgFile=address_file_pos;
+			m_dwSizeJpgFile=file_size;
 			m_biImageSaveType=save_type;
 		}
 		buffer.WriteByte(m_biImageSaveType);
@@ -918,13 +918,13 @@ int CImageFileHost::set_PageNo(int page_no)
 	m_pdfConfig.page_no=page_no;
 	return m_pdfConfig.page_no;
 }
-int CImageFileHost::get_RotationCount()
+int CImageFileHost::get_RotDegAngle()
 {
 	return m_pdfConfig.rotation;
 }
-int CImageFileHost::set_RotationCount(int rotation_count)
+int CImageFileHost::set_RotDegAngle(int rotation)
 {
-	m_pdfConfig.rotation=rotation_count;
+	m_pdfConfig.rotation=rotation;
 	return m_pdfConfig.rotation;
 }
 CImageRegionHost* CImageFileHost::AppendRegion()

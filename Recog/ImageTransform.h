@@ -196,9 +196,13 @@ public:
 	int GetHeight(){return m_nHeight;}
 	int GetDrawingWidth(){return m_nDrawingRgnWidth;}
 	int GetDrawingHeight(){return m_nDrawingRgnHeight;}
+	PDF_FILE_CONFIG SetPdfConfig(PDF_FILE_CONFIG imgcfg){return m_xPdfCfg=imgcfg;}
 	PDF_FILE_CONFIG GetPdfConfig(){return m_xPdfCfg;}
+	__declspec(property(put=SetPdfConfig,get=GetPdfConfig)) PDF_FILE_CONFIG xImgCfg;
 	//
-	bool Turn90(bool byClockwise);		//将文件中图像顺(逆)时针转90度
+	//ciImgTurnMode;	//-3~+3表示顺时针翻转次数（90°为一次）；'Y':左右翻转,'X':上下翻转
+	bool TurnImage(char ciImgTurnMode=0);	//将文件中图像顺(逆)时针转90度
+	void SetCurrTurnCounter(int count);		//设定当前图像的旋转计算数>0顺时针转；<0逆时针转
 	BYTE CalGreynessThreshold();			//计算灰度阈值
 	bool CalDrawingRgnRect();				//计算有效区域的矩形
 	//定位有效区域（工艺卡图框）的矩形
@@ -207,13 +211,14 @@ public:
 	BYTE GetPixelGraynessThresold(int x,int y);	//指定像素点黑白阈值
 	bool IsBlackPixel(int x,int y,int nMonoForwardBalance=0);	//指定象素点是否为黑点
 	void ClearImage();
+	bool ConvertBpp(BYTE uiBitCount=24,long niRawBitsBuffSize=0);
+	bool ReadImageFileHeader(FILE* fp,char ciBmp0Jpeg1Png2);
 	bool ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,int nMonoForward=20);
 	bool ReadImageFile(const char* file_path,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,int nMonoForward=20);	//读取图片
 	bool ReadPdfFile(char* file_path,const PDF_FILE_CONFIG& pdfConfig,int nMonoForward=20,RectD *pRect=NULL,BOOL bInitGrayBitMap=FALSE);
 	bool RetrievePdfRegion(RectD *pRect,double zoom_scale,CImageTransform &image);
 	bool TransPdfRegionCornerPoint(double zoom_scale,PointD &leftTop,PointD &leftBtm,PointD &rightTop,PointD &rightBtm);
 	void SetPdfEngine(BaseEngine *pPdfEngine);
-	bool ReadImageFileHeader(FILE* fp,char ciBmp0Jpeg1Png2);
 	bool WriteImageFile(const char* file_path);	//保存图片
 	bool GapDetect(int start_x,int start_y,int maxGap,bool bScanByRow,int *gaplen);	//出现断点后是否延续的判断
 	bool RetrieveSpecifyRegion( double pos_x_coef,double pos_y_coef,double width_coef,double height_coef, 

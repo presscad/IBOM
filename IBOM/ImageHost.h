@@ -127,8 +127,8 @@ class CImageFileHost : public IImageFile
 	//biType=0.表示按灰度图像压缩存储;
 	//		=1.表示按原始jpg文件存储（实践证明原始的jpg文件图像压缩率更高而且不存在IBOM转换失真问题）
 	BYTE m_biImageSaveType;
-	DWORD m_dwAddressJgpFile;
-	DWORD m_dwSizeJgpFile;
+	DWORD m_dwAddressJpgFile;
+	DWORD m_dwSizeJpgFile;
 	CTempFileBuffer m_tempFileBuffer;
 public:
 	SEGI m_iSeg;	//图片文件归属段号
@@ -162,18 +162,18 @@ public: //属性
 	CXhChar100 set_AliasName(const char* _szAliasName);
 	int get_PageNo();
 	int set_PageNo(int page_no);
-	int get_RotationCount();
-	int set_RotationCount(int rotation_count);
+	int get_RotDegAngle();
+	int set_RotDegAngle(int rotation);
 	double get_PDFZoomScale(){return m_pdfConfig.zoom_scale;}
 	double set_PDFZoomScale(double zoom_scale){return (m_pdfConfig.zoom_scale=zoom_scale);}
 	BYTE get_ImageSaveType(){return m_biImageSaveType;}
-	DWORD get_FileAddressPos(){return m_dwAddressJgpFile;}
-	DWORD get_FileSize(){return m_dwSizeJgpFile;}
+	DWORD get_FileAddressPos(){return m_dwAddressJpgFile;}
+	DWORD get_FileSize(){return m_dwSizeJpgFile;}
 	__declspec(property(get=get_PathFileName)) CXhChar500 szPathFileName;
 	__declspec(property(put=set_FileName,get=get_FileName)) CXhChar100 szFileName;
 	__declspec(property(put=set_AliasName,get=get_AliasName)) CXhChar100 szAliasName;
 	__declspec(property(put=set_PageNo,get=get_PageNo)) int iPageNo;
-	__declspec(property(put=set_RotationCount,get=get_RotationCount)) int nRotationCount;
+	__declspec(property(put=set_RotDegAngle,get=get_RotDegAngle)) int niRotDegAngle;
 	__declspec(property(put=set_PDFZoomScale,get=get_PDFZoomScale)) double fPDFZoomScale;
 	__declspec(property(get=get_ImageSaveType)) BYTE biImageSaveType;
 	__declspec(property(get=get_FileAddressPos)) DWORD dwFileAddressPos;
@@ -296,11 +296,5 @@ public:
 			return m_pInternalImgFile->GetTurnCount();
 		else
 			return 0;
-	}
-	virtual bool IsNeedTurnImage() {
-		if (m_pInternalImgFile)
-			return m_pInternalImgFile->IsNeedTurnImage();
-		else
-			return false;
 	}
 };

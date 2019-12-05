@@ -345,6 +345,45 @@ void CImageTransform::SetBitMap(BITMAP& bmp)
 	//else if(bmp.bmBitsPixel==1)	//黑白图
 	//	;
 }
+static bool _LocalTurnIJ(int W0,int H0,int xI0,int yJ0,int *pxI1,int *pyJ1,char ciImgTurnMode=0)
+{
+	if (ciImgTurnMode=='Y')
+	{
+		*pxI1=xI0;
+		*pyJ1=H0-1-yJ0;
+	}
+	else if (ciImgTurnMode=='X')
+	{
+		*pxI1=W0-1-xI0;
+		*pyJ1=yJ0;
+	}
+	else
+	{
+		int niTurnCount=abs(ciImgTurnMode);
+		if (ciImgTurnMode==0)
+		{
+			*pxI1=xI0;
+			*pyJ1=yJ0;
+		}
+		for (int i=0;i<niTurnCount;i++)
+		{
+			if (ciImgTurnMode>0)
+			{	//像素索引号转换 i1=H0-1-j0,j1=i0;
+				*pxI1=H0-1-yJ0;
+				*pyJ1=xI0;
+			}
+			else
+			{	//像素索引号转换 i1=j0,j1=W0-1-i0;
+				*pxI1=yJ0;
+				*pyJ1=W0-1-xI0;
+			}
+			int Wi=H0;	H0=W0;	W0=Wi;	//每转90°都需要调换一次宽高
+			xI0=*pxI1;
+			yJ0=*pyJ1;
+		}
+	}
+	return true;
+}
 bool CImageTransform::ReadBmpFile(FILE* fp,BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/)
 {
 	CTempFileBuffer tempBuffer(fp);
@@ -385,10 +424,23 @@ bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lp
 	image.bmBitsPixel=infoHeader.biBitCount;
 	image.bmHeight=infoHeader.biHeight;
 	int widthBits = infoHeader.biWidth*infoHeader.biBitCount;
-	//image.bmWidthBytes=((widthBits+31)/32)*4;
-	image.bmWidthBytes = widthBits/ 8;
-	if (widthBits % 8 > 0)
-		image.bmWidthBytes++;
+	image.bmWidthBytes=((widthBits+31)/32)*4;
+	//////////////////////////////////////////////////////////
+	char ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
+	if(ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
+	{	//左/右转90°图像时，宽高对调
+		m_nWidth =image.bmHeight;
+		m_nHeight=image.bmWidth;
+	}
+	else
+	{
+		m_nWidth =image.bmWidth;
+		m_nHeight=image.bmHeight;
+	}
+	m_uBitcount=24;//pImageFile->GetBpp();
+	m_nEffByteWidth=((m_nWidth*3+3)/4)*4;
+	//////////////////////////////////////////////////////////
+
 	if(lpExterRawBitsBuff!=NULL&&(long)uiBitsBuffSize<infoHeader.biHeight*image.bmWidthBytes)
 	{
 		//fclose(fp);
@@ -403,11 +455,22 @@ bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lp
 }
 bool CImageTransform::InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette/*=NULL*/, BYTE *lpBmBits/*=NULL*/, BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/)
 {
+	//////////////////////////////////////////////////////////
 	//填写图像数据
-	m_nWidth=image.bmWidth;
-	m_nHeight=image.bmHeight;
-	this->m_uBitcount=24;
+	char ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
+	if(ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
+	{	//左/右转90°图像时，宽高对调
+		m_nWidth =image.bmHeight;
+		m_nHeight=image.bmWidth;
+	}
+	else
+	{
+		m_nWidth =image.bmWidth;
+		m_nHeight=image.bmHeight;
+	}
+	m_uBitcount=24;//pImageFile->GetBpp();
 	m_nEffByteWidth=((m_nWidth*3+3)/4)*4;
+	//////////////////////////////////////////////////////////
 	DWORD dwCount=m_nEffByteWidth*m_nHeight;
 	//获取原始图像位图内存池m_lpRawBits
 	ReleaseRawImageBits();
@@ -467,7 +530,9 @@ bool CImageTransform::InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette/*=NULL*/, 
 				int ibyte=row*image.bmWidthBytes+i*ciPixelBytes;
 				memcpy(&crPixelColor,&lpBmBits[ibyte],ciPixelBytes);
 			}
-			memcpy(&m_lpRawBits[rowi*m_nEffByteWidth+i*3],&crPixelColor,3);
+			int xI=i,yJ=rowi;
+			_LocalTurnIJ(image.bmWidth,image.bmHeight,i,rowi,&xI,&yJ,ciImgTurnMode);
+			memcpy(&m_lpRawBits[yJ*m_nEffByteWidth+xI*3],&crPixelColor,3);
 		}
 	}
 	return true;
@@ -577,10 +642,66 @@ bool CImageTransform::ReadImageFileHeader(FILE* fp,char ciBmp0Jpeg1Png2tif3)
 		pImageFile=&tifFile;
 #endif
 	pImageFile->ReadImageFile(fp,&exterbyte,1);
-	m_nWidth=pImageFile->GetWidth();
-	m_nEffByteWidth=pImageFile->GetEffWidth();
-	m_nHeight=pImageFile->GetHeight();
-	m_uBitcount=pImageFile->GetBpp();
+	//////////////////////////////////////////////////////////
+	char ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
+	if(ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
+	{	//左/右转90°图像时，宽高对调
+		m_nWidth =pImageFile->GetHeight();
+		m_nHeight=pImageFile->GetWidth();
+	}
+	else
+	{
+		m_nWidth =pImageFile->GetWidth();
+		m_nHeight=pImageFile->GetHeight();
+	}
+	m_uBitcount=24;//pImageFile->GetBpp();
+	m_nEffByteWidth=((m_nWidth*3+3)/4)*4;
+	return true;
+}
+bool CImageTransform::ConvertBpp(BYTE uiBitCount/*=24*/,long niRawBitsBuffSize/*=0*/)
+{	//TODO:此函数还未经测试 有待完善 wjh-2019.12.5
+	if (m_lpRawBits==NULL)
+		return false;
+	int nEffByteWidth=((m_nWidth*3+3)/4)*4;
+	BYTE* lpNewBytes=new BYTE[nEffByteWidth*m_nHeight];
+	if (this->m_uBitcount == 1)
+	{
+		const BYTE xarrConstBitBytes[8] ={ 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
+		for (int row = 0; row < m_nHeight; row++)
+		{
+			BYTE* pFrom = m_lpRawBits+row*m_nEffByteWidth;
+			BYTE* pTo = lpNewBytes+row* nEffByteWidth;
+			for (int xi = 0; xi < m_nWidth; xi++)
+			{
+				int ibyte = xi / 8,ibit = xi % 8;
+				BYTE cbByte = *(pFrom + ibyte);
+				if (cbByte&xarrConstBitBytes[7-ibit])	//通过异或操作得出dwFlag的补码
+					*(pTo + 2) = *(pTo + 1) = *pTo = 255;
+				else
+					*(pTo + 2) = *(pTo + 1) = *pTo = 0;
+				pTo += 3;
+			}
+		}
+	}
+	else
+	{
+		delete[]lpNewBytes;
+		return false;
+	}
+	m_uBitcount=24;
+	m_nEffByteWidth=nEffByteWidth;
+	long liBytesSize=nEffByteWidth*m_nHeight;
+	if (liBytesSize<=niRawBitsBuffSize)
+	{
+		memcpy(m_lpRawBits,lpNewBytes,liBytesSize);
+		delete[]lpNewBytes;
+	}
+	else
+	{
+		this->ReleaseRawImageBits();
+		m_lpRawBits=lpNewBytes;
+		m_bInternalRawBitsBuff=TRUE;
+	}
 	return true;
 }
 //JPG格式图片的读写
@@ -610,22 +731,38 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 	else
 		return false;
 	bool readimgdata=pImageFile->ReadImageFile(fp,lpExterRawBitsBuff,uiBitsBuffSize);
-	
-	m_nWidth = pImageFile->GetWidth();
-	m_nEffByteWidth = pImageFile->GetEffWidth();
-	m_nHeight = pImageFile->GetHeight();
-	m_uBitcount = pImageFile->GetBpp();
-	/*
-	m_nWidth=pImageFile->GetWidth();
-	m_nEffByteWidth= m_nWidth*3+(4-(m_nWidth*3)%4);
-	m_nHeight=pImageFile->GetHeight();
-	m_uBitcount=24;*/
-	if(!readimgdata)
+	//////////////////////////////////////////////////////////
+	char ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
+	if (!readimgdata)
+	{
+		if (ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
+		{	//左/右转90°图像时，宽高对调
+			m_nWidth =pImageFile->GetHeight();
+			m_nHeight=pImageFile->GetWidth();
+		}
+		else
+		{
+			m_nWidth =pImageFile->GetWidth();
+			m_nHeight=pImageFile->GetHeight();
+		}
+		m_uBitcount=24;
+		m_nEffByteWidth=((m_nWidth*3+3)/4)*4;
 		return false;
-	DWORD dwCount=m_nEffByteWidth*m_nHeight;
+	}
+
+	m_nWidth =pImageFile->GetWidth();
+	if (ciBmp0Jpeg1Png2Tif3!=1)	//Jpeg读完一定是24位真彩色但TIFF，PNG等存在黑白或灰度图情况
+		m_uBitcount = pImageFile->GetBpp();
+	else
+		m_uBitcount = 24;
+	m_nEffByteWidth=((m_nWidth*m_uBitcount+31)/32)*4;//pImageFile->GetEffWidth();
+	m_nHeight=pImageFile->GetHeight();
+	long dwRawCount=pImageFile->GetEffWidth()*m_nHeight;
+	long dwCount=max(dwRawCount,((m_nWidth*3+3)/4)*4*m_nHeight);
+	dwCount=max(dwCount,((m_nHeight*3+3)/4)*4*m_nWidth);
 	//获取原始图像位图内存池m_lpRawBits
 	ReleaseRawImageBits();
-	if(lpExterRawBitsBuff&&uiBitsBuffSize>dwCount)
+	if(lpExterRawBitsBuff&&uiBitsBuffSize>(UINT)dwCount)
 	{
 		m_lpRawBits=lpExterRawBitsBuff;
 		m_uiExterRawBitsuffSize=uiBitsBuffSize;
@@ -636,34 +773,17 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 		m_lpRawBits=new BYTE[dwCount];
 		m_bInternalRawBitsBuff=true;
 	}
-	/*if (pImageFile->GetBpp() == 1)
+	//Jpeg与Png格式的默认行扫描模式为自下至上upward,应统一为自上至下downward模式
+	for (int i = 0; i < m_nHeight; i++)
 	{
-		const BYTE xarrConstBitBytes[8] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
-		for (int row = 0; row < m_nHeight; row++)
-		{
-			BYTE* pFrom = pImageFile->GetBits(m_nHeight - row - 1);	//info.pImage
-			BYTE* pTo = m_lpRawBits+row* m_nEffByteWidth;
-			for (int xi = 0; xi < m_nWidth; xi++)
-			{
-				int ibyte = xi / 8, ibit = xi % 8;
-				BYTE cbByte = *(pFrom + ibyte);
-				if (cbByte&xarrConstBitBytes[ibit])	//通过异或操作得出dwFlag的补码
-					*(pTo + 2) = *(pTo + 1) = *pTo = 255;
-				else
-					*(pTo + 2) = *(pTo + 1) = *pTo = 0;
-				pTo += 3;
-			}
-		}
+		int rowi = pImageFile->head.biHeight - 1 - i;
+		BYTE* pImgRowData = pImageFile->GetBits(i);
+		memcpy(&m_lpRawBits[rowi*m_nEffByteWidth], pImgRowData, m_nEffByteWidth);
 	}
-	else*/
-	{	//Jpeg与Png格式的默认行扫描模式为自下至上upward,应统一为自上至下downward模式
-		for (int i = 0; i < m_nHeight; i++)
-		{
-			int rowi = pImageFile->head.biHeight - 1 - i;
-			BYTE* pImgRowData = pImageFile->GetBits(i);
-			memcpy(&m_lpRawBits[rowi*m_nEffByteWidth], pImgRowData, m_nEffByteWidth);
-		}
-	}
+	if (m_uBitcount!=24)
+		ConvertBpp(24,uiBitsBuffSize);
+	if (ciImgTurnMode!=0)
+		TurnImage(ciImgTurnMode);
 	//
 	return UpdateGreyImageBits(true,nMonoForward);
 }
@@ -975,26 +1095,24 @@ BYTE CImageTransform::GetPixelGraynessThresold(int x,int y)
 	else
 		return 0;
 }
-static bool _LocalTurnIJ(int W0,int H0,int xI0,int yJ0,int *pxI1,int *pyJ1,bool clockwise)
-{
-	if(clockwise)
-	{	//像素索引号转换 i1=H0-1-j0,j1=i0;
-		*pxI1=H0-1-yJ0;
-		*pyJ1=xI0;
-	}
-	else
-	{	//像素索引号转换 i1=j0,j1=W0-1-i0;
-		*pxI1=yJ0;
-		*pyJ1=W0-1-xI0;
-	}
-	return true;
+void CImageTransform::SetCurrTurnCounter(int count)
+{	//在不改变当前图像状态情况下，设定当前图像的旋转计算数>0顺时针转；<0逆时针转
+	this->m_xPdfCfg.rotation=count*90;
 }
-bool CImageTransform::Turn90(bool byClockwise)		//将文件中图像顺时针转90度
+bool CImageTransform::TurnImage(char ciImgTurnMode/*=0*/)		//将文件中图像顺时针转90度
 {
 	int xI0,yJ0,xI1,yJ1,W0,H0,W1,H1;
 	//宽度W0,高度H0;H0->W1,W0->H1;
-	W1=H0=this->GetHeight();
-	H1=W0=this->GetWidth();
+	if(ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
+	{	//左/右转90°图像时，宽高对调
+		W1=H0=this->GetHeight();
+		H1=W0=this->GetWidth();
+	}
+	else
+	{
+		W1=W0=this->GetWidth();
+		H1=H0=this->GetHeight();
+	}
 	if(m_lpRawBits!=NULL)
 	{
 		//转换真彩图像数据m_lpRawBits，行扫描(Downward top->bottom)形式的位图字节数据(真彩24位格式），处理前图像数据,m_nEffByteWidth*m_nHeight
@@ -1007,7 +1125,7 @@ bool CImageTransform::Turn90(bool byClockwise)		//将文件中图像顺时针转90度
 			for(xI0=0;xI0<W0;xI0++)
 			{
 				BYTE* pcbPixel=rowdata+xI0*3;
-				_LocalTurnIJ(W0,H0,xI0,yJ0,&xI1,&yJ1,byClockwise);
+				_LocalTurnIJ(W0,H0,xI0,yJ0,&xI1,&yJ1,ciImgTurnMode);
 				BYTE* pcbNewPixel=&lpNewRawBits[yJ1*nEffByteWidth+xI1*3];
 				memcpy(pcbNewPixel,pcbPixel,3);
 			}
@@ -1027,7 +1145,7 @@ bool CImageTransform::Turn90(bool byClockwise)		//将文件中图像顺时针转90度
 			BYTE* rowdata2=m_lpPixelGrayThreshold+W0*yJ0;
 			for(xI0=0;xI0<W0;xI0++)
 			{
-				_LocalTurnIJ(W0,H0,xI0,yJ0,&xI1,&yJ1,byClockwise);
+				_LocalTurnIJ(W0,H0,xI0,yJ0,&xI1,&yJ1,ciImgTurnMode);
 				if(m_lpGrayBitsMap)
 				{
 					BYTE* pcbPixel=rowdata+xI0;
@@ -1053,10 +1171,8 @@ bool CImageTransform::Turn90(bool byClockwise)		//将文件中图像顺时针转90度
 	this->m_nHeight=H1;
 	m_nEffByteWidth=((W1*3+3)/4)*4;
 	//
-	if (byClockwise)
-		m_xPdfCfg.rotation += 90;
-	else
-		m_xPdfCfg.rotation -= 90;
+	if (abs(ciImgTurnMode)<=3)
+		m_xPdfCfg.rotation += 90*ciImgTurnMode;
 	m_xPdfCfg.rotation = m_xPdfCfg.rotation % 360;
 	return m_lpRawBits!=NULL;
 }

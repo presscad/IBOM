@@ -678,7 +678,7 @@ void CDataCmpModel::FromBuffer(CBuffer& buffer,long version/*=0*/)
 	double fPDFZoomScale=0;
 	BYTE ciPDFLineMode=0xFF;
 	double fPDFMinLineWeight=0,fPDFMinLineFlatness=0,fPDFMaxLineWeight=0,fPDFMaxLineFlatness=0;
-	int iPageNo=0,nRotationCount=0;
+	int iPageNo=0,niRotDegAngle=0;
 	for(int i=0;i<nNum;i++)
 	{
 		buffer.ReadInteger(&iSeg.iSeg);
@@ -686,7 +686,7 @@ void CDataCmpModel::FromBuffer(CBuffer& buffer,long version/*=0*/)
 		if(version==NULL||version>=10004)
 		{
 			buffer.ReadInteger(&iPageNo);
-			buffer.ReadInteger(&nRotationCount);
+			buffer.ReadInteger(&niRotDegAngle);
 		}
 		if(version==NULL||version>=10005)
 			buffer.ReadDouble(&fPDFZoomScale);
@@ -698,7 +698,7 @@ void CDataCmpModel::FromBuffer(CBuffer& buffer,long version/*=0*/)
 			buffer.ReadDouble(&fPDFMaxLineWeight);
 			buffer.ReadDouble(&fPDFMaxLineFlatness);
 		}
-		CImageFileHost* pImageHost=AppendImageFile(szPathFileName,iSeg,false,iPageNo,nRotationCount,fPDFZoomScale);
+		CImageFileHost* pImageHost=AppendImageFile(szPathFileName,iSeg,false,iPageNo,niRotDegAngle,fPDFZoomScale);
 		pImageHost->ciPDFLineMode=ciPDFLineMode;
 		pImageHost->fPDFZoomScale=fPDFZoomScale;
 		pImageHost->fPDFMinLineWeight=fPDFMinLineWeight;
@@ -797,7 +797,7 @@ void CDataCmpModel::ToBuffer(CBuffer& buffer,long version/*=0*/,bool bAutoBakSav
 		if(version==NULL||version>=10004)
 		{
 			buffer.WriteInteger(pImageHost->iPageNo);
-			buffer.WriteInteger(pImageHost->nRotationCount);
+			buffer.WriteInteger(pImageHost->niRotDegAngle);
 		}
 		if(version==NULL||version>=10005)
 			buffer.WriteDouble(pImageHost->fPDFZoomScale);
@@ -839,12 +839,11 @@ void CDataCmpModel::ComplementSegItemHashList()
 {
 	for(CImageFileHost* pImageHost=EnumFirstImage();pImageHost;pImageHost=EnumNextImage())
 	{
-		if(m_segHashList.GetValue(pImageHost->m_iSeg)==NULL)
-		{
-			SEGITEM *pSegItem=m_segHashList.Add(pImageHost->m_iSeg);
-			pSegItem->iSeg=pImageHost->m_iSeg;
-			pSegItem->sSegName=pImageHost->m_iSeg.ToString();
-		}
+		if (m_segHashList.GetValue(pImageHost->m_iSeg)!=NULL)
+			continue;	//只补充之前未手动设定名称的分段
+		SEGITEM *pSegItem=m_segHashList.Add(pImageHost->m_iSeg);
+		pSegItem->iSeg=pImageHost->m_iSeg;
+		pSegItem->sSegName=pImageHost->m_iSeg.ToString();
 	}
 }
 //
@@ -908,7 +907,7 @@ CImageFileHost* CDataCmpModel::GetImageFile(const char* sFileName,int page_no/*=
 	return pImageFile;
 }
 CImageFileHost* CDataCmpModel::AppendImageFile(const char* szPathFileName,SEGI iSeg,bool loadFileInstant/*=true*/,
-											   int iPageNo/*==1*/,int nRotationCount/*=0*/,double fZoomScale/*=0*/)
+											   int iPageNo/*==1*/,int niRotDegAngle/*=0*/,double fZoomScale/*=0*/)
 {
 	if(strlen(szPathFileName)<=0)
 		return NULL;
@@ -919,12 +918,12 @@ CImageFileHost* CDataCmpModel::AppendImageFile(const char* szPathFileName,SEGI i
 		pImageFile=m_xDwgImageList.append();
 		pImageFile->m_iSeg=iSeg;
 		pImageFile->iPageNo=iPageNo;
-		pImageFile->nRotationCount=nRotationCount;
+		pImageFile->niRotDegAngle=niRotDegAngle;
 		pImageFile->fPDFZoomScale=fZoomScale;
 		pImageFile->SetImageFile(pInterImageFile);
 		//打开JPG等图像文件时需要根据设置的旋转次数调整图片 wht 19-11-30
-		if (abs(nRotationCount) > 0)
-			pImageFile->SetTurnCount(nRotationCount / 90);
+		if (niRotDegAngle!=0)
+			pImageFile->SetTurnCount(niRotDegAngle / 90);
 		//pImageFile->szPathFileName=szPathFileName;
 	}
 	return pImageFile;
@@ -1378,7 +1377,7 @@ int CDataCmpModel::SummaryBomParts(CXhPtrSet<IRecoginizer::BOMPART> &dwgPartSet,
 		for(CImageFileHost *pImageFile=EnumFirstImage(segI);pImageFile;pImageFile=EnumNextImage(segI))
 		{
 			pImageFile->SummarizePartInfo();
-			SEGI segI;
+			SEGI xPrevSegI,xCurrSegI=segI;
 			for(IRecoginizer::BOMPART* pBomPart=pImageFile->EnumFirstPart();pBomPart;pBomPart=pImageFile->EnumNextPart())
 			{
 				CalAndSyncTheoryWeightToWeight(pBomPart,FALSE);
@@ -1386,17 +1385,19 @@ int CDataCmpModel::SummaryBomParts(CXhPtrSet<IRecoginizer::BOMPART> &dwgPartSet,
 				//	pBomPart->iSeg=pImageFile->m_iSeg.iSeg;
 				if(segI.iSeg==-1||segI.iSeg<=0)
 				{
-					if(pBomPart->wPartType==IRecoginizer::BOMPART::TUBE||pBomPart->wPartType==IRecoginizer::BOMPART::ANGLE)
+					pBomPart->iSeg==xPrevSegI;
+					if(pBomPart->wPartType==IRecoginizer::BOMPART::TUBE||pBomPart->wPartType==IRecoginizer::BOMPART::ANGLE||
+						pBomPart->wPartType==IRecoginizer::BOMPART::PLATE)
 					{
-						if(ParsePartNo(pBomPart->sLabel,&segI,NULL,NULL,NULL))
+						if(ParsePartNo(pBomPart->sLabel,&xCurrSegI,NULL,NULL,NULL))
 						{
-							pBomPart->iSeg=segI;
-							pImageFile->m_iSeg=segI;
+							xPrevSegI=pBomPart->iSeg=xCurrSegI;
+							pImageFile->m_iSeg=xCurrSegI;
 						}
 					}
 				}
 				else 
-					pBomPart->iSeg=segI;
+					pBomPart->iSeg= xPrevSegI;
 				dwgPartSet.append(pBomPart);
 			}
 		}

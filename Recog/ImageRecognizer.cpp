@@ -113,6 +113,19 @@ bool IImage::SetPixelState(int i,int j,bool black/*=true*/)
 		m_lpBitMap[j*m_nEffWidth+i]=pixelstate?1:0;
 	return black;
 }
+UINT IImage::ReallocImageBits(UINT uiBytesCount)
+{
+	if (m_lpBitMap!=NULL)
+		delete []m_lpBitMap;
+	if (uiBytesCount>0)
+	{
+		m_lpBitMap=new BYTE[uiBytesCount];
+		memset(m_lpBitMap,0,uiBytesCount);
+	}
+	else
+		m_lpBitMap=NULL;
+	return uiBytesCount;
+}
 bool IImage::IsBlackPixel(int i,int j)
 {
 	if( i<0||i>=m_nWidth || j<0||j>=m_nHeight)
@@ -3651,6 +3664,11 @@ bool CImageDataRegion::SetPixelState(int i,int j,bool black/*=true*/)
 	IImage::SetPixelState(i,j,black);
 	return black;
 }
+UINT CImageDataRegion::ReallocImageBits(UINT uiBytesCount)
+{	//ÖØĞÂÉú³ÉÍ¼ÏñÇøÓòÊ±£¬ÓÉÓÚĞèÒªÖØĞÂ´ÓÔ­ÓĞ»Ò¶ÈÍ¼ÌáÈ¡Í¼ÏñÊı¾İ£¬´ËÊ±±³¾°ÔëÉùµãÖØÉèÎªÎ´³õÊ¼»¯×´Ì¬ wjh-2019.12.4
+	this->m_ciInitLowNoiseDetect=-1;
+	return IImage::ReallocImageBits(uiBytesCount);
+}
 long CImageDataRegion::FillRgnPixel(int i,int j,RECT& rgn,DWORD crColorFrom,DWORD crColorTo)
 {
 	if(i<rgn.left||j<rgn.top||i>rgn.right||j>rgn.bottom)
@@ -4585,8 +4603,9 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 	yBaseEnd=yEnd;
 	//Í³¼ÆÃ¿ĞĞºÚµãÊı£¬É¾³ıÔëÒôµã
 	if(iDataType==CImageCellRegion::PARTNO||iDataType==CImageCellRegion::GUIGE)
-	{
+	{	//ÕâÁ½ÁĞ±í¸ñÊı¾İÒ»°ãÈÏÎªºáÏò¿í¶ÈÖµ´óÓÚ¸ß¶È£¬ÊÓÎª¶à×Ö·û wjh-2019.12.4
 		int nWidth=xEnd-xStart+1;
+		int yTopestStart=-1;
 		for(int j=yStart;j<=yEnd;j++)
 		{	
 			nBlack=0;	//Í³¼ÆÃ¿ĞĞµÄºÚµãÊı
@@ -4602,13 +4621,19 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 				}
 			}
 			//¶¥ĞĞºÚµãµÄÆğÖ¹Çø¼äÕ¼ÎÄ±¾Õû¿íµÄ±ÈÀıÖµ(¸ßÔëÉùÊ±Ó°ÏìÕæÊµÎÄ±¾YÏòÇøÓòÏŞÖÆ£© wjh-2019.11.28
-			double TOPLINE_BLCKPIXELS_MINSCALECOEF=0.7;
-			if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
-				TOPLINE_BLCKPIXELS_MINSCALECOEF=0.1;
+			//double TOPLINE_BLCKPIXELS_MINSCALECOEF=0.7;
+			//if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
+			//	TOPLINE_BLCKPIXELS_MINSCALECOEF=0.1;
 			double fScopeScale=(iEndBlack-iFirstBlack+1)/(double)nWidth;
-			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>TOPLINE_BLCKPIXELS_MINSCALECOEF)
+			if(nBlack>=MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>0.1&&yTopestStart<0)
+				yTopestStart=j;
+			if(nBlack>=MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>0.7)
 			{
 				yStart=j;
+				//µ±¶¥²¿»ùÏßÓë¼«ÏŞ±ß½ç(yTopestStart)¼ä²î±ğ²»´ó(2ÏñËØ)Ê±,ÒÔ¶¥²¿±ß½ç¼«ÏŞÎª¶¥²¿»ùÏß
+				//Èç´Ë±ÜÃâ±³¾°ÔëÉù¸ßµÍ×´Ì¬²»ºÃÕì±ğ¼ÇÂ¼ÎÊÌâ£¨È¥Ôëºó¾ÍÎŞÔëÁË£© wjh-2019.12.4
+				if (yStart-yTopestStart<=2)
+					yStart=yTopestStart;
 				break;
 			}
 		}
@@ -4626,12 +4651,9 @@ void CImageDataRegion::CalCellTextRect(RECT& rcCell,double vfScaleCoef,LONG& xSt
 					nBlack++;
 				}
 			}
-			//¶¥ĞĞºÚµãµÄÆğÖ¹Çø¼äÕ¼ÎÄ±¾Õû¿íµÄ±ÈÀıÖµ(¸ßÔëÉùÊ±Ó°ÏìÕæÊµÎÄ±¾YÏòÇøÓòÏŞÖÆ£© wjh-2019.11.28
-			double TOPLINE_BLCKPIXELS_MINSCALECOEF=0.7;
-			if (this->BelongImageData() && this->BelongImageData()->IsLowBackgroundNoise())
-				TOPLINE_BLCKPIXELS_MINSCALECOEF=0.1;
+			//µ×²¿ĞĞºÚµãµÄÆğÖ¹Çø¼äÕ¼ÎÄ±¾Õû¿íµÄ±ÈÀıÖµ(¸ßÔëÉùÊ±Ó°ÏìÕæÊµÎÄ±¾YÏòÇøÓòÏŞÖÆ£© wjh-2019.11.28
 			double fScopeScale=(iEndBlack-iFirstBlack+1)/(double)nWidth;
-			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>TOPLINE_BLCKPIXELS_MINSCALECOEF)
+			if(nBlack>MINPIXELS_OF_TEXTHORZLINE&&fScopeScale>0.7)
 			{
 				yBaseEnd=j;
 				break;
@@ -4660,7 +4682,7 @@ void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStar
 	if (iDataType==CImageCellRegion::NUM)
 		MAX_ISLAND_PIXELS=max(15,f2i(15*vfScaleCoef));
 	long liNoisePixels=this->RemoveNoisePixels(&rcCell,MAX_ISLAND_PIXELS);
-	if (m_ciInitLowNoiseDetect == 0)
+	/*if (m_ciInitLowNoiseDetect == 0)
 	{
 		if(BelongImageData())
 			BelongImageData()->SetLowBackgroundNoise(true);
@@ -4681,7 +4703,7 @@ void CImageDataRegion::CalCharValidRect(RECT data_rect,int iDataType,LONG& xStar
 		if (BelongImageData())
 			BelongImageData()->SetLowBackgroundNoise(false);
 		m_ciInitLowNoiseDetect=1;
-	}
+	}*/
 #ifdef _TIMER_COUNT
 	timer.Relay(4002);
 #endif
@@ -6374,6 +6396,11 @@ double CImageDataFile::CalMonoThresholdBalanceCoef(int forward/*=20*/)
 		forward=100;
 	return MONO_BALANCE_NUMBERS[forward];
 }
+void CImageDataFile::SetTurnCount(int count) 
+{
+	m_nTurnCount = count; 
+	image.SetCurrTurnCounter(count);
+}
 void CImageDataFile::InitImageShowPara(RECT showRect)
 {
 	int new_width=showRect.right-showRect.left;
@@ -6528,9 +6555,8 @@ bool CImageDataFile::RetrieveRegionImageBits(CImageDataRegion *pRegion,bool bSna
 	pRegion->m_nWidth=pImage->GetDrawingWidth()+1;
 	pRegion->m_nHeight=pImage->GetDrawingHeight()+1;
 	pRegion->m_nWidth%16>0?pRegion->m_nEffWidth=(pRegion->m_nWidth/16)*2+2:pRegion->m_nEffWidth=pRegion->m_nWidth/8;
-	if(pRegion->m_lpBitMap)
-		delete []pRegion->m_lpBitMap;
-	pRegion->m_lpBitMap=new BYTE[pRegion->m_nEffWidth*pRegion->m_nHeight];
+	//ReallocImageBits¿ÉÒÔÍ¬Ê±³õÊ¼»¯pRegion->m_ciInitLowNoiseDetect wjh-2019.12.4
+	pRegion->ReallocImageBits(pRegion->m_nEffWidth*pRegion->m_nHeight);
 	memset(pRegion->m_lpBitMap,0,pRegion->m_nEffWidth*pRegion->m_nHeight);
 	POINT p;
 	for(int i=0;i<pRegion->m_nWidth;i++)
@@ -7867,21 +7893,12 @@ int  CImageDataFile::GetWidth()
 {
 	return image.GetWidth();
 }
+bool CImageDataFile::IsLowBackgroundNoise()const {
+	return true;//m_bLowBackgroundNoise;
+}
 int CImageDataFile::Get24BitsImageEffWidth()
 {
 	return image.GetEffWidth();
-}
-static bool _LocalTurnTransWnH(UINT uiTurnCount,int* piHeight,int* piWidth,int* pniEffWidth)
-{
-	if ((uiTurnCount%2)==0||piHeight==NULL||piWidth==NULL)
-		return false;
-	int W = *piHeight;
-	int H = *piWidth;
-	if(pniEffWidth)
-		*pniEffWidth = ((W * 3 + 3) / 4) * 4;
-	*piWidth = W;
-	*piHeight = H;
-	return true;
 }
 int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 {
@@ -7890,11 +7907,6 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 	int nHeight = image.GetHeight();
 	int nWidth = image.GetWidth();
 	int nEffWidth = image.GetEffWidth();
-	if (IsNeedTurnImage())
-	{	//¸ù¾İÍ¼Æ¬·­×ªĞÅÏ¢ÖØĞÂ¼ÆËã¿í¶È¸ß¶È wht 19-11-30
-		_LocalTurnTransWnH(abs(m_nTurnCount),&nHeight,&nWidth,&nEffWidth);
-		count = nEffWidth*nHeight;
-	}
 	if(imagedata->imagedata&&(imagedata->nEffWidth*imagedata->nHeight)>=count)
 	{
 		imagedata->nHeight=nHeight;
@@ -7916,13 +7928,6 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 		bool loadgreydata_from_vm=false;
 		if(image.ReadImageFile(m_sPathFileName))
 		{
-			if (IsNeedTurnImage())
-			{	//¸ù¾İÍ¼Æ¬·­×ªĞÅÏ¢ÖØĞÂ¼ÆËã¿í¶È¸ß¶È wht 19-11-30
-				bool bClockwise = GetTurnCount() > 0;
-				UINT uiTurnCount = (bClockwise ? GetTurnCount():-GetTurnCount())%4;
-				for (UINT i = 0; i < uiTurnCount; i++)
-					image.Turn90(bClockwise);
-			}
 			memcpy(imagedata->imagedata,image.GetRawBits(),count);
 			if(nEffWidth*nHeight >=0x2000000)
 			{
@@ -7963,7 +7968,6 @@ int CImageDataFile::Get24BitsImageData(IMAGE_DATA* imagedata)
 		imagedata->nHeight=nHeight;
 		imagedata->nWidth=nWidth;
 		imagedata->nEffWidth=nEffWidth;
-		
 	}
 	return count;
 }
@@ -8013,7 +8017,8 @@ bool CImageDataFile::TurnClockwise90()		//½«ÎÄ¼şÖĞÍ¼ÏñË³Ê±Õë×ª90¶È£¬Ğı×ª²»Ó°ÏìÒÑ
 		loadRawImgFromVM=LoadRawImageBytesFromVM();
 		LoadGreyBytes(&loadGreyFromVM);
 	}
-	bool retcode=image.Turn90(true);
+	bool retcode=image.TurnImage(1);
+	this->UpdateImageRegions();
 	//Ğı×ªÖ®ºó¸üĞÂm_nTurnCount,±£Ö¤Ğı×ª½Ç¶ÈÓëĞı×ª´ÎÊıÒ»ÖÂ£¬·ñÔò»á´¥·¢JPGÍ¼ÏñÎÄ¼şÄÚ²¿Ğı×ª wht 19-11-30
 	m_nTurnCount = image.GetPdfConfig().rotation / 90;
 	if(loadRawImgFromVM)
@@ -8030,7 +8035,8 @@ bool CImageDataFile::TurnAntiClockwise90()	//½«ÎÄ¼şÖĞÍ¼ÏñÄæÊ±Õë×ª90¶È£¬Ğı×ª²»Ó°Ï
 		loadRawImgFromVM=LoadRawImageBytesFromVM();
 		LoadGreyBytes(&loadGreyFromVM);
 	}
-	bool retcode=image.Turn90(false);
+	bool retcode=image.TurnImage(-1);
+	this->UpdateImageRegions();
 	//Ğı×ªÖ®ºó¸üĞÂm_nTurnCount,±£Ö¤Ğı×ª½Ç¶ÈÓëĞı×ª´ÎÊıÒ»ÖÂ£¬·ñÔò»á´¥·¢JPGÍ¼ÏñÎÄ¼şÄÚ²¿Ğı×ª wht 19-11-30
 	m_nTurnCount = image.GetPdfConfig().rotation / 90;
 	if(loadRawImgFromVM)
@@ -8038,16 +8044,6 @@ bool CImageDataFile::TurnAntiClockwise90()	//½«ÎÄ¼şÖĞÍ¼ÏñÄæÊ±Õë×ª90¶È£¬Ğı×ª²»Ó°Ï
 	if(loadGreyFromVM)
 		UnloadGreyBytes();
 	return retcode;
-}
-
-bool CImageDataFile::IsNeedTurnImage()
-{
-	PDF_FILE_CONFIG cfg = image.GetPdfConfig();
-	int nTurnCount = cfg.rotation / 90;
-	if (nTurnCount != m_nTurnCount)
-		return true;
-	else
-		return false;
 }
 
 bool CImageDataFile::IsBlackPixel(int i,int j)
