@@ -417,6 +417,8 @@ bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lp
 		//fread(&palette[i].rgbRed,1,1,fp);
 		//fread(&palette[i].rgbReserved,1,1,fp);
 	}
+	//存在个别图像文件图像数据区与调色版区间加入了用户自定义信息的情况，此时就应直接根据文件头中指定的偏移量读取图像文件 wjh-2019.12.6
+	tempBuffer.SeekPosition(fileHeader.bfOffBits);
 	BITMAP image;
 	image.bmType=0;
 	image.bmPlanes=1;

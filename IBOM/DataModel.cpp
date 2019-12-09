@@ -1385,7 +1385,7 @@ int CDataCmpModel::SummaryBomParts(CXhPtrSet<IRecoginizer::BOMPART> &dwgPartSet,
 				//	pBomPart->iSeg=pImageFile->m_iSeg.iSeg;
 				if(segI.iSeg==-1||segI.iSeg<=0)
 				{
-					pBomPart->iSeg==xPrevSegI;
+					pBomPart->iSeg=xPrevSegI;
 					if(pBomPart->wPartType==IRecoginizer::BOMPART::TUBE||pBomPart->wPartType==IRecoginizer::BOMPART::ANGLE||
 						pBomPart->wPartType==IRecoginizer::BOMPART::PLATE)
 					{
@@ -1394,10 +1394,12 @@ int CDataCmpModel::SummaryBomParts(CXhPtrSet<IRecoginizer::BOMPART> &dwgPartSet,
 							xPrevSegI=pBomPart->iSeg=xCurrSegI;
 							pImageFile->m_iSeg=xCurrSegI;
 						}
+						else
+							pImageFile->m_iSeg=SEGI();	//根据件号提取不出段号时默认段号未0方便刷选错误构件 wht 19-12-05
 					}
 				}
 				else 
-					pBomPart->iSeg= xPrevSegI;
+					pBomPart->iSeg= xCurrSegI;
 				dwgPartSet.append(pBomPart);
 			}
 		}

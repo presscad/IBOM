@@ -1440,6 +1440,23 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 			return -1;
 		else if(pIsland->count>4)
 			return 0;//1;
+		int yiStart,yiEnd,irow,maxblackpixels,icol,xiMid=m_nWidth/2;
+		//为区分'6'与'0'字符增加'6'中间笔划的判断，黑点像素数不能小于3 wjh-2018.3.27
+		yiStart=(int)f2i(0.3*m_nHeight);
+		yiEnd=(int)f2i(0.75*m_nHeight);		//0.7059=12/17
+		int iPrevBlackPixelStart=0,iPrevBlackPixelEnd=0;
+		int centerblacks=0;
+		maxblackpixels=max(1,f2i(1*vfScaleCoef));
+		for(irow=yiStart;irow<=yiEnd;irow++)
+		{
+			for(icol=xiMid-1;icol<xiMid+2;icol++)
+			{
+				if(IsBlackPixel(icol,irow))
+					centerblacks++;
+				if(centerblacks>maxblackpixels)
+					return -1;	//中间区域黑点过多不认为是'0',可能是'6' wjh-2019.12.6
+			}
+		}
 	}
 	else if(wChar.wHz=='1')
 	{
@@ -1449,6 +1466,43 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 			return -1;	//1字符过宽可能是精度不高的'4'字符　wjh-2018.3.18
 		if (wTopBlackPixels>f2i(0.35*m_nWidth))	//'1顶部有时候会向左突出一部分宽度，故取值0.35较好 wjh-2018.4.19
 			return -1;	//'1'顶部黑点过多，可能是字符'7'
+		//为区分'1'与'2'字符间因窄字符导致的混淆，增加'1'中间笔划宽度限制，笔画宽度黑像素数不能多于4，或整宽7 wjh-2018.3.27
+		int yiStart=(int)f2i(0.35*m_nHeight);
+		int yiEnd=(int)f2i(0.75*m_nHeight);		//0.7059=12/17
+		int strokewidth=0,maxwidth=0,postwidth=0;
+		int maxblackpixels=max(4,f2i(4.5*vfScaleCoef));
+		int xiStart=-1,xiPostMinStart=-1,xiPostMaxPixel=-1;
+		for(int irow=0;irow<m_nHeight;irow++)
+		{
+			int nCurrWidth=0,nCurrPostWidth=0;
+			for(int icol=0;icol<m_nWidth;icol++)
+			{
+				if (!IsBlackPixel(icol,irow))
+					continue;
+				if (nCurrWidth==0)
+				{
+					if (xiStart==-1)
+						xiStart=icol;
+					else
+						xiStart=min(xiStart,icol);
+					nCurrWidth=icol-xiStart+1;
+				}
+				else
+					nCurrWidth=icol-xiStart+1;
+				if (irow>=yiStart&&irow<=yiEnd)
+				{
+					xiPostMinStart=xiPostMinStart<0?icol:min(xiPostMinStart,icol);
+					xiPostMaxPixel=xiPostMaxPixel<0?icol:max(xiPostMaxPixel,icol);
+					nCurrPostWidth=xiPostMaxPixel-xiPostMinStart+1;
+				}
+			}
+			if (irow>=yiStart&&irow<=yiEnd&&nCurrPostWidth>postwidth)
+				postwidth=nCurrPostWidth;
+			if (nCurrWidth>maxwidth)
+				maxwidth=nCurrWidth;
+			if(postwidth>maxblackpixels)//||postwidth/(double)maxwidth>0.6)
+				return -1;	//中间区域黑点过多不认为是'0',可能是'6' wjh-2019.12.6
+		}
 	}
 	else if(wChar.wHz=='2')
 	{
@@ -1536,10 +1590,24 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 		}
 		else if(count==1&&(core_y>m_nHeight*0.6||core_y<m_nHeight*0.4))
 			return -1;	//'4'字符的孤岛应该在中间范围,以示与'6'及'9'等字符区分
-		else
-			return 0;
-		//if(pIsland!=NULL)
-		//	return -1;	//'1'字符不可能有孤岛存在
+		int yiStart,yiEnd,irow,maxblackpixels,icol,xiMid=m_nWidth/2;
+		//为区分'4'与'0'字符增加'4'中间笔划的判断，黑点像素数不能小于3 wjh-2018.3.27
+		yiStart=(int)f2i(0.45*m_nHeight);
+		yiEnd=(int)f2i(0.75*m_nHeight);		//0.7059=12/17
+		int iPrevBlackPixelStart=0,iPrevBlackPixelEnd=0;
+		int centerblacks=0;
+		maxblackpixels=max(1,f2i(2*vfScaleCoef));
+		for(irow=yiStart;irow<=yiEnd;irow++)
+		{
+			for(icol=xiMid-1;icol<xiMid+2;icol++)
+			{
+				if(IsBlackPixel(icol,irow))
+					centerblacks++;
+			}
+		}
+		if(centerblacks<maxblackpixels)
+			return -1;	//中间区域黑点过少不认为是'4',可能是'0' wjh-2019.12.6
+		return 0;
 	}
 	else if(wChar.wHz=='5')
 	{
@@ -1583,6 +1651,26 @@ int CImageChar::CheckFeatures(CXhSimpleList<ISLAND>* pIslands/*=NULL*/)
 					return -1;	//右上侧开放区域黑点过多超出误差噪点范围，不认为是'5'，可能是'9'或'3'
 			}
 		}
+	}
+	else if(wChar.wHz=='6')
+	{
+		int yiStart,yiEnd,irow,maxblackpixels,icol,xiMid=m_nWidth/2;
+		//为区分'6'与'0'字符增加'6'中间笔划的判断，黑点像素数不能小于3 wjh-2018.3.27
+		yiStart=(int)f2i(0.3*m_nHeight);
+		yiEnd=(int)f2i(0.5*m_nHeight);		//0.7059=12/17
+		int iPrevBlackPixelStart=0,iPrevBlackPixelEnd=0;
+		int centerblacks=0;
+		maxblackpixels=max(1,f2i(2*vfScaleCoef));
+		for(irow=yiStart;irow<=yiEnd;irow++)
+		{
+			for(icol=xiMid-1;icol<xiMid+2;icol++)
+			{
+				if(IsBlackPixel(icol,irow))
+					centerblacks++;
+			}
+		}
+		if(centerblacks<maxblackpixels)
+			return -1;	//中间区域黑点过少不认为是'6',可能是'0' wjh-2019.12.6
 	}
 	else if(wChar.wHz=='7')
 	{
@@ -3030,7 +3118,7 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 			continue;	//仅识别窄字符(如：1)
 		CImageChar text;
 		int niCharHeight=this->m_nHeight;
-		if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,pCharSect->xiEnd,this->m_nHeight-yBaseEndGap-2))
+		if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,pCharSect->xiEnd,this->m_nHeight-yBaseEndGap+2))
 			niCharHeight-=(this->yBaseEndGap);
 		text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,pCharSect->xiEnd,niCharHeight),STDFONT_HEIGHT);
 		if(Alphabets->RecognizeData(&text,0.65,&matchcoef))
@@ -3123,7 +3211,7 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 				{
 					CImageChar text;
 					int niCharHeight=this->m_nHeight;
-					if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,i,this->m_nHeight-yBaseEndGap-2))
+					if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,i,this->m_nHeight-yBaseEndGap+2))
 						niCharHeight-=(this->yBaseEndGap);
 					text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,i,niCharHeight),STDFONT_HEIGHT);
 					if(recognized=Alphabets->RecognizeData(&text,0.65,&matchcoef))
@@ -3137,7 +3225,7 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 					if (recognized)
 					{
 						niCharHeight=this->m_nHeight;
-						if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pNextCharSect->xiStart,pNextCharSect->xiEnd,this->m_nHeight-yBaseEndGap-2))
+						if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pNextCharSect->xiStart,pNextCharSect->xiEnd,this->m_nHeight-yBaseEndGap+2))
 							niCharHeight-=(this->yBaseEndGap);
 						text.StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pNextCharSect->xiStart,0,pNextCharSect->xiEnd,niCharHeight),STDFONT_HEIGHT);
 						if(recognized=Alphabets->RecognizeData(&text,0.65,&matchcoef))
@@ -3304,7 +3392,7 @@ void CImageCellRegion::SplitImageCharSet(WORD iBitStart/*=0*/,WORD wGuessCharWid
 		pText->xiImgLeft=pCharSect->xiStart;
 		pText->xiImgRight=pCharSect->xiEnd;
 		int niCharHeight=this->m_nHeight;
-		if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,pCharSect->xiEnd,this->m_nHeight-yBaseEndGap-2))
+		if (this->yBaseEndGap>0&&!IsHasBelowBlckPixels(pCharSect->xiStart,pCharSect->xiEnd,this->m_nHeight-yBaseEndGap+2))
 			niCharHeight-=(this->yBaseEndGap);
 		pText->StandardLocalize(m_lpBitMap,m_bBlackPixelIsTrue,m_nEffWidth,RECT_C(pCharSect->xiStart,0,pCharSect->xiEnd,niCharHeight),stdHeight);
 		//UINT count=listChars.GetNodeNum();
@@ -4857,7 +4945,7 @@ CXhChar50 CImageDataRegion::RecognizeDatas(CELL_RECT &data_rect,int idCellTextTy
 	cell.m_nMaxCharCout=(int)(cell.m_nWidth/(0.6*cell.m_nHeight));
 	cell.m_nLeftMargin=xStart-rcCell.left;	//有效区域与单元格左侧边界线距离，用来处理表格线压字问题 wht 18-07-30
 	cell.m_nRightMargin=rcCell.right-xEnd;		//有效区域与单元格右侧边界线距离
-	cell.yBaseEndGap=max(0,yEnd-yBaseEnd);
+	cell.yBaseEndGap=yEnd-yBaseEnd>2?yEnd-yBaseEnd:0;
 	if(idCellTextType!=CImageCellRegion::GUIGE&&idCellTextType!=CImageCellRegion::PARTNO)
 		cell.UpdateFontTemplCharState();	//规格列中需要根据当前识别的字符数量实时设定模版字符的识别状态
 #ifdef _DEBUG
@@ -4934,6 +5022,11 @@ void CImageDataRegion::ParseDataValue(CXhChar50 sText,int data_type,char* sValue
 			{
 				sMat[1]='4';
 				sMat[3]='0';
+			}
+			else if (sMat[1]=='3')
+			{
+				sMat[2]='4';
+				sMat[3]='5';
 			}
 			//提取材质后将类型字符添加会规格字符中
 			CXhChar100 sSpec;
@@ -5383,7 +5476,7 @@ int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/,int iCellRow
 {
 	iCellCol=0;
 	iCellRowStart=3;
-	iCellRowEnd=iCellRowStart+1;
+	iCellRowEnd=iCellRowStart;
 #else
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/)
 {
@@ -6052,7 +6145,6 @@ int CImageDataRegion::RecognizeSingleBomPart(DYN_ARRAY<CELL_RECT> &rowCells,BOOL
 			}
 			else if((pszSizeNumber=strstr(sText,"Φ"))!=NULL||(pszSizeNumber=strstr(sText,"φ"))!=NULL)
 				cls_id=BOM_PART::TUBE;
-
 			if(sText.Remove('?')>0||(pszSizeNumber&&pszThick))
 			{
 				int sizenumber=0;
@@ -6420,7 +6512,7 @@ void CImageDataFile::InitImageShowPara(RECT showRect)
 }
 bool CImageDataFile::RetrievePdfRegionImageBits(CImageDataRegion *pRegion,CImageTransform &regionImage)
 {
-	if(m_ciRawImageFileType!=RAW_IMAGE_PDF)
+	if(!this->IsSrcFromPdfFile())//m_ciRawImageFileType!=RAW_IMAGE_PDF&&m_ciRawImageFileType!=RAW_IMAGE_PDF_IMG)
 		return false;
 	//1.计算字体放大到模板字高的缩放比例
 	double zoom_scale=CalPdfRegionZoomScaleBySample(pRegion);
@@ -6445,7 +6537,7 @@ bool CImageDataFile::RetrievePdfRegionImageBits(CImageDataRegion *pRegion,CImage
 
 double CImageDataFile::CalPdfRegionZoomScaleBySample(CImageDataRegion *pRegion)
 {	
-	if(m_ciRawImageFileType!=RAW_IMAGE_PDF)
+	if(!this->IsSrcFromPdfFile())//m_ciRawImageFileType!=RAW_IMAGE_PDF&&m_ciRawImageFileType!=RAW_IMAGE_PDF_IMG)
 		return 0;
 	PDF_FILE_CONFIG pdfCfg=image.GetPdfConfig();
 	double zoom_scale=pdfCfg.zoom_scale;
@@ -6485,8 +6577,10 @@ double CImageDataFile::CalPdfRegionZoomScaleBySample(CImageDataRegion *pRegion)
 		else
 		{	//==0可能是还未导入图片信息
 			nTextHeight=nTemplateH;
-			if(image.GetWidth()>0&&image.GetHeight()>0)
-				logerr.LevelLog(CLogFile::WARNING_LEVEL1_IMPORTANT,"样本检测区未找到表格信息!");
+			//if (image.GetWidth()>0&&image.GetHeight()>0)
+			//	logerr.LevelLog(CLogFile::WARNING_LEVEL1_IMPORTANT,"样本检测区未找到表格信息!");
+			//else
+			//	logerr.LevelLog(CLogFile::WARNING_LEVEL1_IMPORTANT,"图片#\"%s\"加载失败,PDF原始样本信息提取失败",(char*)this->m_sPathFileName);
 		}
 	}
 	if(nTemplateH>0&&nTextHeight>0)
@@ -6512,7 +6606,7 @@ bool CImageDataFile::RetrieveRegionImageBits(CImageDataRegion *pRegion,bool bSna
 	bool loadfrom_virtualmemory=false;
 	CImageTransform regionImage;
 	CImageTransform *pImage=&image;
-	if( bSnapPdfLiveRegionImg&&m_ciRawImageFileType==RAW_IMAGE_PDF&&
+	if( bSnapPdfLiveRegionImg&&//m_ciRawImageFileType==RAW_IMAGE_PDF&&
 		RetrievePdfRegionImageBits(pRegion,regionImage))
 	{
 		pImage=&regionImage;
@@ -6541,7 +6635,7 @@ bool CImageDataFile::RetrieveRegionImageBits(CImageDataRegion *pRegion,bool bSna
 	int yjTopLeft=min(leftUp.y,rightUp.y);
 	int nRgnWidth=max(rightUp.x,rightDown.x)-xiTopLeft+1;
 	int nRgnHeight=max(leftDown.y,rightDown.y)-yjTopLeft+1;
-	if(m_ciRawImageFileType!=RAW_IMAGE_PDF)
+	if(!this->IsSrcFromPdfFile())//m_ciRawImageFileType!=RAW_IMAGE_PDF&&m_ciRawImageFileType!=RAW_IMAGE_PDF_IMG)
 	{	//通过前几行预测明细表的行高及各列宽度
 		//预测网格线及网格锚点
 		//PreTestScanRegionGridLine(pRegion);
