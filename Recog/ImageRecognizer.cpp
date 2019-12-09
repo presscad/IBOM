@@ -2977,9 +2977,9 @@ int CImageCellRegion::ParseImgCharRects(BYTE cbTextTypeFlag/*=0*/,IXhList<CHAR_S
 		pCharSectList=&listCharSects;
 	//1.检测单元格是否为空单元格
 	double dfMinWtoHcoefOfChar1=Alphabets->m_fMinWtoHcoefOfChar1>0?Alphabets->m_fMinWtoHcoefOfChar1:1.0/7;
-	WORD wMinCharWidth=f2i(STDFONT_HEIGHT*dfMinWtoHcoefOfChar1);//robot.MIN_CHAR_WIDTH_SCALE);//0.15),2/10;
+	WORD wMinCharWidth=max(3,f2i(STDFONT_HEIGHT*dfMinWtoHcoefOfChar1));//robot.MIN_CHAR_WIDTH_SCALE);//0.15),2/10;
 	//4的左半部分宽约10像素（字高40），故设定10范围内要求全分断时才视为字符分断。 wjh-2019.11.29
-	WORD wMinCharWidth2=f2i(STDFONT_HEIGHT*0.25);//robot.MIN_CHAR_WIDTH_SCALE);//0.15)
+	WORD wMinCharWidth2=max(5,f2i(STDFONT_HEIGHT*0.25));//robot.MIN_CHAR_WIDTH_SCALE);//0.15)
 	WORD wMaxCharWidth=f2i(STDFONT_HEIGHT*robot.MAX_CHAR_WIDTH_SCALE);//8/10;
 	WORD wMinCharAllWidth=f2i(STDFONT_HEIGHT*0.33);	//全宽字符的最小宽度，如'Q','X','0',2~9字符等
 	WORD wPreferCharWidth=f2i(STDFONT_HEIGHT*robot.PREFER_CHAR_WIDTH_SCALE);//6/10;
@@ -5474,8 +5474,8 @@ CLogFile bomlog("D:\\summbom.txt");
 #ifdef _DEBUG
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/,int iCellRowStart/*=-1*/,int iCellRowEnd/*=-1*/,int iCellCol/*=-1*/)	//-1表示全部,>=0表示指定行或列 wjh-2018.3.14
 {
-	iCellCol=0;
-	iCellRowStart=3;
+	//iCellCol=0;
+	iCellRowStart=22;
 	iCellRowEnd=iCellRowStart;
 #else
 int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/)
@@ -5598,6 +5598,7 @@ int CImageDataRegion::Recognize(char modeOfAuto0BomPart1Summ2/*=0*/)
 		if(modeOfAuto0BomPart1Summ2!=2)
 		{	//3、识别每行构件明细区域的内容
 #ifdef _DEBUG
+			TRACE(CXhChar16("Ln#%2d\n",i));
 			RecognizeSingleBomPart(rowCells,FALSE,NULL,iCellCol,EXPORT_CHAR_RECOGNITION);
 #else
 			RecognizeSingleBomPart(rowCells,FALSE,NULL);
@@ -6145,6 +6146,7 @@ int CImageDataRegion::RecognizeSingleBomPart(DYN_ARRAY<CELL_RECT> &rowCells,BOOL
 			}
 			else if((pszSizeNumber=strstr(sText,"Φ"))!=NULL||(pszSizeNumber=strstr(sText,"φ"))!=NULL)
 				cls_id=BOM_PART::TUBE;
+
 			if(sText.Remove('?')>0||(pszSizeNumber&&pszThick))
 			{
 				int sizenumber=0;
@@ -6488,10 +6490,10 @@ double CImageDataFile::CalMonoThresholdBalanceCoef(int forward/*=20*/)
 		forward=100;
 	return MONO_BALANCE_NUMBERS[forward];
 }
-void CImageDataFile::SetTurnCount(int count) 
+void CImageDataFile::SetTurnCount(int count,bool blSyncTurnImg/*=false*/) 
 {
 	m_nTurnCount = count; 
-	image.SetCurrTurnCounter(count);
+	image.SetCurrTurnCounter(count,blSyncTurnImg);
 }
 void CImageDataFile::InitImageShowPara(RECT showRect)
 {

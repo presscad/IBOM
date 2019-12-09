@@ -287,9 +287,9 @@ public:
 		if(m_pInternalImgFile)
 			m_pInternalImgFile->UpdateImageRegions();
 	}
-	virtual void SetTurnCount(int count) { 
+	virtual void SetTurnCount(int count,bool blSyncTurnImg=false) { 
 		if(m_pInternalImgFile)
-			m_pInternalImgFile->SetTurnCount(count); 
+			m_pInternalImgFile->SetTurnCount(count,blSyncTurnImg); 
 	}
 	virtual int GetTurnCount() {
 		if (m_pInternalImgFile)

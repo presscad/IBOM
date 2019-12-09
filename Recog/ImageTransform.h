@@ -202,7 +202,7 @@ public:
 	//
 	//ciImgTurnMode;	//-3~+3表示顺时针翻转次数（90°为一次）；'Y':左右翻转,'X':上下翻转
 	bool TurnImage(char ciImgTurnMode=0);	//将文件中图像顺(逆)时针转90度
-	void SetCurrTurnCounter(int count);		//设定当前图像的旋转计算数>0顺时针转；<0逆时针转
+	void SetCurrTurnCounter(int count,bool blSyncTurnImg=false);		//设定当前图像的旋转计算数>0顺时针转；<0逆时针转
 	BYTE CalGreynessThreshold();			//计算灰度阈值
 	bool CalDrawingRgnRect();				//计算有效区域的矩形
 	//定位有效区域（工艺卡图框）的矩形

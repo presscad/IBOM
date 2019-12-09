@@ -923,7 +923,7 @@ CImageFileHost* CDataCmpModel::AppendImageFile(const char* szPathFileName,SEGI i
 		pImageFile->SetImageFile(pInterImageFile);
 		//打开JPG等图像文件时需要根据设置的旋转次数调整图片 wht 19-11-30
 		if (niRotDegAngle!=0)
-			pImageFile->SetTurnCount(niRotDegAngle / 90);
+			pImageFile->SetTurnCount(niRotDegAngle / 90,true);
 		//pImageFile->szPathFileName=szPathFileName;
 	}
 	return pImageFile;

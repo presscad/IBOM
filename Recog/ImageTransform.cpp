@@ -1097,9 +1097,13 @@ BYTE CImageTransform::GetPixelGraynessThresold(int x,int y)
 	else
 		return 0;
 }
-void CImageTransform::SetCurrTurnCounter(int count)
+void CImageTransform::SetCurrTurnCounter(int count,bool blSyncTurnImg/*=false*/)
 {	//在不改变当前图像状态情况下，设定当前图像的旋转计算数>0顺时针转；<0逆时针转
-	this->m_xPdfCfg.rotation=count*90;
+	char niDiffTurnCount=(char)(count-this->m_xPdfCfg.rotation/90);
+	if (blSyncTurnImg&&niDiffTurnCount!=0)
+		TurnImage(niDiffTurnCount);
+	else
+		this->m_xPdfCfg.rotation=count*90;
 }
 bool CImageTransform::TurnImage(char ciImgTurnMode/*=0*/)		//将文件中图像顺时针转90度
 {

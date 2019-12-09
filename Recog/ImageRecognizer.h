@@ -910,7 +910,7 @@ public:
 	virtual double GetMonoThresholdBalanceCoef();
 	//balancecoef 划分黑白点间的界限调整平衡系数,取值-0.5~0.5;0时对应最高频率像素前移20位
 	static double CalMonoThresholdBalanceCoef(int monoforwardpixels=20);
-	virtual void SetTurnCount(int count);
+	virtual void SetTurnCount(int count,bool blSyncTurnImg=false);
 	virtual int GetTurnCount() { return m_nTurnCount; }
 	__declspec( property(put=SetTurnCount,get=GetTurnCount)) int niTurnCount;
 };
