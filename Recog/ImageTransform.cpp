@@ -1099,7 +1099,7 @@ BYTE CImageTransform::GetPixelGraynessThresold(int x,int y)
 }
 void CImageTransform::SetCurrTurnCounter(int count,bool blSyncTurnImg/*=false*/)
 {	//在不改变当前图像状态情况下，设定当前图像的旋转计算数>0顺时针转；<0逆时针转
-	char niDiffTurnCount=(char)(count-this->m_xPdfCfg.rotation/90);
+	char niDiffTurnCount=(char)((count-this->m_xPdfCfg.rotation/90) % 4);
 	if (blSyncTurnImg&&niDiffTurnCount!=0)
 		TurnImage(niDiffTurnCount);
 	else
