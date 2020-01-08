@@ -14,9 +14,12 @@
     <ProjectGuid>{F30E85B7-475E-4E35-89E0-EE0802CE20FA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Recog</RootNamespace>
-    <SccProjectName>"$/IBOM", WKMAAAAA</SccProjectName>
-    <SccLocalPath>..</SccLocalPath>
-    <SccProvider>MSSCCI:Microsoft Visual SourceSafe</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

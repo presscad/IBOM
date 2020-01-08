@@ -1040,6 +1040,9 @@
     <ClCompile Include="..\Recog\ImageFile\ImageFile.cpp">
       <Filter>RecogCode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\ExcelOper.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="IBOM.rc">

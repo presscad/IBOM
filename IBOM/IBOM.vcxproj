@@ -14,9 +14,12 @@
     <ProjectGuid>{F81AA50D-71BA-43C1-AFD0-1AF09117B9C4}</ProjectGuid>
     <RootNamespace>IBOM</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <SccProjectName>"$/IBOM", WKMAAAAA</SccProjectName>
-    <SccLocalPath>.</SccLocalPath>
-    <SccProvider>MSSCCI:Microsoft Visual SourceSafe</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -302,6 +305,7 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ToolKits\ToolCode\ExcelOper.cpp" />
     <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp" />
     <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp" />
     <ClCompile Include="..\..\LDS\LDS\BOM\BOM.cpp" />

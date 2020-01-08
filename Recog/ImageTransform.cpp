@@ -685,6 +685,21 @@ bool CImageTransform::ConvertBpp(BYTE uiBitCount/*=24*/,long niRawBitsBuffSize/*
 			}
 		}
 	}
+	else if (this->m_uBitcount == 8)
+	{
+		for (int row = 0; row < m_nHeight; row++)
+		{
+			BYTE* pFrom = m_lpRawBits+row*m_nEffByteWidth;
+			BYTE* pTo = lpNewBytes+row* nEffByteWidth;
+			for (int xi = 0; xi < m_nWidth; xi++)
+			{
+				int ibyte = xi;
+				BYTE cbByte = *(pFrom + ibyte);
+				*(pTo + 2) = *(pTo + 1) = *pTo = cbByte;
+				pTo += 3;
+			}
+		}
+	}
 	else
 	{
 		delete[]lpNewBytes;
@@ -753,10 +768,10 @@ bool CImageTransform::ReadImageFile(FILE* fp,char ciBmp0Jpeg1Png2Tif3,BYTE* lpEx
 	}
 
 	m_nWidth =pImageFile->GetWidth();
-	if (ciBmp0Jpeg1Png2Tif3!=1)	//Jpeg读完一定是24位真彩色但TIFF，PNG等存在黑白或灰度图情况
+	//if (ciBmp0Jpeg1Png2Tif3!=1)	//Jpeg读完一定是24位真彩色但TIFF，PNG等存在黑白或灰度图情况
 		m_uBitcount = pImageFile->GetBpp();
-	else
-		m_uBitcount = 24;
+	//else
+	//	m_uBitcount = 24;
 	m_nEffByteWidth=((m_nWidth*m_uBitcount+31)/32)*4;//pImageFile->GetEffWidth();
 	m_nHeight=pImageFile->GetHeight();
 	long dwRawCount=pImageFile->GetEffWidth()*m_nHeight;
@@ -1099,7 +1114,7 @@ BYTE CImageTransform::GetPixelGraynessThresold(int x,int y)
 }
 void CImageTransform::SetCurrTurnCounter(int count,bool blSyncTurnImg/*=false*/)
 {	//在不改变当前图像状态情况下，设定当前图像的旋转计算数>0顺时针转；<0逆时针转
-	char niDiffTurnCount=(char)((count-this->m_xPdfCfg.rotation/90) % 4);
+	char niDiffTurnCount=(char)(count-this->m_xPdfCfg.rotation/90);
 	if (blSyncTurnImg&&niDiffTurnCount!=0)
 		TurnImage(niDiffTurnCount);
 	else
