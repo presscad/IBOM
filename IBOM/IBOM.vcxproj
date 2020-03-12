@@ -158,6 +158,7 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ToolKits\ToolCode\BomTblTitleCfg.h" />
     <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h" />
     <ClInclude Include="..\..\XhCore\Ent\f_ent.h" />
     <ClInclude Include="..\..\LDS\LDS\BOM\BOM.h" />
@@ -305,6 +306,7 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ToolKits\ToolCode\BomTblTitleCfg.cpp" />
     <ClCompile Include="..\..\ToolKits\ToolCode\ExcelOper.cpp" />
     <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp" />
     <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp" />

@@ -103,7 +103,7 @@
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>__BOM_FILE_;__VS2010_;__XHLICAGENT_2_;APP_EMBEDDED_MODULE_ENCRYPT;__IBOM_;__ENABLE_XHSTRING_LENGTH_PROPERTY_;WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;D:\ObjectARX 2005\inc;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\LDS\MapLds</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\XhLmd;..\..\XhLmd\DES;..\..\XhLmd\AES;..\..\XhLmd\RSA;..\..\XhLmd\DogDrvs;..\..\XhLmd\XhLicAgent;..\..\XhLmd\XhLdsLm;..\..\XhLmd\XhLmd;D:\ObjectARX 2005\inc;..\..\XhCore\Ent;..\..\XhCore\EntList;..\..\XhCore\AlgFun;..\..\ToolKits\ToolCode;..\..\ToolKits\TowerCad;..\..\LDS\MapLds</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
