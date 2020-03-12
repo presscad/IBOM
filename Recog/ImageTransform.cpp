@@ -391,7 +391,8 @@ bool CImageTransform::ReadBmpFile(FILE* fp,BYTE* lpExterRawBitsBuff/*=NULL*/,UIN
 	tempBuffer.CloseFile();
 	return bRetCode;
 }
-bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/)
+bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lpExterRawBitsBuff/*=NULL*/,
+											UINT uiBitsBuffSize/*=0*/, bool bTurnBmpByCfgPara /*= true*/)
 {
 	//if(fp==NULL)
 	//	return false;
@@ -428,16 +429,18 @@ bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lp
 	int widthBits = infoHeader.biWidth*infoHeader.biBitCount;
 	image.bmWidthBytes=((widthBits+31)/32)*4;
 	//////////////////////////////////////////////////////////
-	char ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
-	if(ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
+	char ciImgTurnMode = 0;
+	if (bTurnBmpByCfgPara)	//是否需要根据配置参数旋转图像，用于PDF读取时不需要启用（读取PDF时已经进行了旋转处理） wht 20-01-08
+		ciImgTurnMode = (m_xPdfCfg.rotation / 90) % 4;
+	if (ciImgTurnMode <= 3 && ciImgTurnMode % 2 != 0)
 	{	//左/右转90°图像时，宽高对调
-		m_nWidth =image.bmHeight;
-		m_nHeight=image.bmWidth;
+		m_nWidth = image.bmHeight;
+		m_nHeight = image.bmWidth;
 	}
 	else
 	{
-		m_nWidth =image.bmWidth;
-		m_nHeight=image.bmHeight;
+		m_nWidth = image.bmWidth;
+		m_nHeight = image.bmHeight;
 	}
 	m_uBitcount=24;//pImageFile->GetBpp();
 	m_nEffByteWidth=((m_nWidth*3+3)/4)*4;
@@ -453,13 +456,16 @@ bool CImageTransform::ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lp
 	//fread(image.bmBits,1,infoHeader.biHeight*image.bmWidthBytes,fp);
 	tempBuffer.Read(image.bmBits,infoHeader.biHeight*image.bmWidthBytes);
 	//fclose(fp);
-	return InitFromBITMAP(image,palette,(BYTE*)image.bmBits,lpExterRawBitsBuff,uiExterRawBitsBuffSize);
+	return InitFromBITMAP(image,palette,(BYTE*)image.bmBits,lpExterRawBitsBuff,uiExterRawBitsBuffSize,bTurnBmpByCfgPara);
 }
-bool CImageTransform::InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette/*=NULL*/, BYTE *lpBmBits/*=NULL*/, BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/)
+bool CImageTransform::InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette/*=NULL*/, BYTE *lpBmBits/*=NULL*/, 
+									 BYTE* lpExterRawBitsBuff/*=NULL*/,UINT uiBitsBuffSize/*=0*/, bool bTurnBmpByCfgPara /*= true*/)
 {
 	//////////////////////////////////////////////////////////
 	//填写图像数据
-	char ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
+	char ciImgTurnMode = 0;
+	if(bTurnBmpByCfgPara)	//是否需要根据配置参数旋转图像，用于PDF读取时不需要启用（读取PDF时已经进行了旋转处理） wht 20-01-08
+		ciImgTurnMode=(m_xPdfCfg.rotation/90)%4;
 	if(ciImgTurnMode<=3&&ciImgTurnMode%2!=0)
 	{	//左/右转90°图像时，宽高对调
 		m_nWidth =image.bmHeight;
@@ -945,7 +951,7 @@ bool CImageTransform::ReadPdfFile(char* file_path,const PDF_FILE_CONFIG& pdfConf
 				if(byteArr)
 					free(byteArr);
 				if(bCreateVirtualFile)
-					ReadBmpFileByTempFile(tempFile);
+					ReadBmpFileByTempFile(tempFile,NULL,0,false);
 				else
 					;//TODO: 未完待续
 				delete pBMP;
