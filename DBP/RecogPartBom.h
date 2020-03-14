@@ -16,7 +16,21 @@ struct BOM_CELL{
 	GEPOINT dimpos;	//文本标注位置
 	CXhChar50 contents;
 	BOM_CELL(){iRow=iCol=-1;}
+	BOM_CELL(const BOM_CELL& srcCell);
+	BOM_CELL& operator=(const BOM_CELL& srcCell);
+	void Clone(const BOM_CELL& srcCell);
 };
+
+struct BLOCK_ROW {
+	int iRow;
+	GEPOINT blockPos;
+	CXhSimpleList<BOM_CELL> listCells;
+	BLOCK_ROW() { iRow = -1; }
+	BLOCK_ROW(const BLOCK_ROW& srcRow);
+	BLOCK_ROW& operator=(const BLOCK_ROW& srcRow);
+	void Clone(const BLOCK_ROW& srcRow);
+};
+
 class CPartBomTable{
 private:
 	GEPOINT leftTop,rightBottom;
@@ -26,7 +40,9 @@ private:
 	ARRAY_LIST<f3dLine> m_xCollines;
 	ATOM_LIST<CManuPart> m_xBomPartList;
 	ATOM_LIST<CStatBolt> m_xBomBoltList;
+	ATOM_LIST<BLOCK_ROW> m_xBlockRowList;
 	BOOL InternalSelectEntFromUI();
+	int GetAllRow(ATOM_LIST<BLOCK_ROW>& rowList);
 public:
 	CHashSet<AcDbObjectId> m_xSelEntIdSet;
 public:

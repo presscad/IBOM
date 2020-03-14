@@ -49,7 +49,7 @@ void RegisterServerComponents ()
 		&RecogizePartBomToBomdFile);            // Function pointer
 #endif
 }
-char* SearchChar(char* srcStr, char ch, bool reverseOrder/*=false*/)
+static char* SearchChar(char* srcStr, char ch, bool reverseOrder/*=false*/)
 {
 	if (!reverseOrder)
 		return strchr(srcStr, ch);

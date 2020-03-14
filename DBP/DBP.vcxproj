@@ -225,8 +225,12 @@
     <None Include="res\DBP.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\LDS\MapLds\RecogPartBOM.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\CadToolFunc.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\DimStyle.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\LayerTable.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\PathManager.cpp" />
     <ClCompile Include="..\..\XhCore\AlgFun\f_alg_fun.cpp" />
+    <ClCompile Include="..\..\XhCore\EntList\f_ent_list.cpp" />
     <ClCompile Include="..\..\XhCore\Ent\f_ent.cpp" />
     <ClCompile Include="..\..\ToolKits\ToolCode\Buffer.cpp" />
     <ClCompile Include="..\..\ToolKits\ToolCode\LogBinaryFile.cpp" />
@@ -258,6 +262,7 @@
     <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgent.cpp" />
     <ClCompile Include="..\..\XhLmd\XhLicAgent\XhLicAgentI.cpp" />
     <ClCompile Include="DBP.cpp" />
+    <ClCompile Include="RecogPartBOM.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -266,8 +271,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\LDS\MapLds\RecogPartBom.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\CadToolFunc.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\DimStyle.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\LayerTable.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\PathManager.h" />
     <ClInclude Include="..\..\XhCore\AlgFun\f_alg_fun.h" />
+    <ClInclude Include="..\..\XhCore\EntList\f_ent_list.h" />
     <ClInclude Include="..\..\XhCore\Ent\f_ent.h" />
     <ClInclude Include="..\..\LDS\maplds\Material.h" />
     <ClInclude Include="..\..\ToolKits\ToolCode\Buffer.h" />
@@ -300,6 +309,7 @@
     <ClInclude Include="..\..\XhLmd\XhLicAgent\XhLicAgentS.h" />
     <ClInclude Include="..\ToolCode\ArrayList.h" />
     <ClInclude Include="MenuFunc.h" />
+    <ClInclude Include="RecogPartBom.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

@@ -584,7 +584,7 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 		}
 		return TRUE;
 	}
-	else if(wVKey==CConfig::CFG_VK_REPEAT)
+	else if(wVKey==CConfig::CFG_VK_REPEAT || wVKey == CConfig::CFG_VK_REPEAT_UP)
 	{
 		if(pItem==NULL)
 			return FALSE;
@@ -592,52 +592,79 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 		{
 			CString newStr;
 			pListCtrl->m_editBox.GetWindowText(newStr);
-			if(newStr.CompareNoCase(".")!=0)
+			if( (wVKey == CConfig::CFG_VK_REPEAT && newStr.CompareNoCase(CConfig::KEY_REPEAT)!=0)||
+				(wVKey == CConfig::CFG_VK_REPEAT_UP && newStr.CompareNoCase(CConfig::KEY_REPEAT_UP) != 0))
 				return FALSE;
 		}
 		int iCurSel=pItem->GetIndex();
-		CSuperGridCtrl::CTreeItem *pPrevItem=iCurSel>0?pListCtrl->GetTreeItem(iCurSel-1):NULL;
-		IRecoginizer::BOMPART *pPrevPart=pPrevItem!=NULL?(IRecoginizer::BOMPART*)pPrevItem->m_idProp:NULL;
+		CSuperGridCtrl::CTreeItem *pNextToItem=iCurSel>0?pListCtrl->GetTreeItem(iCurSel-1):NULL;
+		if (wVKey == CConfig::CFG_VK_REPEAT_UP)
+			pNextToItem = (iCurSel > 0 && iCurSel < pListCtrl->GetItemCount() - 2) ? pListCtrl->GetTreeItem(iCurSel + 1) : NULL;
+		IRecoginizer::BOMPART *pNextToPart=pNextToItem!=NULL?(IRecoginizer::BOMPART*)pNextToItem->m_idProp:NULL;
 		CString sOldText=pItem->m_lpNodeInfo->GetSubItemText(biCurCol);
-		if(pPrevItem&&pPrevPart)
+		if(pNextToItem&&pNextToPart)
 		{
 			if(biCurCol==0)
 			{	//件号列，件号加1
 				SEGI segI;
 				CXhChar16 sSerialNo,sMaterial="H",sSeparator;
-				if(ParsePartNo(pPrevPart->sLabel,&segI,sSerialNo,sMaterial,sSeparator))
+				if(ParsePartNo(pNextToPart->sLabel,&segI,sSerialNo,sMaterial,sSeparator))
 				{
 					if(sSeparator.Length>0)
 					{	//件号中有分隔符
 						int nSerialNo=ConvertLabelToNum(sSerialNo);
 						if(nSerialNo>0)
 						{
-							if(sSerialNo.StartWith('0')&&nSerialNo<9)
-								strcpy(pCurPart->sLabel,CXhChar16("%s%s0%d",(char*)segI.ToString(),(char*)sSeparator,nSerialNo+1));
+							if (wVKey == CConfig::CFG_VK_REPEAT_UP)
+							{	//复制下一单元格内容
+								int nNewSerialNo = nSerialNo - 1;
+								if(nNewSerialNo<10)
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s0%d", (char*)segI.ToString(), (char*)sSeparator, nNewSerialNo));
+								else if(nNewSerialNo<100)
+									strcpy(pCurPart->sLabel, CXhChar16("%s%d", (char*)segI.ToString(), nNewSerialNo));
+								else 
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s%d", (char*)segI.ToString(), (char*)sSeparator, nNewSerialNo));
+							}
 							else
-								strcpy(pCurPart->sLabel,CXhChar16("%s%s%d",(char*)segI.ToString(),(char*)sSeparator,nSerialNo+1));
+							{
+								if (sSerialNo.StartWith('0') && nSerialNo < 9)
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s0%d", (char*)segI.ToString(), (char*)sSeparator, nSerialNo + 1));
+								else
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s%d", (char*)segI.ToString(), (char*)sSeparator, nSerialNo + 1));
+							}
 							pListCtrl->SetSubItemText(pItem,0,pCurPart->sLabel);
 						}
 					}
 					else 
 					{	//无分隔符
 						int nLabel=ConvertLabelToNum(sSerialNo);
-						if(nLabel>0)
+						if (nLabel > 0)
 						{
-							if(nLabel==99)	//大于100
-								strcpy(pCurPart->sLabel,CXhChar16("%s-100",(char*)segI.ToString()));
-							else if((nLabel+1)<10)
-								strcpy(pCurPart->sLabel,CXhChar16("%s%s0%d",(char*)segI.ToString(),(char*)sSeparator,nLabel+1));
+							if (wVKey == CConfig::CFG_VK_REPEAT_UP)
+							{
+								int nNewSerialNo = nLabel - 1;
+								if (nNewSerialNo < 100)
+									strcpy(pCurPart->sLabel, CXhChar16("%s%d", (char*)segI.ToString(), nNewSerialNo));
+								else
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s%d", (char*)segI.ToString(), (char*)sSeparator, nNewSerialNo));
+							}
 							else
-								strcpy(pCurPart->sLabel,CXhChar16("%s%s%d",(char*)segI.ToString(),(char*)sSeparator,nLabel+1));
-							pListCtrl->SetSubItemText(pItem,0,pCurPart->sLabel);
+							{
+								if (nLabel == 99)	//大于100
+									strcpy(pCurPart->sLabel, CXhChar16("%s-100", (char*)segI.ToString()));
+								else if ((nLabel + 1) < 10)
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s0%d", (char*)segI.ToString(), (char*)sSeparator, nLabel + 1));
+								else
+									strcpy(pCurPart->sLabel, CXhChar16("%s%s%d", (char*)segI.ToString(), (char*)sSeparator, nLabel + 1));
+							}
+							pListCtrl->SetSubItemText(pItem, 0, pCurPart->sLabel);
 						}
 					}
 				}
 			}
 			else //if(biCurCol==1)
 			{	//其它列重复前一列
-				CString sText=pPrevItem->m_lpNodeInfo->GetSubItemText(biCurCol);
+				CString sText=pNextToItem->m_lpNodeInfo->GetSubItemText(biCurCol);
 				pListCtrl->SetSubItemText(pItem,biCurCol,sText);
 				if (biCurCol == 1)
 					strcpy(pCurPart->materialStr, sText);
@@ -650,10 +677,14 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 				else if (biCurCol == 5)
 					pCurPart->weight = atof(sText);
 				else if (biCurCol == CDisplayDataPage::COL_MAP_SUM_WEIGHT)
+
 					pCurPart->sumWeight = atof(sText);
 			}
 			//修改完之后跳转至下一行
-			wVKey=CConfig::CFG_VK_DOWN;
+			if (wVKey == CConfig::CFG_VK_REPEAT_UP)
+				wVKey = CConfig::CFG_VK_UP;
+			else
+				wVKey=CConfig::CFG_VK_DOWN;
 			if(sOldText.CompareNoCase(pItem->m_lpNodeInfo->GetSubItemText(biCurCol))!=0)
 			{
 				BYTE byteArr[8]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
@@ -664,7 +695,10 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 			}
 			if(pListCtrl->m_editBox.GetSafeHwnd()&&pListCtrl->m_editBox.IsWindowVisible())
 			{
-				pListCtrl->m_editBox.SetWindowText(".");
+				if (wVKey == CConfig::CFG_VK_REPEAT_UP)
+					pListCtrl->m_editBox.SetWindowText(CConfig::KEY_REPEAT_UP);
+				else
+					pListCtrl->m_editBox.SetWindowText(CConfig::KEY_REPEAT);
 				pListCtrl->KillfocusEditBox();
 			}
 		}
@@ -677,6 +711,7 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 	}
 	else if( wVKey==CConfig::CFG_VK_Q235||
 			 wVKey==CConfig::CFG_VK_Q345||
+			 wVKey==CConfig::CFG_VK_Q355 ||
 			 wVKey==CConfig::CFG_VK_Q390||
 			 wVKey==CConfig::CFG_VK_Q420)
 	{	//通过快捷键录入材质
@@ -688,6 +723,8 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 			CXhChar16 sMaterial;
 			if(wVKey==CConfig::CFG_VK_Q345)
 				sMaterial.Copy("Q345");
+			else if(wVKey==CConfig::CFG_VK_Q355)
+				sMaterial.Copy("Q355");
 			else if(wVKey==CConfig::CFG_VK_Q390)
 				sMaterial.Copy("Q390");
 			else if(wVKey==CConfig::CFG_VK_Q420)
@@ -876,7 +913,8 @@ static BOOL FireModifyValue(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 	if(biCurCol<0)
 		return FALSE;
 	IRecoginizer::BOMPART *pCurPart=pItem!=NULL?(IRecoginizer::BOMPART*)pItem->m_idProp:NULL;
-	if(sTextValue.CompareNoCase(".")==0)
+	if( sTextValue.CompareNoCase(CConfig::KEY_REPEAT) == 0 ||
+		sTextValue.CompareNoCase(CConfig::KEY_REPEAT_UP) == 0)
 	{
 		if(biCurCol==CDisplayDataPage::COL_LABEL)
 			sTextValue=pCurPart->sLabel;
@@ -897,6 +935,7 @@ static BOOL FireModifyValue(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 			SimplifiedNumString(sTextValue);
 		}
 		return TRUE;	//输入点表示重复上一次，已经在FireKeyDown中处理
+						//输入*表示重复下一次，已经在FireKeyDown中处理
 	}
 	if(biCurCol==CDisplayDataPage::COL_LABEL)
 	{

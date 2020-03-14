@@ -94,7 +94,22 @@
     <ClCompile Include="..\..\ToolKits\TowerCad\ProductFeature.cpp">
       <Filter>TowerCad</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\LDS\MapLds\RecogPartBOM.cpp" />
+    <ClCompile Include="RecogPartBOM.cpp" />
+    <ClCompile Include="..\..\ToolKits\ToolCode\CadToolFunc.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\LayerTable.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\DimStyle.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\XhCore\EntList\f_ent_list.cpp">
+      <Filter>EntList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\PathManager.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuFunc.h" />
@@ -194,7 +209,22 @@
     <ClInclude Include="..\..\ToolKits\TowerCad\LicFuncDef.h">
       <Filter>ToolCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\LDS\MapLds\RecogPartBom.h" />
+    <ClInclude Include="RecogPartBom.h" />
+    <ClInclude Include="..\..\ToolKits\ToolCode\CadToolFunc.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\LayerTable.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\DimStyle.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\XhCore\EntList\f_ent_list.h">
+      <Filter>EntList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\PathManager.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DBP.rc" />
@@ -246,6 +276,9 @@
     </Filter>
     <Filter Include="XhLdsLm">
       <UniqueIdentifier>{7e252cd7-39a5-4506-9b2e-1fde6351b8b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EntList">
+      <UniqueIdentifier>{58abbe79-065f-4c64-99cb-36a40372aa00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

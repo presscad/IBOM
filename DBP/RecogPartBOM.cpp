@@ -11,9 +11,11 @@
 #include "MenuFunc.h"
 #include "RecogPartBom.h"
 #include "XhCharString.h"
+#include "CadToolFunc.h"
 #if defined(__BOM_FILE_)
 #include "direct.h"
 
+/*
 static double TestDrawTextLength(const char* dimtext,double height,AcDbObjectId textStyleId)
 {
 	AcDbMText mtxt;
@@ -27,6 +29,8 @@ static double TestDrawTextLength(const char* dimtext,double height,AcDbObjectId 
 	mtxt.setTextStyle(textStyleId);		//文字插入点
 	return mtxt.actualWidth();
 }
+*/
+
 static char QuerySteelBriefMatMark(const char* material_str)
 {
 	if(material_str==NULL)
@@ -107,6 +111,53 @@ static bool _LocalIsInteralLineInRect(GEPOINT lineStart,GEPOINT lineEnd,
 		return topY-btmY>minInnerLength;
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////
+// BLOCK_CELL
+BOM_CELL::BOM_CELL(const BOM_CELL& srcCell)
+{
+	Clone(srcCell);
+}
+BOM_CELL& BOM_CELL::operator=(const BOM_CELL& srcCell)
+{
+	Clone(srcCell);
+	return *this;
+}
+void BOM_CELL::Clone(const BOM_CELL& srcCell)
+{
+	iRow = srcCell.iRow;
+	iCol = srcCell.iCol;
+	rc = srcCell.rc;
+	dimpos = srcCell.dimpos;
+	contents.Copy(srcCell.contents);
+}
+//////////////////////////////////////////////////////////////////////////
+// BLOCK_ROW
+BLOCK_ROW::BLOCK_ROW(const BLOCK_ROW& srcRow)
+{
+	Clone(srcRow);
+}
+BLOCK_ROW& BLOCK_ROW::operator =(const BLOCK_ROW& srcRow)
+{
+	Clone(srcRow);
+	return *this;
+}
+void BLOCK_ROW::Clone(const BLOCK_ROW& srcRow)
+{
+	iRow = srcRow.iRow;
+	blockPos = srcRow.blockPos;
+	listCells.Empty();
+	for (BOM_CELL* pCell = (const_cast<BLOCK_ROW*>(&srcRow))->listCells.EnumObjectFirst(); pCell;
+		pCell = (const_cast<BLOCK_ROW*>(&srcRow))->listCells.EnumObjectNext())
+	{
+		BOM_CELL *pNewCell = listCells.AttachObject();
+		pNewCell->iCol = pCell->iCol;
+		pNewCell->iRow = pCell->iRow;
+		pNewCell->rc = pCell->rc;
+		pNewCell->dimpos = pCell->dimpos;
+		pNewCell->contents.Copy(pCell->contents);
+	}
+}
 //////////////////////////////////////////////////////////////////////////
 //CPartBomTable
 CPartBomTable::CPartBomTable(GEPOINT* vertArr)
@@ -130,22 +181,21 @@ void CPartBomTable::ExportBomToTxt()
 	if(savedlg.DoModal()!=IDOK)
 		return;
 	FILE* fp=fopen(savedlg.GetPathName(),"wt");
-	for(int row=0;row<m_xRowlines.GetSize()-1;row++)
+	ATOM_LIST<BLOCK_ROW> rowList;
+	GetAllRow(rowList);
+	int row = 0, col = 0;
+	for (BLOCK_ROW* pRow = rowList.GetFirst(); pRow; pRow = rowList.GetNext())
 	{
-		for(int col=0;col<m_xCollines.GetSize()-1;col++)
+		for (BOM_CELL* pCell = pRow->listCells.EnumObjectFirst(); pCell; pCell = pRow->listCells.EnumObjectNext())
 		{
-			CXhChar100 celltext;
-			for(BOM_CELL* pCell=listCells.EnumObjectFirst();pCell;pCell=listCells.EnumObjectNext())
-			{
-				if(pCell->contents.GetLength()==0||pCell->iRow!=row||pCell->iCol!=col)
-					continue;
-				celltext.Append(pCell->contents);
-			}
+			col = pCell->iCol;
+			CXhChar100 celltext(pCell->contents);
 			celltext.ResizeLength(16,' ',true);
 			celltext.Replace("%%c","φ");
 			celltext.Replace("%%C","Φ");
 			fprintf(fp,"%s",(char*)celltext);
 		}
+		row++;
 		fprintf(fp,"\n");
 	}
 	fclose(fp);
@@ -177,6 +227,36 @@ static BOOL GetCurFileName(CXhChar500 &sFilePath,CXhChar500 &sName)
 	_splitpath(file_path,NULL,NULL,sName,NULL);
 	return TRUE;
 }
+int CPartBomTable::GetAllRow(ATOM_LIST<BLOCK_ROW>& rowList)
+{
+	rowList.Empty();
+	for (int row = 0; row < m_xRowlines.GetSize() - 1; row++)
+	{
+		BLOCK_ROW* pRow = rowList.append();
+		pRow->iRow = row;
+		for (int col = 0; col < m_xCollines.GetSize() - 1; col++)
+		{
+			CXhChar100 sCellText;
+			for (BOM_CELL* pCell = listCells.EnumObjectFirst(); pCell; pCell = listCells.EnumObjectNext())
+			{
+				if (pCell->contents.GetLength() == 0 || pCell->iRow != row || pCell->iCol != col)
+					continue;
+				BOM_CELL *pNewCell = pRow->listCells.AttachObject();
+				pNewCell->Clone(*pCell);
+				break;
+			}
+		}
+	}
+	int iRow = rowList.GetNodeNum();
+	for (BLOCK_ROW* pRow = m_xBlockRowList.GetFirst(); pRow; pRow = m_xBlockRowList.GetNext())
+	{
+		BLOCK_ROW* pNewRow = rowList.append();
+		pNewRow->Clone(*pRow);
+		pRow->iRow = iRow;
+		iRow++;
+	}
+	return rowList.GetNodeNum();
+}
 void CPartBomTable::ExportBomToBomdFile(const char* work_path,bool bPrompt)
 {
 	if(work_path==NULL)
@@ -185,21 +265,28 @@ void CPartBomTable::ExportBomToBomdFile(const char* work_path,bool bPrompt)
 	SEGI segI;
 	int iFirstLabelCol=0;
 	CXhChar16 sFirstLabel,sTailLabel;
-	for(int row=0;row<m_xRowlines.GetSize()-1;row++)
+	ATOM_LIST<BLOCK_ROW> rowList;
+	GetAllRow(rowList);
+	int row = 0, col = 0;
+	for(BLOCK_ROW *pRow=rowList.GetFirst();pRow;pRow=rowList.GetNext())
 	{
 		CXhChar200 sPartText;
-		for(int col=0;col<m_xCollines.GetSize()-1;col++)
-		{
+		for(int i=0;i<7;i++)
+		{	//最多支持7列
 			CXhChar100 sCellText;
-			for(BOM_CELL *pCell=listCells.EnumObjectFirst();pCell;pCell=listCells.EnumObjectNext())
+			for (BOM_CELL* pCell = pRow->listCells.EnumObjectFirst(); pCell; pCell = pRow->listCells.EnumObjectNext())
 			{
-				if(pCell->contents.GetLength()==0||pCell->iRow!=row||pCell->iCol!=col)
-					continue;
-				sCellText.Append(pCell->contents);
-				break;
+				if (pCell->iCol == i)
+				{
+					sCellText.Copy(pCell->contents);
+					break;
+				}
 			}
- 			sCellText.Replace("%%c","φ");
-			sCellText.Replace("%%C","Φ");
+			sCellText.Replace("%%c", "φ");
+			sCellText.Replace("%c", "φ");
+			sCellText.Replace("%%C", "Φ");
+			sCellText.Replace("%C", "Φ");
+			col = i;
 			if(col==0)
 			{
 				if(row==0)
@@ -209,10 +296,10 @@ void CPartBomTable::ExportBomToBomdFile(const char* work_path,bool bPrompt)
 					sFirstLabel.Copy(sCellText);
 					iFirstLabelCol=row;
 				}
-				else if(row==m_xRowlines.GetSize()-2)
+				else if(row==rowList.GetNodeNum()-1)
 					sTailLabel.Copy(sCellText);
 			}
-			if(col>0&&row==m_xRowlines.GetSize()-2&&sTailLabel.GetLength()<=0)
+			if(col>0&&row== rowList.GetNodeNum() - 1 && sTailLabel.GetLength()<=0)
 			{	//件号为空，取规格列
 				if(sCellText.GetLength()>0)
 					sTailLabel.Copy(sCellText);
@@ -224,6 +311,7 @@ void CPartBomTable::ExportBomToBomdFile(const char* work_path,bool bPrompt)
 			sPartText.Append(sCellText);
 			sPartText.Append("\t");	//使用空格分隔内容时，无法处理空列问题，改用\t分割内容 wht 18-12-20
 		}
+		row++;
 		partList.append(sPartText);
 	}
 	CXhChar500 sFileName,sFilePath;
@@ -245,36 +333,35 @@ void CPartBomTable::ExportBomToBomdFile(const char* work_path,bool bPrompt)
 			}
 		}
 	}
-	CXhChar500 sDwgFilePath("%s/%s~%s.bomd",work_path,(char*)sFirstLabel,(char*)sTailLabel);
+	CXhChar500 sDwgFilePath("%s\\%s~%s.bomd",work_path,(char*)sFirstLabel,(char*)sTailLabel);
 	if(psSeg!=NULL)
-		sDwgFilePath.Printf("%s/%s#%s~%s.bomd",work_path,(char*)*psSeg,(char*)sFirstLabel,(char*)sTailLabel);
+		sDwgFilePath.Printf("%s\\%s#%s~%s.bomd",work_path,(char*)*psSeg,(char*)sFirstLabel,(char*)sTailLabel);
 	FILE* fp=fopen(sDwgFilePath,"wt");
-	for(CXhChar200 *pLineText=partList.GetFirst();pLineText;pLineText=partList.GetNext())
+	if (fp != NULL)
 	{
-		fprintf(fp,"%s",(char*)*pLineText);
-		fprintf(fp,"\n");
+		for (CXhChar200 *pLineText = partList.GetFirst(); pLineText; pLineText = partList.GetNext())
+		{
+			fprintf(fp, "%s", (char*)*pLineText);
+			fprintf(fp, "\n");
+		}
+		fclose(fp);
+		if (bPrompt)
+			MessageBox(NULL, CXhChar500("成功提出%s~%s共%d个构件！", (char*)sFirstLabel, (char*)sTailLabel, partList.GetSize()), "提示", MB_OK);
 	}
-	fclose(fp);
-	if(bPrompt)
-		MessageBox(NULL,CXhChar500("成功提出%s~%s共%d个构件！",(char*)sFirstLabel,(char*)sTailLabel,partList.GetSize()),"提示",MB_OK);
 }
 extern int GetParttype(char* spec);
 CHashStrList<CXhChar500> CPartBomTable::m_hashSegStrByFilePath;
 void CPartBomTable::RetrieveParts()
 {
-	for(int row=0;row<m_xRowlines.GetSize()-1;row++)
+	ATOM_LIST<BLOCK_ROW> rowList;
+	GetAllRow(rowList);
+	int row = 0, col = 0;
+	for (BLOCK_ROW* pRow = rowList.GetFirst(); pRow; pRow = rowList.GetNext())
 	{
-		CManuPart* pManuPart=m_xBomPartList.append();
-		for(int col=0;col<m_xCollines.GetSize()-1;col++)
+		CManuPart* pManuPart = m_xBomPartList.append();
+		for (BOM_CELL* pCell = pRow->listCells.EnumObjectFirst(); pCell; pCell = pRow->listCells.EnumObjectNext())
 		{
-			BOM_CELL* pCell=NULL;
-			for(pCell=listCells.EnumObjectFirst();pCell;pCell=listCells.EnumObjectNext())
-			{
-				if(pCell->contents.GetLength()>0&&pCell->iRow==row&&pCell->iCol==col)
-					break;
-			}
-			if(pCell==NULL)
-				continue;
+			col = pCell->iCol;
 			if(col==0)	//件号
 			{
 				strcpy(pManuPart->sPartNo,pCell->contents);
@@ -283,8 +370,10 @@ void CPartBomTable::RetrieveParts()
 			if(col==1)	//规格
 			{
 				CXhChar100 sText(pCell->contents),ss;
-				sText.Replace("%%c","φ");
-				sText.Replace("%%C","Φ");
+				sText.Replace("%%c", "φ");
+				sText.Replace("%c", "φ");
+				sText.Replace("%%C", "Φ");
+				sText.Replace("%C", "Φ");
 				if(strstr(sText,"-"))
 				{
 					sText.Replace("-"," ");
@@ -338,6 +427,7 @@ void CPartBomTable::RetrieveParts()
 			if(col==5)	//总重
 				pManuPart->sumWeight=atof(pCell->contents);
 		}
+		row++;
 	}
 	//删除无意义的BOM
 	for(CManuPart* pManuPart=m_xBomPartList.GetFirst();pManuPart;pManuPart=m_xBomPartList.GetNext())
@@ -420,6 +510,117 @@ public:
 			pCadDbObj->close();
 	}
 };
+BOOL AppendBlockRowToList(ATOM_LIST<BLOCK_ROW> &blockList, AcDbBlockReference *pBlockRef)
+{
+	if (pBlockRef == NULL)
+		return FALSE;
+	BOOL bRetCode = false;
+	AcDbEntity *pSubEnt = NULL;
+	AcDbObjectIterator *pIter = pBlockRef->attributeIterator();
+	BOOL bValidRow = FALSE;
+	CXhChar100 sPartNo, sSpec, sLen, sNum, sWeight, sSumWeight, sNotes;
+	for (pIter->start(); !pIter->done(); pIter->step())
+	{
+		CAcDbObjLife objLife(pIter->objectId());
+		if ((pSubEnt = objLife.GetEnt()) == NULL)
+			continue;
+		if (!pSubEnt->isKindOf(AcDbAttribute::desc()))
+			continue;
+		AcDbAttribute *pAttr = (AcDbAttribute*)pSubEnt;
+		CXhChar100 sTag, sText;
+#ifdef _ARX_2007
+		sTag.Copy(_bstr_t(pAttr->tag()));
+		sText.Copy(_bstr_t(pAttr->textString()));
+#else
+		sTag.Copy(pAttr->tag());
+		sText.Copy(pAttr->textString());
+#endif
+		if (sTag.GetLength() == 0 || sText.GetLength() == 0)
+			continue;
+		//件号：CL_ITEM_NUMBER
+		//规格：CL_ITEM_TYPE
+		//长度：CL_ITEM_LENGTH
+		//数量：CL_ITEM_AMOUNT
+		//单重：CL_ITEM_WEIGHT
+		//总重：CL_ITEM_SUBTOTAL
+		//备注：CL_ITEM_MARK
+		if (sTag.EqualNoCase("CL_ITEM_NUMBER"))
+			sPartNo = sText;
+		else if (sTag.EqualNoCase("CL_ITEM_TYPE"))
+			sSpec = sText;
+		else if (sTag.EqualNoCase("CL_ITEM_LENGTH"))
+			sLen = sText;
+		else if (sTag.EqualNoCase("CL_ITEM_AMOUNT"))
+			sNum = sText;
+		else if (sTag.EqualNoCase("CL_ITEM_WEIGHT"))
+			sWeight = sText;
+		else if (sTag.EqualNoCase("CL_ITEM_SUBTOTAL"))
+			sSumWeight = sText;
+		else if (sTag.EqualNoCase("CL_ITEM_MARK"))
+			sNotes = sText;
+	}
+	if ((sPartNo.GetLength() > 0 || sSpec.GetLength() > 0) && 	//件号、规格至少有一列有效
+		sNum.GetLength() > 0 && sWeight.GetLength() > 0 && 
+		sSumWeight.GetLength() > 0)
+	{
+		double fPosY = pBlockRef->position().y;
+		int index = 0;
+		for (BLOCK_ROW* pRow = blockList.GetFirst(); pRow; pRow = blockList.GetNext())
+		{
+			if (fPosY > pRow->blockPos.y)
+				break;
+			index++;
+		}
+		BLOCK_ROW *pBlockRow = blockList.insert(BLOCK_ROW(),index);
+		pBlockRow->iRow = -1;
+		pBlockRow->blockPos.x = pBlockRef->position().x;
+		pBlockRow->blockPos.y = pBlockRef->position().y;
+		BOM_CELL *pCell=pBlockRow->listCells.AttachObject();
+		pCell->iCol = 0;
+		pCell->contents = sPartNo;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		//
+		pCell = pBlockRow->listCells.AttachObject();
+		pCell->iCol = 1;
+		pCell->contents = sSpec;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		//
+		pCell = pBlockRow->listCells.AttachObject();
+		pCell->iCol = 2;
+		pCell->contents = sLen;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		//
+		pCell = pBlockRow->listCells.AttachObject();
+		pCell->iCol = 3;
+		pCell->contents = sNum;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		//
+		pCell=pBlockRow->listCells.AttachObject();
+		pCell->iCol = 4;
+		pCell->contents = sWeight;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		//
+		pCell = pBlockRow->listCells.AttachObject();
+		pCell->iCol = 5;
+		pCell->contents = sSumWeight;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		//
+		pCell = pBlockRow->listCells.AttachObject();
+		pCell->iCol = 6;
+		pCell->contents = sNotes;
+		pCell->rc.top = (LONG)pBlockRow->blockPos.y;
+		pCell->rc.bottom = (LONG)pBlockRow->blockPos.y;
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
 BOOL CPartBomTable::RecogizeBomTable()
 {
 	BOM_CELL* pCell;
@@ -571,6 +772,8 @@ BOOL CPartBomTable::RecogizeBomTable()
 				}
 				if(pLineBlockRef&&i==1)
 					break;
+				//添加属性块行数据 wht 20-03-13
+				AppendBlockRowToList(m_xBlockRowList, pBlockRef);
 			}
 		}
 		if(pLineBlockRef&&i==1)
