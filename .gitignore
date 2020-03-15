@@ -264,3 +264,8 @@ __pycache__/
 *.fas
 *.dwl
 *.bomd
+*.tlog
+*.res
+*.manifest
+*.ib_tag
+*.lastbuildstate

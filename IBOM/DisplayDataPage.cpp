@@ -599,7 +599,7 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 		int iCurSel=pItem->GetIndex();
 		CSuperGridCtrl::CTreeItem *pNextToItem=iCurSel>0?pListCtrl->GetTreeItem(iCurSel-1):NULL;
 		if (wVKey == CConfig::CFG_VK_REPEAT_UP)
-			pNextToItem = (iCurSel > 0 && iCurSel < pListCtrl->GetItemCount() - 2) ? pListCtrl->GetTreeItem(iCurSel + 1) : NULL;
+			pNextToItem = (iCurSel >= 0 && iCurSel < pListCtrl->GetItemCount() - 1) ? pListCtrl->GetTreeItem(iCurSel + 1) : NULL;
 		IRecoginizer::BOMPART *pNextToPart=pNextToItem!=NULL?(IRecoginizer::BOMPART*)pNextToItem->m_idProp:NULL;
 		CString sOldText=pItem->m_lpNodeInfo->GetSubItemText(biCurCol);
 		if(pNextToItem&&pNextToPart)
@@ -618,7 +618,7 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 							if (wVKey == CConfig::CFG_VK_REPEAT_UP)
 							{	//复制下一单元格内容
 								int nNewSerialNo = nSerialNo - 1;
-								if(nNewSerialNo<10)
+								if(sSerialNo.StartWith('0') && nNewSerialNo<10)
 									strcpy(pCurPart->sLabel, CXhChar16("%s%s0%d", (char*)segI.ToString(), (char*)sSeparator, nNewSerialNo));
 								else if(nNewSerialNo<100)
 									strcpy(pCurPart->sLabel, CXhChar16("%s%d", (char*)segI.ToString(), nNewSerialNo));
@@ -643,7 +643,9 @@ static BOOL FireKeyDownItem(CSuperGridCtrl* pListCtrl,CSuperGridCtrl::CTreeItem*
 							if (wVKey == CConfig::CFG_VK_REPEAT_UP)
 							{
 								int nNewSerialNo = nLabel - 1;
-								if (nNewSerialNo < 100)
+								if(nNewSerialNo<10)
+									strcpy(pCurPart->sLabel, CXhChar16("%s0%d", (char*)segI.ToString(), nNewSerialNo));
+								else if (nNewSerialNo < 100)
 									strcpy(pCurPart->sLabel, CXhChar16("%s%d", (char*)segI.ToString(), nNewSerialNo));
 								else
 									strcpy(pCurPart->sLabel, CXhChar16("%s%s%d", (char*)segI.ToString(), (char*)sSeparator, nNewSerialNo));
