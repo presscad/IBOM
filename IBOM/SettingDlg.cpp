@@ -209,6 +209,8 @@ static BOOL ModifySettingValue(CPropertyList* pPropList,CPropTreeItem* pItem,CSt
 		CConfig::KEY_Q235=valueStr;
 	else if(CSettingDlg::GetPropID("KEY_Q345")==pItem->m_idProp)
 		CConfig::KEY_Q345=valueStr;
+	else if (CSettingDlg::GetPropID("KEY_Q355") == pItem->m_idProp)
+		CConfig::KEY_Q355 = valueStr;
 	else if(CSettingDlg::GetPropID("KEY_Q390")==pItem->m_idProp)
 		CConfig::KEY_Q390=valueStr;
 	else if(CSettingDlg::GetPropID("KEY_Q420")==pItem->m_idProp)
@@ -223,6 +225,8 @@ static BOOL ModifySettingValue(CPropertyList* pPropList,CPropTreeItem* pItem,CSt
 		CConfig::KEY_RIGHT=valueStr;
 	else if(CSettingDlg::GetPropID("KEY_REPEAT")==pItem->m_idProp)
 		CConfig::KEY_REPEAT=valueStr;
+	else if (CSettingDlg::GetPropID("KEY_REPEAT_UP") == pItem->m_idProp)
+		CConfig::KEY_REPEAT_UP = valueStr;
 	else if(CSettingDlg::GetPropID("KEY_BIG_FAI")==pItem->m_idProp)
 		CConfig::KEY_BIG_FAI=valueStr;
 	else if(CSettingDlg::GetPropID("KEY_LITTLE_FAI")==pItem->m_idProp)
@@ -523,6 +527,7 @@ void CSettingDlg::InitSystemSettingPropHashTbl()
 	AddPropItem("Material",PROPLIST_ITEM(id++,"材质快捷键"));
 	AddPropItem("KEY_Q235",PROPLIST_ITEM(id++,"Q235"));
 	AddPropItem("KEY_Q345",PROPLIST_ITEM(id++,"Q345"));
+	AddPropItem("KEY_Q355", PROPLIST_ITEM(id++, "Q355"));
 	AddPropItem("KEY_Q390",PROPLIST_ITEM(id++,"Q390"));
 	AddPropItem("KEY_Q420",PROPLIST_ITEM(id++,"Q420"));
 	AddPropItem("Operation",PROPLIST_ITEM(id++,"操作快捷键"));
@@ -531,6 +536,7 @@ void CSettingDlg::InitSystemSettingPropHashTbl()
 	AddPropItem("KEY_LEFT",PROPLIST_ITEM(id++,"左"));
 	AddPropItem("KEY_RIGHT",PROPLIST_ITEM(id++,"右"));
 	AddPropItem("KEY_REPEAT",PROPLIST_ITEM(id++,"重复上一单元格内容"));
+	AddPropItem("KEY_REPEAT_UP", PROPLIST_ITEM(id++, "重复下一单元格内容"));
 	AddPropItem("SpecialChar",PROPLIST_ITEM(id++,"特殊字符快捷键"));
 	AddPropItem("KEY_BIG_FAI",PROPLIST_ITEM(id++,"大写Φ快捷键"));
 	AddPropItem("KEY_LITTLE_FAI",PROPLIST_ITEM(id++,"小写φ快捷键"));
@@ -645,6 +651,8 @@ int CSettingDlg::GetPropValueStr(long id,char* valueStr,UINT nMaxStrBufLen/*=100
 		sText.Copy(CConfig::KEY_Q235);
 	else if(GetPropID("KEY_Q345")==id)
 		sText.Copy(CConfig::KEY_Q345);
+	else if (GetPropID("KEY_Q355") == id)
+		sText.Copy(CConfig::KEY_Q355);
 	else if(GetPropID("KEY_Q390")==id)
 		sText.Copy(CConfig::KEY_Q390);
 	else if(GetPropID("KEY_Q420")==id)
@@ -659,6 +667,8 @@ int CSettingDlg::GetPropValueStr(long id,char* valueStr,UINT nMaxStrBufLen/*=100
 		sText.Copy(CConfig::KEY_DOWN);
 	else if(GetPropID("KEY_REPEAT")==id)
 		sText.Copy(CConfig::KEY_REPEAT);
+	else if (GetPropID("KEY_REPEAT_UP") == id)
+		sText.Copy(CConfig::KEY_REPEAT_UP);
 	else if(GetPropID("KEY_BIG_FAI")==id)
 		sText.Copy(CConfig::KEY_BIG_FAI);
 	else if(GetPropID("KEY_LITTLE_FAI")==id)
@@ -795,6 +805,7 @@ void CSettingDlg::DisplaySystemSetting()
 	pGroupItem->m_dwPropGroup=GetSingleWord(GROUP_SHORTCUT);
 	oper.InsertEditPropItem(pGroupItem,"KEY_Q235");
 	oper.InsertEditPropItem(pGroupItem,"KEY_Q345");
+	oper.InsertEditPropItem(pGroupItem,"KEY_Q355");
 	oper.InsertEditPropItem(pGroupItem,"KEY_Q390");
 	oper.InsertEditPropItem(pGroupItem,"KEY_Q420");
 	//
@@ -806,6 +817,7 @@ void CSettingDlg::DisplaySystemSetting()
 	oper.InsertEditPropItem(pGroupItem,"KEY_LEFT");
 	oper.InsertEditPropItem(pGroupItem,"KEY_RIGHT");
 	oper.InsertEditPropItem(pGroupItem,"KEY_REPEAT");
+	oper.InsertEditPropItem(pGroupItem, "KEY_REPEAT_UP");
 	pGroupItem=oper.InsertPropItem(pRootItem,"SpecialChar");
 	pGroupItem->m_bHideChildren=FALSE;
 	pGroupItem->m_dwPropGroup=GetSingleWord(GROUP_SHORTCUT);

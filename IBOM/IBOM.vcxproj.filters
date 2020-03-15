@@ -648,6 +648,9 @@
     <ClInclude Include="..\..\ToolKits\TowerCad\ParseAdaptNo.h">
       <Filter>TowerCad</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ToolKits\ToolCode\BomTblTitleCfg.h">
+      <Filter>ToolCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IBOM.cpp">
@@ -1041,6 +1044,9 @@
       <Filter>RecogCode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ToolKits\ToolCode\ExcelOper.cpp">
+      <Filter>ToolCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ToolKits\ToolCode\BomTblTitleCfg.cpp">
       <Filter>ToolCode</Filter>
     </ClCompile>
   </ItemGroup>

@@ -22,7 +22,7 @@
 typedef DWORD (*DefGetSupportBOMType)();
 typedef DWORD (*DefGetSupportDataBufferVersion)();
 typedef int (*DefCreateExcelBomFile)(char* data_buf,int buf_len,const char* file_name,DWORD dwFlag);
-typedef int (*DefGetExcelFormat)(int* colIndexArr,int *startRowIndex);
+typedef int (*DefGetExcelFormat)(int* colIndexArr,int *startRowIndex, char *titleStr);
 class CIBOMApp : public CWinAppEx
 {
 	HMODULE m_hBomExport;

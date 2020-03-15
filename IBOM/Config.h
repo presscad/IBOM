@@ -25,10 +25,13 @@ public:
 	static const WORD CFG_VK_Q390		= 0xFFF2;
 	static const WORD CFG_VK_Q420		= 0xFFF3;
 	static const WORD CFG_VK_REPEAT		= 0xFFF5;	//重复上一次
+	static const WORD CFG_VK_REPEAT_UP  = 0xFFF6;	//重复上一次（向上）
+	static const WORD CFG_VK_Q355		= 0xFFF7;
 	
 public:
 	static CXhChar100 KEY_Q235;
 	static CXhChar100 KEY_Q345;
+	static CXhChar100 KEY_Q355;
 	static CXhChar100 KEY_Q390;
 	static CXhChar100 KEY_Q420;
 	static CXhChar100 KEY_LEFT;
@@ -36,6 +39,7 @@ public:
 	static CXhChar100 KEY_UP;
 	static CXhChar100 KEY_DOWN;
 	static CXhChar100 KEY_REPEAT;
+	static CXhChar100 KEY_REPEAT_UP;
 	static CXhChar100 KEY_RETURN;
 	static CXhChar100 KEY_HOME;
 	static CXhChar100 KEY_END;

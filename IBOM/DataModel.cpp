@@ -10,6 +10,7 @@
 #include "XhLicAgent.h"
 #include "f_alg_fun.h"
 #include "CryptBuffer.h"
+#include "BomTblTitleCfg.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -100,9 +101,13 @@ BOOL CBomFileData::ImportExcelBomFileByDllFromat(CVariant2dArray &sheetContextMa
 	if(CIBOMApp::GetBomExcelFormat==NULL)
 		return FALSE;
 	int colIndexArr[50]={0},iStartRow=0;
-	int nCount=CIBOMApp::GetBomExcelFormat(colIndexArr,&iStartRow);
+	CXhChar500 sTitle;
+	int nCount=CIBOMApp::GetBomExcelFormat(colIndexArr,&iStartRow,sTitle);
 	if(nCount<4)
 		return FALSE;
+	CBomTblTitleCfg cfg(colIndexArr, sTitle, nCount, iStartRow);
+	if (!cfg.IsMatch(sheetContextMap))
+		return NULL;
 	//colIndexArr[0]=3;	//件号
 	//colIndexArr[1]=5;	//规格
 	//colIndexArr[2]=6;	//材质

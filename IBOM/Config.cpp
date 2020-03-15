@@ -10,9 +10,11 @@ CHashList<CXhChar100> CConfig::hashTextByKey;
 CHashStrList<CXhChar16> CConfig::hashAngleSpecByKey;
 CXhChar100 CConfig::KEY_Q235=CXhChar16("R");
 CXhChar100 CConfig::KEY_Q345=CXhChar16("T");
+CXhChar100 CConfig::KEY_Q355=CXhChar16("E");
 CXhChar100 CConfig::KEY_Q390=CXhChar16("Y");
 CXhChar100 CConfig::KEY_Q420=CXhChar16("U");
 CXhChar100 CConfig::KEY_REPEAT=CXhChar16(".");
+CXhChar100 CConfig::KEY_REPEAT_UP = CXhChar16("*");
 CXhChar100 CConfig::KEY_LEFT=CXhChar16("S");
 CXhChar100 CConfig::KEY_RIGHT=CXhChar16("F");
 CXhChar100 CConfig::KEY_UP=CXhChar16("E");
@@ -87,6 +89,7 @@ void CConfig::SaveToFile(const char* file_path)
 	fprintf(fp,"材质快捷键\n");
 	fprintf(fp,"Q235=%s ;Q235快捷键\n",(char*)KEY_Q235);
 	fprintf(fp,"Q345=%s ;Q345快捷键\n",(char*)KEY_Q345);
+	fprintf(fp,"Q355=%s ;Q355快捷键\n",(char*)KEY_Q355);
 	fprintf(fp,"Q390=%s ;Q390快捷键\n",(char*)KEY_Q390);
 	fprintf(fp,"Q420=%s ;Q420快捷键\n",(char*)KEY_Q420);
 	//
@@ -95,7 +98,8 @@ void CConfig::SaveToFile(const char* file_path)
 	fprintf(fp,"Down=%s ;下快捷键\n",(char*)KEY_DOWN);
 	fprintf(fp,"Left=%s ;左快捷键\n",(char*)KEY_LEFT);
 	fprintf(fp,"Right=%s ;右快捷键\n",(char*)KEY_RIGHT);
-	fprintf(fp,"Repeat=%s ;重复快捷键\n",(char*)KEY_REPEAT);
+	fprintf(fp,"Repeat=%s ;重复快捷键（向下）\n",(char*)KEY_REPEAT);
+	fprintf(fp, "RepeatUP=%s ;重复快捷键（向上）\n", (char*)KEY_REPEAT_UP);
 	//
 	fprintf(fp,"特殊字符快捷键\n");
 	fprintf(fp,"BigFai=%s ;钢管直径Φ\n",(char*)KEY_BIG_FAI);
@@ -160,10 +164,14 @@ void CConfig::LoadFromFile(const char* file_path)
 			sscanf(line_txt,"%s %s",&key_word,&KEY_DOWN);
 		else if(_stricmp(key_word,"Repeat")==0)
 			sscanf(line_txt,"%s %s",&key_word,&KEY_REPEAT);
+		else if (_stricmp(key_word, "RepeatUP") == 0)
+			sscanf(line_txt, "%s %s", &key_word, &KEY_REPEAT_UP);
 		else if(_stricmp(key_word,"Q235")==0)
 			sscanf(line_txt,"%s %s",&key_word,&KEY_Q235);
 		else if(_stricmp(key_word,"Q345")==0)
 			sscanf(line_txt,"%s %s",&key_word,&KEY_Q345);
+		else if (_stricmp(key_word, "Q355") == 0)
+			sscanf(line_txt, "%s %s", &key_word, &KEY_Q355);
 		else if(_stricmp(key_word,"Q390")==0)
 			sscanf(line_txt,"%s %s",&key_word,&KEY_Q390);
 		else if(_stricmp(key_word,"Q420")==0)
@@ -281,6 +289,8 @@ int CConfig::GetCfgVKCode(int wKeyCode,HWND hWnd)
 			return CFG_VK_Q235;
 		else if(stricmp(KEY_Q345,sKeyText)==0)
 			return CFG_VK_Q345;
+		else if (stricmp(KEY_Q355, sKeyText) == 0)
+			return CFG_VK_Q355;
 		else if(stricmp(KEY_Q390,sKeyText)==0)
 			return CFG_VK_Q390;
 		else if(stricmp(KEY_Q420,sKeyText)==0)
@@ -295,6 +305,8 @@ int CConfig::GetCfgVKCode(int wKeyCode,HWND hWnd)
 			return CFG_VK_RIGHT;
 		else if(stricmp(KEY_REPEAT,sKeyText)==0)
 			return CFG_VK_REPEAT;
+		else if (stricmp(KEY_REPEAT_UP, sKeyText) == 0)
+			return CFG_VK_REPEAT_UP;
 		else
 			return wKeyCode;
 	}
@@ -331,6 +343,7 @@ CXhChar500 CConfig::GetShortcutPromptStr()
 	sPrompt.Append("材质快捷键\n");
 	sPrompt.Append(CXhChar16("Q235: %s\n",(char*)KEY_Q235));
 	sPrompt.Append(CXhChar16("Q345: %s\n",(char*)KEY_Q345));
+	sPrompt.Append(CXhChar16("Q355: %s\n", (char*)KEY_Q355));
 	sPrompt.Append(CXhChar16("Q390: %s\n",(char*)KEY_Q390));
 	sPrompt.Append(CXhChar16("Q420: %s\n",(char*)KEY_Q420));
 	sPrompt.Append("\n");
@@ -339,7 +352,8 @@ CXhChar500 CConfig::GetShortcutPromptStr()
 	sPrompt.Append(CXhChar16("下: %s\n",(char*)KEY_DOWN));
 	sPrompt.Append(CXhChar16("左: %s\n",(char*)KEY_LEFT));
 	sPrompt.Append(CXhChar16("右: %s\n",(char*)KEY_RIGHT));
-	sPrompt.Append(CXhChar16("重复: %s\n",(char*)KEY_REPEAT));
+	sPrompt.Append(CXhChar16("向下重复: %s\n",(char*)KEY_REPEAT));
+	sPrompt.Append(CXhChar16("向上重复: %s\n", (char*)KEY_REPEAT_UP));
 	sPrompt.Append("特殊字符快捷键\n");
 	sPrompt.Append(CXhChar16("Φ: %s\n",(char*)KEY_BIG_FAI));
 	sPrompt.Append(CXhChar16("φ: %s\n",(char*)KEY_LITTLE_FAI));
