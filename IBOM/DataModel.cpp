@@ -236,7 +236,7 @@ BOOL CBomFileData::ImportExcelBomFileCore(CVariant2dArray &sheetContentMap,CHash
 				sMaterial.Copy("Q235");
 		}
 		//³¤¶È
-		float fLength=0;
+		double fLength=0;
 		if((pColIndex=hashColIndexByColTitle.GetValue(T_BOMPART_LEN))!=NULL)
 		{
 			sheetContentMap.GetValueAt(i,*pColIndex,value);
@@ -321,6 +321,7 @@ BOOL CBomFileData::ImportExcelBomFile(const char* sFileName)
 	if(ImportExcelBomFileByDllFromat(sheetContentMap))
 		return TRUE;
 	//
+	CLogErrorLife logLife;
 	CHashStrList<DWORD> hashColIndexByColTitle;
 	int EXCEL_COL_COUNT=DWG_EXCEL_COL_COUNT;
 	BYTE cbCellTitleFlag=0;

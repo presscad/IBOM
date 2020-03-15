@@ -153,11 +153,11 @@ class CImageTransform
 private:
 	void Clear();
 	bool ReadBmpFile(FILE* fp,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0);
-	bool ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0);
+	bool ReadBmpFileByTempFile(CTempFileBuffer &tempBuffer,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,bool bTurnBmpByCfgPara=true);
 	bool WriteBmpFile(FILE* fp);
 	bool WriteJpegFile(FILE* fp);
 	bool WritePngFile(FILE* fp);
-	bool InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette=NULL,BYTE *lpBmBits=NULL,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0);
+	bool InitFromBITMAP(BITMAP &image, RGBQUAD *pPalette=NULL,BYTE *lpBmBits=NULL,BYTE* lpExterRawBitsBuff=NULL,UINT uiBitsBuffSize=0,bool bTurnBmpByCfgPara=true);
 public:
 	void UnloadRawBytesToVirtualMemBuff(BUFFER_IO* pIO,bool write2vm=true);
 	bool LoadRawBytesFromVirtualMemBuff(BUFFER_IO* pIO);
