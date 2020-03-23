@@ -151,7 +151,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-x64|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release\</OutDir>
+    <OutDir>..\bin\Release-x64\</OutDir>
     <TargetName>IBOM</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,6 +161,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-x64|x64'">
     <TargetName>IBOM</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\bin\Release-x64\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -361,7 +362,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\ToolKits\QRCode\Release;..\..\ToolKits\MuPDF\Release-lib;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libthirdparty.lib;libmupdf-js-none.lib;tiff.lib;QRCode.lib;unarrlib.lib;libmupdf.lib;version.lib;jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
+      <AdditionalDependencies>libthirdparty.lib;libmupdf-js-none.lib;tiff.lib;QRCode.lib;unarrlib.lib;libmupdf.lib;version.lib;jpeg.lib;png.lib;zlib.lib;hasp_windows_x64_106281.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Midl>
@@ -392,9 +393,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ToolKits\QRCode\Release;..\..\ToolKits\MuPDF\Release-lib;..\Recog\ImageFile;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libthirdparty.lib;libmupdf-js-none.lib;tiff.lib;QRCode.lib;unarrlib.lib;libmupdf.lib;version.lib;jpeg.lib;png.lib;zlib.lib;hasp_windows_106281.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ToolKits\QRCode\Release-x64;..\..\ToolKits\MuPDF\Release-lib-x64;..\Recog\ImageFile\Release-x64;..\..\XhLmd\DogDrvs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libthirdparty.lib;libmupdf-js-none.lib;tiff.lib;QRCode.lib;unarrlib.lib;libmupdf.lib;version.lib;jpeg.lib;png.lib;zlib.lib;hasp_windows_x64_106281.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>..\bin\Release-x64\IBOM.exe</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -997,10 +999,16 @@
     <Object Include="..\..\XhLmd\DogDrvs\Mhwin32c.obj">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-x64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-x64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-x64|Win32'">true</ExcludedFromBuild>
     </Object>
     <Object Include="..\..\XhLmd\DogDrvs\Unhwin32c.obj">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-x64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-x64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-x64|Win32'">true</ExcludedFromBuild>
     </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
