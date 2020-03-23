@@ -252,7 +252,7 @@ void CIBOMDoc::OnFontsLibrary()
 }
 
 
-void CALLBACK EXPORT AutoSaveProc(HWND hWnd, UINT nMsg, UINT nIDEvent, DWORD dwTime)
+void CALLBACK EXPORT AutoSaveProc(HWND hWnd, UINT nMsg, UINT_PTR nIDEvent, DWORD dwTime)
 {
 	if(nIDEvent==theApp.GetDocument()->m_nTimer)
 		theApp.GetDocument()->AutoSaveBakFile();

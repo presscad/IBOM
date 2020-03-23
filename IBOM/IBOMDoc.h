@@ -15,7 +15,7 @@ protected: // 仅从序列化创建
 
 // 特性
 public:
-	UINT m_nTimer;
+	UINT_PTR m_nTimer;
 	int m_iMaxBakSerial;//当前的文件存储序号 默认值为0
 // 操作
 public:
